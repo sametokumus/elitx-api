@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\AdminAuthenticate;
+use App\Http\Middleware\ShopAuthenticate;
 use App\Http\Middleware\UserAuthenticate;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -67,6 +68,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'api_version' => \App\Http\Middleware\APIVersion::class,
         'type.user' => UserAuthenticate::class,
+        'type.shop' => ShopAuthenticate::class,
         'type.admin' => AdminAuthenticate::class
     ];
 }

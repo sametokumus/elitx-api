@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Auth\AuthenticationException;
 use Laravel\Sanctum\Exceptions\MissingAbilityException;
 
-class AdminAuthenticate
+class ShopAuthenticate
 {
     /**
      * Handle the incoming request.
@@ -23,7 +23,7 @@ class AdminAuthenticate
             throw new AuthenticationException;
         }
 
-            if ($request->user()->tokenCan('role:shop') || $request->user()->tokenCan('role:user')) {
+            if ($request->user()->tokenCan('role:user')) {
                 return redirect()->route('auth.login');
             }
 
