@@ -17,4 +17,5 @@ class CartController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
+
 }
