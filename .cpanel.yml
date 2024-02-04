@@ -1,0 +1,7 @@
+---
+deployment:
+      tasks:
+        - export DEPLOYPATH=/home/sametokumus/elitx-api.sametokumus.com
+        - /bin cp * $DEPLOYPATH
+
+
