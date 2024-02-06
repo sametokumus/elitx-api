@@ -21,9 +21,7 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
-                'user_name' => 'nullable',
                 'email' => 'required|email',
-                'phone_number' => 'required',
                 'password' => 'required'
             ]);
 
@@ -48,20 +46,9 @@ class AuthController extends Controller
             //Önce Kullanıcıyı oluşturuyor
             $userId = User::query()->insertGetId([
                 'email' => $request->email,
-                'phone_number' => $request->phone_number,
                 'password' => Hash::make($request->password),
                 'token' => Str::random(60)
             ]);
-
-            //İletişim Kurallarını oluşturuyor
-            $user_contact_rules = $request->user_contact_rules;
-            foreach ($user_contact_rules as $user_contact_rule){
-                UserContactRule::query()->insert([
-                    'user_id' => $userId,
-                    'contact_rule_id' => $user_contact_rule['contact_rule_id'],
-                    'value' => $user_contact_rule['value']
-                ]);
-            }
 
             //Kullanıcının dökümanlarını ekliyor
             $user_document_checks = $request->user_document_checks;
@@ -72,19 +59,11 @@ class AuthController extends Controller
                     'value' => $user_document_check['value']
                 ]);
             }
-            //Kullanıcı profilini oluşturuyor
-            $name = $request->name;
-            $surname = $request->surname;
-            UserProfile::query()->insert([
-                'user_id' => $userId,
-                'name' => $name,
-                'surname' => $surname
-            ]);
 
             // Oluşturulan kullanıcıyı çekiyor
             $user = User::query()->whereId($userId)->first();
 
-            //Oluşturulan Kullanıcıyı mail yolluyor
+            //Oluşturulan Kullanıcıya mail yolluyor
             $user->sendApiConfirmAccount($user);
 
             return response(['message' => 'Kullanıcı başarıyla oluşturuldu sisteme giriş için epostanızı kontrol ediniz.','status' => 'success']);
