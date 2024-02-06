@@ -2,6 +2,6 @@
 deployment:
       tasks:
         - export DEPLOYPATH=/home/sametokumus/elitx-api.sametokumus.com
-        - /bin cp /app/Providers/RouteServiceProvider.php $DEPLOYPATH
+        - /bin cp -r * $DEPLOYPATH
 
 
