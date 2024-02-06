@@ -61,9 +61,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/logout', [AuthController::class, 'logout']);
 
     Route::get('/user/getUser', [UserController::class, 'getUser']);
-    Route::post('/user/updateUser/{user_id}', [UserController::class, 'updateUser']);
-    Route::get('/user/deleteUser/{id}', [UserController::class, 'deleteUser']);
-    Route::post('/user/changePassword/{user_id}', [UserController::class, 'changePassword']);
+    Route::post('/user/updateUser', [UserController::class, 'updateUser']);
+    Route::get('/user/deleteUser', [UserController::class, 'deleteUser']);
+    Route::post('/user/changePassword', [UserController::class, 'changePassword']);
 //    Route::post('/user/addUserFavorite', [UserController::class, 'addUserFavorite']);
 //    Route::post('/user/removeUserFavorite', [UserController::class, 'removeUserFavorite']);
 //    Route::get('/user/getUserFavorites/{user_id}', [UserController::class, 'getUserFavorites']);
