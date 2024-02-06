@@ -26,11 +26,15 @@ class UserController extends Controller
         return @json_decode(json_encode($object), true);
     }
 
-    public function getUser($id){
+    public function getUser(){
         try {
-            $user = User::query()->where('id',$id)->first();
-            $user_profile = UserProfile::query()->where('user_id',$id)->first();
-            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['user' => $user,'user_profile' => $user_profile]]);
+            $user = Auth::user();
+
+            if ($user) {
+                return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['user' => $user]]);
+            } else {
+                return response(['message' => 'Kullanıcı bulunamadı.', 'status' => 'user-001']);
+            }
         } catch (QueryException $queryException){
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         }
