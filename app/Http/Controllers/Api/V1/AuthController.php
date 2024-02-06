@@ -37,12 +37,6 @@ class AuthController extends Controller
                 throw new \Exception('auth-002');
             }
 
-            $userPhoneCheck = User::query()->where('phone_number', $request->phone_number)->where('active', 1)->count();
-
-            if ($userPhoneCheck > 0) {
-                throw new \Exception('auth-003');
-            }
-
             //Önce Kullanıcıyı oluşturuyor
             $userId = User::query()->insertGetId([
                 'email' => $request->email,
