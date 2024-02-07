@@ -81,10 +81,13 @@ class UserController extends Controller
                 ]);
 
                 $user_document_checks = $request->user_document_checks;
-                foreach ($user_document_checks as $user_document_check){
-                    UserDocumentCheck::query()->where('user_id', $user->id)->where('document_id', $user_document_check->document_id)->update([
-                        'value' => $user_document_check->value
-                    ]);
+                foreach ($user_document_checks as $user_document_check) {
+                    UserDocumentCheck::query()
+                        ->where('user_id', $user->id)
+                        ->where('document_id', $user_document_check['document_id'])
+                        ->update([
+                            'value' => $user_document_check['value']
+                        ]);
                 }
 
                 return response(['message' => 'Güncelleme işlemi başarılı.','status' => 'success']);
