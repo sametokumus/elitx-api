@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Shop;
 use App\Http\Controllers\Controller;
 use App\Mail\UserWelcome;
 use App\Models\ContactRule;
-use App\Models\User;
+use App\Models\Shop;
 use App\Models\UserContactRule;
 use App\Models\UserDocumentCheck;
 use App\Models\UserProfile;
