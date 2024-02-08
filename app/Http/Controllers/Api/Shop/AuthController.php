@@ -28,25 +28,25 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
-            $shopActiveCheck = User::query()->where('email', $request->email)->where('active', 0)->count();
+            $shopActiveCheck = Shop::query()->where('email', $request->email)->where('active', 0)->count();
 
             if ($shopActiveCheck > 0) {
                 throw new \Exception('shop-004');
             }
 
-            $shopCheck = User::query()->where('email', $request->email)->count();
+            $shopCheck = Shop::query()->where('email', $request->email)->count();
 
             if ($shopCheck > 0) {
                 throw new \Exception('shop-002');
             }
 
-            $userPhoneCheck = User::query()->where('phone_number', $request->phone_number)->where('active', 1)->count();
+            $userPhoneCheck = Shop::query()->where('phone_number', $request->phone_number)->where('active', 1)->count();
 
             if ($userPhoneCheck > 0) {
                 throw new \Exception('shop-003');
             }
 
-            $userId = User::query()->insertGetId([
+            $userId = Shop::query()->insertGetId([
                 'email' => $request->email,
                 'name' => $request->name,
                 'phone_number' => $request->phone_number,
@@ -55,7 +55,7 @@ class AuthController extends Controller
             ]);
 
             // Oluşturulan kullanıcıyı çekiyor
-            $user = User::query()->whereId($userId)->first();
+            $user = Shop::query()->whereId($userId)->first();
 
             //Oluşturulan Kullanıcıyı mail yolluyor
             $user->sendApiConfirmAccount($user);
