@@ -116,7 +116,7 @@ class AuthController extends Controller
             if ($exception->getMessage() == 'auth-001'){
                 return  response(['message' => 'Eposta veya şifre hatalı.','status' => 'auth-001']);
             }
-            return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'e' => $exception->getMessage()]);
         }
     }
 
