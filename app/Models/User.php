@@ -52,12 +52,4 @@ class User extends Authenticatable
     public function sendApiConfirmAccount($user) {
         $this->notify(new AccountVerify($user));
     }
-
-    public function addresses(){
-        return $this->hasMany('App\Models\Address');
-    }
-
-    public function profile(){
-        return $this->hasOne('App\Models\UserProfile');
-    }
 }

@@ -88,26 +88,26 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
-            $user = Shop::query()->where('email', $request->email)->first();
+            $shop = Shop::query()->where('email', $request->email)->first();
 
-            if ($user->active == 0){
+            if ($shop->active == 0){
                 Shop::query()->where('email', $request->email)->update([
                     'active' => 1
                 ]);
             }
 
-            if (!$user || !Hash::check($request->password, $user->password)) {
+            if (!$shop || !Hash::check($request->password, $shop->password)) {
                 throw new \Exception('auth-001');
             }
 
-            $userToken = $user->createToken('api-token', ['role:shop'])->plainTextToken;
-            Shop::query()->where('id', $user->id)->update([
+            $userToken = $shop->createToken('api-token', ['role:shop'])->plainTextToken;
+            Shop::query()->where('id', $shop->id)->update([
                 'token' => $userToken
             ]);
 
-            $user->token = $userToken;
+            $shop->token = $userToken;
 
-            return  response(['message' => 'Başarılı.','status' => 'success', 'object' => ['user'=>$user]]);
+            return  response(['message' => 'Başarılı.','status' => 'success', 'object' => ['shop'=>$shop]]);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
