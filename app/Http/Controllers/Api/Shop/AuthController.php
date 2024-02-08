@@ -22,64 +22,36 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
-                'user_name' => 'nullable',
+                'name' => 'required',
                 'email' => 'required|email',
                 'phone_number' => 'required',
                 'password' => 'required'
             ]);
 
-            $userActiveCheck = User::query()->where('email', $request->email)->where('active', 0)->count();
+            $shopActiveCheck = User::query()->where('email', $request->email)->where('active', 0)->count();
 
-            if ($userActiveCheck > 0) {
-                throw new \Exception('auth-004');
+            if ($shopActiveCheck > 0) {
+                throw new \Exception('shop-004');
             }
 
-            $userCheck = User::query()->where('email', $request->email)->count();
+            $shopCheck = User::query()->where('email', $request->email)->count();
 
-            if ($userCheck > 0) {
-                throw new \Exception('auth-002');
+            if ($shopCheck > 0) {
+                throw new \Exception('shop-002');
             }
 
             $userPhoneCheck = User::query()->where('phone_number', $request->phone_number)->where('active', 1)->count();
 
             if ($userPhoneCheck > 0) {
-                throw new \Exception('auth-003');
+                throw new \Exception('shop-003');
             }
 
-            //Önce Kullanıcıyı oluşturuyor
             $userId = User::query()->insertGetId([
                 'email' => $request->email,
+                'name' => $request->name,
                 'phone_number' => $request->phone_number,
                 'password' => Hash::make($request->password),
                 'token' => Str::random(60)
-            ]);
-
-            //İletişim Kurallarını oluşturuyor
-            $user_contact_rules = $request->user_contact_rules;
-            foreach ($user_contact_rules as $user_contact_rule){
-                UserContactRule::query()->insert([
-                    'user_id' => $userId,
-                    'contact_rule_id' => $user_contact_rule['contact_rule_id'],
-                    'value' => $user_contact_rule['value']
-                ]);
-            }
-
-            //Kullanıcının dökümanlarını ekliyor
-            $user_document_checks = $request->user_document_checks;
-            foreach ($user_document_checks as $user_document_check){
-                UserDocumentCheck::query()->insert([
-                    'user_id' => $userId,
-                    'document_id' => $user_document_check['document_id'],
-                    'value' => $user_document_check['value']
-                ]);
-            }
-            //Kullanıcı profilini oluşturuyor
-            $name = $request->name;
-            $surname = $request->surname;
-            UserProfile::query()->insert([
-                'user_id' => $userId,
-                'name' => $name,
-                'surname' => $surname
             ]);
 
             // Oluşturulan kullanıcıyı çekiyor
@@ -88,20 +60,20 @@ class AuthController extends Controller
             //Oluşturulan Kullanıcıyı mail yolluyor
             $user->sendApiConfirmAccount($user);
 
-            return response(['message' => 'Kullanıcı başarıyla oluşturuldu sisteme giriş için epostanızı kontrol ediniz.','status' => 'success']);
+            return response(['message' => 'Mağazanız başarıyla oluşturuldu sisteme giriş için epostanızı kontrol ediniz.','status' => 'success']);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','error' => $queryException->getMessage()]);
         } catch (\Exception $exception){
-            if ($exception->getMessage() == 'auth-002'){
+            if ($exception->getMessage() == 'shop-002'){
                 return  response(['message' => 'Girdiğiniz eposta adresi kullanılmaktadır.','status' => 'auth-002']);
             }
-            if ($exception->getMessage() == 'auth-003'){
+            if ($exception->getMessage() == 'shop-003'){
                 return  response(['message' => 'Girdiğiniz telefon numarası kullanılmaktadır.','status' => 'auth-003']);
             }
-            if ($exception->getMessage() == 'auth-004'){
-                return  response(['message' => 'Bu e-posta adresi ile bir hesap bulunmaktadır. Yeniden giriş yaparak hesabınızı aktifleştirebilirsiniz.','status' => 'auth-003']);
+            if ($exception->getMessage() == 'shop-004'){
+                return  response(['message' => 'Bu e-posta adresi ile bir mağaza bulunmaktadır. Yeniden giriş yaparak hesabınızı aktifleştirebilirsiniz.','status' => 'auth-003']);
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'err' => $exception->getMessage()]);
         }
