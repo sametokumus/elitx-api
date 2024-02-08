@@ -88,10 +88,10 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
-            $user = User::query()->where('email', $request->email)->first();
+            $user = Shop::query()->where('email', $request->email)->first();
 
             if ($user->active == 0){
-                User::query()->where('email', $request->email)->update([
+                Shop::query()->where('email', $request->email)->update([
                     'active' => 1
                 ]);
             }
@@ -100,8 +100,8 @@ class AuthController extends Controller
                 throw new \Exception('auth-001');
             }
 
-            $userToken = $user->createToken('api-token', ['role:user'])->plainTextToken;
-            User::query()->where('id', $user->id)->update([
+            $userToken = $user->createToken('api-token', ['role:shop'])->plainTextToken;
+            Shop::query()->where('id', $user->id)->update([
                 'token' => $userToken
             ]);
 
@@ -138,7 +138,7 @@ class AuthController extends Controller
     protected function verify(Request $request)
     {
         try {
-            $user = User::query()->where('token', $request['token'])->first();
+            $user = Shop::query()->where('token', $request['token'])->first();
             if ($user->verified == 1 && $user->email_verified_at != null) {
                 throw new \Exception('validation-002');
             }
