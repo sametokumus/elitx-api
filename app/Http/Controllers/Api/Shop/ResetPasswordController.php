@@ -102,16 +102,16 @@ class ResetPasswordController extends Controller
             if (!$user) {
                 throw new \Exception('validation-005');
             }
-            Shop::query()->where('email', $resetpassword->email)->update([
+            Shop::query()->where('email', $user->email)->update([
                 'password' => Hash::make($request->password)
             ]);
-            ResetPassword::query()->where('email', $resetpassword->email)->delete();
+            ResetPassword::query()->where('email', $user->email)->delete();
 //            $user->notify(new ResetPasswordSuccess());
             return response()->json(['message' => 'Mağaza şifresi başarıyla değiştirildi.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
-            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001', 'e' => $queryException->getMessage()]);
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001', 'e' => $queryException->getMessage(), 'u'=>$user]);
         } catch (\Exception $exception){
             if ($exception->getMessage() == 'validation-003'){
                 return  response(['message' => 'Şifre yenileme talebi bulunamadı!','status' => 'validation-003']);
