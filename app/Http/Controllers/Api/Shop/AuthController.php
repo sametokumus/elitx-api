@@ -66,7 +66,7 @@ class AuthController extends Controller
             //Oluşturulan Kullanıcıyı mail yolluyor
 //            $user->sendApiConfirmAccount($user);
 
-            return response(['message' => 'Mağazanız başarıyla oluşturuldu sisteme giriş için epostanızı kontrol ediniz.','status' => 'success', 'shop'=>$shop]);
+            return response(['message' => 'Mağazanız başarıyla oluşturuldu sisteme giriş için epostanızı kontrol ediniz.','status' => 'success', 'object' => ['shop'=>$shop]]);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
