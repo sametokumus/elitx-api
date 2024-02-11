@@ -111,7 +111,7 @@ class ResetPasswordController extends Controller
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
-            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001', 'e' => $queryException->getMessage()]);
         } catch (\Exception $exception){
             if ($exception->getMessage() == 'validation-003'){
                 return  response(['message' => 'Şifre yenileme talebi bulunamadı!','status' => 'validation-003']);
