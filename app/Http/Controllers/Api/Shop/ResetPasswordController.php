@@ -29,23 +29,26 @@ class ResetPasswordController extends Controller
                 'email' => 'required|string|email'
             ]);
 
-            $user = Shop::query()->where('email', $request['email'])->first();
+            $user = Shop::query()->where('email', $request->email)->first();
             if (!$user) {
                 throw new \Exception('validation-003');
             }
-            $resetpassword = ResetPassword::query()->updateOrCreate(
-                [
-                    'email' => $user->email,
-                ],
-                [
-                    'email' => $user->email,
-                    'token' => Str::random(45),
-                ]
-            );
+            $check = ResetPassword::query()->where('email', $request->email)->first();
+            $token = Str::random(45);
+            if ($check){
+                ResetPassword::query()->where('email', $request->email)->update([
+                    'token' => $token
+                ]);
+            }else{
+                ResetPassword::query()->insert([
+                    'email' => $request->email,
+                    'token' => $token
+                ]);
+            }
 //            if ($user && $resetpassword) {
 //                $user->notify(new ResetPasswordNotify($resetpassword->token));
 //            }
-            return response()->json(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['token' => $resetpassword->token]]);
+            return response()->json(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['token' => $token]]);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
