@@ -95,6 +95,9 @@ class AuthController extends Controller
             ]);
 
             $shop = Shop::query()->where('email', $request->email)->first();
+            if(!$shop){
+                throw new \Exception('auth-001');
+            }
 
             if ($shop->active == 0){
                 Shop::query()->where('email', $request->email)->update([
