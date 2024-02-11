@@ -21,6 +21,7 @@ class Shop extends Model
      */
     protected $fillable = [
         'name',
+        'user_name',
         'email',
         'password',
         'phone_number',

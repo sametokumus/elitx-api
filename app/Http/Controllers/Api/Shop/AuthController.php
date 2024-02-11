@@ -23,6 +23,7 @@ class AuthController extends Controller
         try {
             $request->validate([
                 'name' => 'required',
+                'user_name' => 'required',
                 'email' => 'required|email',
                 'phone_number' => 'required',
                 'password' => 'required'
@@ -49,6 +50,7 @@ class AuthController extends Controller
             $userId = Shop::query()->insertGetId([
                 'email' => $request->email,
                 'name' => $request->name,
+                'user_name' => $request->user_name,
                 'phone_number' => $request->phone_number,
                 'password' => Hash::make($request->password),
                 'token' => Str::random(60)
