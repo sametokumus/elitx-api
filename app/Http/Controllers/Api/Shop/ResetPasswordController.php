@@ -41,10 +41,10 @@ class ResetPasswordController extends Controller
                     'token' => Str::random(45),
                 ]
             );
-            if ($user && $resetpassword) {
-                $user->notify(new ResetPasswordNotify($resetpassword->token));
-            }
-            return response()->json(['message' => 'E-Posta adresinize şifre sıfırlama bağlantısı gönderildi.', 'status' => 'success']);
+//            if ($user && $resetpassword) {
+//                $user->notify(new ResetPasswordNotify($resetpassword->token));
+//            }
+            return response()->json(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['token' => $resetpassword->token]]);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
@@ -88,7 +88,7 @@ class ResetPasswordController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function resetPassword(Request $request) {
+    public function newPassword(Request $request) {
 //        $validator = $request->validate([
 //            'email' => 'required|string|email|exists:users',
 //            'token' => 'required|string',
