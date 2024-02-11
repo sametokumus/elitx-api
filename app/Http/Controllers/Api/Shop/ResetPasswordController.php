@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Shop;
 use App\Http\Controllers\Controller;
 use App\Models\ResetPassword;
 use App\Models\User;
+use App\Models\Shop;
 use App\Notifications\ResetPasswordNotify;
 use App\Notifications\ResetPasswordSuccess;
 use Illuminate\Database\QueryException;
@@ -25,10 +26,10 @@ class ResetPasswordController extends Controller
     {
         try {
             $request->validate([
-                'email' => 'required|string|email|exists:users'
+                'email' => 'required|string|email'
             ]);
 
-            $user = User::query()->where('email', $request['email'])->first();
+            $user = Shop::query()->where('email', $request['email'])->first();
             if (!$user) {
                 throw new \Exception('validation-003');
             }
