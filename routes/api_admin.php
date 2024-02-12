@@ -43,7 +43,7 @@ use App\Http\Controllers\Api\Admin\ContactController;
 */
 
 
-Route::post('login', [AuthController::class, 'login'])->name('admin.login');
+Route::post('auth/login', [AuthController::class, 'login'])->name('admin.login');
 
 
 Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
