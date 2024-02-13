@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Mail\UserWelcome;
-use App\Models\ContactRule;
+use App\Models\Brand;
 use App\Models\Shop;
-use App\Models\UserContactRule;
-use App\Models\UserDocumentCheck;
-use App\Models\UserProfile;
+use App\Models\ShopDocument;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -203,6 +202,38 @@ class AuthController extends Controller
                 return response('Eposta adresi daha önceden doğrulanmış.');
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
+        }
+    }
+
+
+    public function registerDocument(Request $request)
+    {
+        try {
+            $request->validate([
+                'file' => 'required'
+            ]);
+            $shop = Auth::user();
+            if ($request->hasFile('file')) {
+                $rand = uniqid();
+                $file = $request->file('file');
+                $file_original_name = $file->getClientOriginalName();
+                $file_name = $rand . "-" . $file->getClientOriginalName();
+                $file->move(public_path('/files/shop/document/'), $file_name);
+                $file_path = "/files/shop/document/" . $file_name;
+
+                ShopDocument::query()->insert([
+                    'shop_id' => $shop->id,
+                    'name' => $file_original_name,
+                    'file_url' => $file_path
+                ]);
+            }
+            return response(['message' => 'Döküman ekleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001','er' => $throwable->getMessage()]);
         }
     }
 }

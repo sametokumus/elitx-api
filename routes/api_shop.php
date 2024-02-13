@@ -30,7 +30,8 @@ Route::post('password/newPassword',[ResetPasswordController::class, 'newPassword
 
 Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
 
-    Route::get('/logout', [AuthController::class, 'logout']);
+    Route::get('auth/logout', [AuthController::class, 'logout']);
+    Route::post('auth/registerDocument', [AuthController::class, 'registerDocument']);
 
 });
 
