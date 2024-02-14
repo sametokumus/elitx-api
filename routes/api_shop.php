@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\Shop\AuthController;
 use App\Http\Controllers\Api\Shop\ResetPasswordController;
+use App\Http\Controllers\Api\Shop\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,8 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
 
     Route::get('auth/logout', [AuthController::class, 'logout']);
     Route::post('auth/registerDocument', [AuthController::class, 'registerDocument']);
+    Route::get('user/getRegisterDocuments', [UserController::class, 'getRegisterDocuments']);
+    Route::get('user/deleteRegisterDocument/{id}', [UserController::class, 'deleteRegisterDocument']);
 
 });
 
