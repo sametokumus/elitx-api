@@ -236,6 +236,109 @@ class AuthController extends Controller
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001','er' => $throwable->getMessage()]);
         }
     }
+    public function registerAllDocument(Request $request)
+    {
+        try {
+            $request->validate([
+                'logo' => 'required',
+                'id_card' => 'required',
+                'tax_certificate' => 'required',
+                'signature_circular' => 'required'
+            ]);
+            $shop = Auth::user();
+
+            if ($request->hasFile('logo')) {
+                $rand = uniqid();
+                $file = $request->file('logo');
+                $file_original_name = $file->getClientOriginalName();
+                $file_name = $rand . "-" . $file->getClientOriginalName();
+                $file->move(public_path('/files/shop/document/'), $file_name);
+                $file_path = "/files/shop/document/" . $file_name;
+
+                ShopDocument::query()->insert([
+                    'shop_id' => $shop->id,
+                    'name' => $file_original_name,
+                    'file_url' => $file_path,
+                    'file_type' => 1
+                ]);
+            }
+
+            if ($request->hasFile('id_card')) {
+                $rand = uniqid();
+                $file = $request->file('id_card');
+                $file_original_name = $file->getClientOriginalName();
+                $file_name = $rand . "-" . $file->getClientOriginalName();
+                $file->move(public_path('/files/shop/document/'), $file_name);
+                $file_path = "/files/shop/document/" . $file_name;
+
+                ShopDocument::query()->insert([
+                    'shop_id' => $shop->id,
+                    'name' => $file_original_name,
+                    'file_url' => $file_path,
+                    'file_type' => 2
+                ]);
+            }
+
+            if ($request->hasFile('tax_certificate')) {
+                $rand = uniqid();
+                $file = $request->file('tax_certificate');
+                $file_original_name = $file->getClientOriginalName();
+                $file_name = $rand . "-" . $file->getClientOriginalName();
+                $file->move(public_path('/files/shop/document/'), $file_name);
+                $file_path = "/files/shop/document/" . $file_name;
+
+                ShopDocument::query()->insert([
+                    'shop_id' => $shop->id,
+                    'name' => $file_original_name,
+                    'file_url' => $file_path,
+                    'file_type' => 3
+                ]);
+            }
+
+            if ($request->hasFile('signature_circular')) {
+                $rand = uniqid();
+                $file = $request->file('signature_circular');
+                $file_original_name = $file->getClientOriginalName();
+                $file_name = $rand . "-" . $file->getClientOriginalName();
+                $file->move(public_path('/files/shop/document/'), $file_name);
+                $file_path = "/files/shop/document/" . $file_name;
+
+                ShopDocument::query()->insert([
+                    'shop_id' => $shop->id,
+                    'name' => $file_original_name,
+                    'file_url' => $file_path,
+                    'file_type' => 4
+                ]);
+            }
+
+            if ($request->hasFile('authorization_documents')) {
+                $authorizationDocuments = $request->file('authorization_documents');
+
+                foreach ($authorizationDocuments as $authorizationDocument) {
+                    $rand = uniqid();
+                    $file_original_name = $authorizationDocument->getClientOriginalName();
+                    $file_name = $rand . "-" . $authorizationDocument->getClientOriginalName();
+                    $authorizationDocument->move(public_path('/files/shop/document/'), $file_name);
+                    $file_path = "/files/shop/document/" . $file_name;
+
+                    ShopDocument::query()->insert([
+                        'shop_id' => $shop->id,
+                        'name' => $file_original_name,
+                        'file_url' => $file_path,
+                        'file_type' => 5
+                    ]);
+                }
+            }
+
+            return response(['message' => 'Döküman ekleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001','er' => $throwable->getMessage()]);
+        }
+    }
     public function registerComplete()
     {
         try {

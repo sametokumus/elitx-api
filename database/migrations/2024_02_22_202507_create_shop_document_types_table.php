@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateShopDocumentsTable extends Migration
+class CreateShopDocumentTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateShopDocumentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('shop_documents', function (Blueprint $table) {
+        Schema::create('shop_document_types', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('shop_id');
             $table->string('name')->nullable();
-            $table->string('file_url')->nullable();
-            $table->integer('file_type');
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
@@ -32,6 +29,6 @@ class CreateShopDocumentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shop_documents');
+        Schema::dropIfExists('shop_document_types');
     }
 }
