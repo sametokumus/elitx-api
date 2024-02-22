@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     Route::post('auth/registerDocument', [AuthController::class, 'registerDocument']);
     Route::post('auth/registerAllDocument', [AuthController::class, 'registerAllDocument']);
     Route::get('auth/registerComplete', [AuthController::class, 'registerComplete']);
+    Route::get('user/checkRegisterDocuments', [UserController::class, 'checkRegisterDocuments']);
     Route::get('user/getRegisterDocuments', [UserController::class, 'getRegisterDocuments']);
     Route::get('user/deleteRegisterDocument/{id}', [UserController::class, 'deleteRegisterDocument']);
 

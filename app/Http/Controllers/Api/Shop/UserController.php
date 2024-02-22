@@ -10,6 +10,24 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function checkRegisterDocuments(){
+        try {
+            $user = Auth::user();
+
+            $documents = ShopDocument::query()->where('active', 1)->where('shop_id', $user->id)->get();
+
+            if ($documents){
+                return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['check_documents' => 1, 'documents' => $documents]]);
+
+            }else{
+                return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['check_documents' => 0]]);
+
+            }
+
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        }
+    }
     public function getRegisterDocuments(){
         try {
             $user = Auth::user();
