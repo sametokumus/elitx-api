@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Models\ShopDocument;
+use App\Models\ShopDocumentType;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,9 @@ class UserController extends Controller
             $documents = ShopDocument::query()->where('active', 1)->where('shop_id', $user->id)->get();
 
             if ($documents){
+                foreach ($documents as $document){
+                    $document->file_type_name = ShopDocumentType::query()->where('id', $document->file_type)->first()->name;
+                }
                 return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['check_documents' => 1, 'documents' => $documents]]);
 
             }else{
