@@ -15,9 +15,10 @@ class UserController extends Controller
         try {
             $user = Auth::user();
 
-            $documents = ShopDocument::query()->where('active', 1)->where('shop_id', $user->id)->get();
+            $document_count = ShopDocument::query()->where('active', 1)->where('shop_id', $user->id)->count();
 
-            if ($documents){
+            if ($document_count){
+                $documents = ShopDocument::query()->where('active', 1)->where('shop_id', $user->id)->get();
                 foreach ($documents as $document){
                     $document->file_type_name = ShopDocumentType::query()->where('id', $document->file_type)->first()->name;
                 }
