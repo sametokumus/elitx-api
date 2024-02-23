@@ -330,6 +330,10 @@ class AuthController extends Controller
                 }
             }
 
+            Shop::query()->where('id', $shop->id)->update([
+                'register_completed' => 1
+            ]);
+
             return response(['message' => 'Döküman ekleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
