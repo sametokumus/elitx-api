@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductCategory;
+use App\Models\ProductImage;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +25,7 @@ class ProductController extends Controller
 
             $product_id = Product::query()->insertGetId([
                 'brand_id' => $request->brand_id,
-                'sku' => $request->type_id,
+                'sku' => $request->sku,
                 'name' => $request->name,
                 'description' => $request->description,
                 'stock_quantity' => $request->stock_quantity,
@@ -50,6 +52,25 @@ class ProductController extends Controller
                     'thumbnail' => $image_path
                 ]);
             }
+
+            foreach ($request->categories as $category){
+                ProductCategory::query()->insert([
+                    'product_id' => $product_id,
+                    'category_id' => $category
+                ]);
+            }
+
+            foreach ($request->file('images') as $image){
+                $rand = uniqid();
+                $image_name = $rand . "-" . $image->getClientOriginalName();
+                $image->move(public_path('/images/ProductImage/'), $image_name);
+                $image_path = "/images/ProductImage/" . $image_name;
+                ProductImage::query()->insert([
+                    'product_id' => $product_id,
+                    'image' => $image_path
+                ]);
+            }
+
             return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $product_id]]);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
