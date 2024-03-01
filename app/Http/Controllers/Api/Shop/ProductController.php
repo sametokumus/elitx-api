@@ -62,17 +62,23 @@ class ProductController extends Controller
                 ]);
             }
 
-            foreach ($request->file('images') as $image){
+            if ($request->hasFile('thumbnail')) {
                 return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $image->getClientOriginalName()]]);
 
-                $rand = uniqid();
-                $image_name = $rand . "-" . $image->getClientOriginalName();
-                $image->move(public_path('/images/ProductImage/'), $image_name);
-                $image_path = "/images/ProductImage/" . $image_name;
-                ProductImage::query()->insert([
-                    'product_id' => $product_id,
-                    'image' => $image_path
-                ]);
+                foreach ($request->file('images') as $image) {
+
+                    $rand = uniqid();
+                    $image_name = $rand . "-" . $image->getClientOriginalName();
+                    $image->move(public_path('/images/ProductImage/'), $image_name);
+                    $image_path = "/images/ProductImage/" . $image_name;
+                    ProductImage::query()->insert([
+                        'product_id' => $product_id,
+                        'image' => $image_path
+                    ]);
+                }
+            }else{
+                return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => '--------']]);
+
             }
 
             return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $product_id]]);
