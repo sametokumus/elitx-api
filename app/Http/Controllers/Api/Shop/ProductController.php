@@ -63,6 +63,8 @@ class ProductController extends Controller
             }
 
             foreach ($request->file('images') as $image){
+                return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $image->getClientOriginalName()]]);
+
                 $rand = uniqid();
                 $image_name = $rand . "-" . $image->getClientOriginalName();
                 $image->move(public_path('/images/ProductImage/'), $image_name);
