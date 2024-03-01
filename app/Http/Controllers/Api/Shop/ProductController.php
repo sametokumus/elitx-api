@@ -53,10 +53,11 @@ class ProductController extends Controller
                 ]);
             }
 
-            foreach ($request->categories as $category){
+            $categories = json_decode($request->categories);
+            foreach ($categories as $category){
                 ProductCategory::query()->insert([
                     'product_id' => $product_id,
-                    'category_id' => $category
+                    'category_id' => $category->id
                 ]);
             }
 
