@@ -17,8 +17,8 @@ class CreateProductVariationsTable extends Migration
             $table->id();
             $table->bigInteger('variation_group_id')->nullable();
             $table->string('name')->nullable();
-            $table->longText('description')->nullable();
-            $table->string('sku')->nullable();
+            $table->bigInteger('stock_quantity')->default(0);
+            $table->decimal('price')->nullable();
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
