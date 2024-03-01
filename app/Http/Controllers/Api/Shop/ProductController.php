@@ -54,6 +54,8 @@ class ProductController extends Controller
             }
 
             $categories = json_decode($request->categories);
+            return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $categories]]);
+
             foreach ($categories as $category){
                 ProductCategory::query()->insert([
                     'product_id' => $product_id,
