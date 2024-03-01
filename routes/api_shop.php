@@ -42,7 +42,7 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     Route::get('user/deleteRegisterDocument/{id}', [UserController::class, 'deleteRegisterDocument']);
 
     //Product
-    Route::post('shop/addProduct', [ProductController::class, 'addProduct']);
+    Route::post('product/addProduct', [ProductController::class, 'addProduct']);
 
 });
 
