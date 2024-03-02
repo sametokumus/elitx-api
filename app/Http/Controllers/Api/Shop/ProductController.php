@@ -63,6 +63,8 @@ class ProductController extends Controller
             }
 
             if ($request->hasFile('images')) {
+                $files = $request->file('images');
+                $fileCount = count($files);
 $i = 0;
                 foreach ($request->file('images') as $image) {
 
@@ -76,7 +78,7 @@ $i = 0;
                     ]);
                     $i++;
                 }
-                return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $i]]);
+                return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $fileCount]]);
 
             }else{
                 return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => '--------']]);
