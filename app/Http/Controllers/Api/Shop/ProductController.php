@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductImage;
+use App\Models\ProductVariation;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -53,8 +54,17 @@ class ProductController extends Controller
                 ]);
             }
 
-            $categories = json_decode($request->categories);
+            $variations = json_decode($request->variations);
+            foreach ($variations as $variation){
+                ProductVariation::query()->insert([
+                    'variation_group_id' => $variation->variation_group_id,
+                    'name' => $variation->name,
+                    'stock_quantity' => $variation->stock_quantity,
+                    'price' => $variation->price
+                ]);
+            }
 
+            $categories = json_decode($request->categories);
             foreach ($categories as $category){
                 ProductCategory::query()->insert([
                     'product_id' => $product_id,
@@ -63,11 +73,7 @@ class ProductController extends Controller
             }
 
             if ($request->hasFile('images')) {
-                $files = $request->file('images');
-                $fileCount = count($files);
-$i = 0;
                 foreach ($request->file('images') as $image) {
-
                     $rand = uniqid();
                     $image_name = $rand . "-" . $image->getClientOriginalName();
                     $image->move(public_path('/images/ProductImage/'), $image_name);
@@ -76,13 +82,7 @@ $i = 0;
                         'product_id' => $product_id,
                         'image' => $image_path
                     ]);
-                    $i++;
                 }
-                return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $fileCount]]);
-
-            }else{
-                return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => '--------']]);
-
             }
 
             return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $product_id]]);
