@@ -24,6 +24,14 @@ class ProductController extends Controller
             ]);
             $shop = Auth::user();
 
+            $discounted_price = null;
+
+            if ($request->discount_type == 2){
+                $discounted_price = $request->base_price / 100 * (100 - $request->discount_rate);
+            }if ($request->discount_type == 3){
+                $discounted_price = $request->discounted_price;
+            }
+
             $product_id = Product::query()->insertGetId([
                 'brand_id' => $request->brand_id,
                 'sku' => $request->sku,
@@ -31,7 +39,7 @@ class ProductController extends Controller
                 'description' => $request->description,
                 'stock_quantity' => $request->stock_quantity,
                 'base_price' => $request->base_price,
-                'discounted_price' => $request->discounted_price,
+                'discounted_price' => $discounted_price,
                 'discount_type' => $request->discount_type,
                 'discount_rate' => $request->discount_rate,
                 'currency' => $request->currency,
