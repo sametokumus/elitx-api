@@ -63,7 +63,6 @@ class ProductController extends Controller
             }
 
             if ($request->hasFile('images')) {
-                return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => 1111]]);
 
                 foreach ($request->file('images') as $image) {
                     return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $image->getClientOriginalName()]]);
