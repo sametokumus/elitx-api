@@ -63,9 +63,10 @@ class ProductController extends Controller
             }
 
             if ($request->hasFile('thumbnail')) {
-                return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $image->getClientOriginalName()]]);
+                return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => 1111]]);
 
                 foreach ($request->file('images') as $image) {
+                    return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $image->getClientOriginalName()]]);
 
                     $rand = uniqid();
                     $image_name = $rand . "-" . $image->getClientOriginalName();
