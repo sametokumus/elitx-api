@@ -65,10 +65,10 @@ class ProductController extends Controller
             $variations = json_decode($request->variations);
             foreach ($variations as $variation){
                 ProductVariation::query()->insert([
-                    'variation_group_id' => $variation->variationGroup,
-                    'name' => $variation->variationName,
-                    'stock_quantity' => $variation->variationPrice,
-                    'price' => $variation->variationQuantity
+                    'variation_group_id' => $variation->group_id,
+                    'name' => $variation->name,
+                    'stock_quantity' => $variation->stock_quantity,
+                    'price' => $variation->price
                 ]);
             }
 
