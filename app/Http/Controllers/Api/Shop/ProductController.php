@@ -71,6 +71,7 @@ class ProductController extends Controller
             }
             foreach ($variations as $variation){
                 ProductVariation::query()->insert([
+                    'product_id' => $product_id,
                     'variation_group_id' => $variation->group_id,
                     'name' => $variation->name,
                     'stock_quantity' => $variation->stock_quantity,
