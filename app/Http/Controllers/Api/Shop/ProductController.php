@@ -68,15 +68,15 @@ class ProductController extends Controller
                 Product::query()->where('id', $product_id)->update([
                     'has_variation' => 1
                 ]);
-            }
-            foreach ($variations as $variation){
-                ProductVariation::query()->insert([
-                    'product_id' => $product_id,
-                    'variation_group_id' => $variation->group_id,
-                    'name' => $variation->name,
-                    'stock_quantity' => $variation->stock_quantity,
-                    'price' => $variation->price
-                ]);
+                foreach ($variations as $variation) {
+                    ProductVariation::query()->insert([
+                        'product_id' => $product_id,
+                        'variation_group_id' => $variation->group_id,
+                        'name' => $variation->name,
+                        'stock_quantity' => $variation->stock_quantity,
+                        'price' => $variation->price
+                    ]);
+                }
             }
 
             $categories = json_decode($request->categories);
