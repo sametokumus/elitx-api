@@ -10,6 +10,7 @@ use App\Models\ProductVariation;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Nette\Schema\ValidationException;
 
 class ProductController extends Controller
@@ -102,5 +103,20 @@ class ProductController extends Controller
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
         }
 
+    }
+    public function getProducts()
+    {
+        try {
+            $shop = Auth::user();
+
+            $products = Product::query()
+                ->selectRaw('products.*')
+                ->where('products.active', 1)
+                ->where('products.owner_id', $shop->id)
+                ->get();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
     }
 }
