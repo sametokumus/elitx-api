@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductImage;
+use App\Models\ProductStatusHistory;
 use App\Models\ProductVariation;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -50,6 +51,11 @@ class ProductController extends Controller
                 'status_id' => 0,
                 'owner_type' => 1,
                 'owner_id' => $shop->id,
+            ]);
+
+            ProductStatusHistory::query()->insert([
+                'product_id' => $product_id,
+                'status_id' => 1
             ]);
 
             if ($request->hasFile('thumbnail')) {
