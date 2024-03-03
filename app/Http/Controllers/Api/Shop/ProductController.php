@@ -64,6 +64,11 @@ class ProductController extends Controller
             }
 
             $variations = json_decode($request->variations);
+            if (count($variations) > 0) {
+                Product::query()->where('id', $product_id)->update([
+                    'has_variation' => 1
+                ]);
+            }
             foreach ($variations as $variation){
                 ProductVariation::query()->insert([
                     'variation_group_id' => $variation->group_id,

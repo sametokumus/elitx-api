@@ -15,6 +15,7 @@ class CreateProductVariationsTable extends Migration
     {
         Schema::create('product_variations', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('product_id');
             $table->bigInteger('variation_group_id')->nullable();
             $table->string('name')->nullable();
             $table->bigInteger('stock_quantity')->default(0);
