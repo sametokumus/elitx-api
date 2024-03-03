@@ -64,7 +64,7 @@ class ProductController extends Controller
             }
 
             $variations = json_decode($request->variations);
-            if (count($variations) > 0) {
+            if ($variations != null && count($variations) > 0) {
                 Product::query()->where('id', $product_id)->update([
                     'has_variation' => 1
                 ]);
