@@ -13,8 +13,7 @@ class ShopController extends Controller
         try {
             $shops = Shop::query()
                 ->where('shops.register_completed', 1)
-                ->get(['shops.id', 'shops.user_name', 'shops.name', 'shops.email', 'shops.phone_number',
-                    'shops.register_completed', 'shops.verified', 'shops.confirmed', 'shops.confirmed_at', 'shops.created_at']);
+                ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['shops' => $shops]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
