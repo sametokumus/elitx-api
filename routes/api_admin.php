@@ -2,6 +2,9 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\Admin\AuthController;
+use App\Http\Controllers\Api\Admin\ShopController;
+
+
 use App\Http\Controllers\Api\Admin\AdminUserComments;
 use App\Http\Controllers\Api\Admin\AdminRoleController;
 use App\Http\Controllers\Api\Admin\AdminPermissionController;
@@ -76,6 +79,16 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('adminPermission/addAdminPermission', [AdminPermissionController::class, 'addAdminPermission']);
     Route::post('adminPermission/updateAdminPermission/{id}', [AdminPermissionController::class, 'updateAdminPermission']);
     Route::get('adminPermission/deleteAdminPermission/{id}', [AdminPermissionController::class, 'deleteAdminPermission']);
+
+
+
+    //Shop
+    Route::get('shop/getShops', [ShopController::class, 'getShops']);
+    Route::get('shop/getShopById/{id}', [ShopController::class, 'getShopById']);
+
+
+
+
 
 
     Route::post('brand/addBrand', [BrandController::class, 'addBrand']);
