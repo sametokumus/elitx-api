@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
+use App\Models\ShopDocument;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -45,6 +46,15 @@ class ShopController extends Controller
                 'register_completed' => 2
             ]);
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+    public function getShopRegisterDocuments($id){
+        try {
+            $shop = Shop::query()->where('id', $id)->first();
+            $documents = ShopDocument::query()->where('active', 1)->where('shop_id', $id)->get();
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['shop' => $shop, 'documents' => $documents]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
