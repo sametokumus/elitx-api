@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
@@ -23,6 +24,27 @@ class ShopController extends Controller
         try {
             $shop = Shop::query()->where('id',$id)->first();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['shop' => $shop]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+    public function getShopConfirmed($id){
+        try {
+            Shop::query()->where('id',$id)->update([
+                'confirmed' => 1,
+                'account_confirmed_at' => Carbon::now()
+            ]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+    public function getShopRejected($id){
+        try {
+            Shop::query()->where('id',$id)->update([
+                'register_completed' => 2
+            ]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }

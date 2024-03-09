@@ -85,6 +85,8 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     //Shop
     Route::get('shop/getShops', [ShopController::class, 'getShops']);
     Route::get('shop/getShopById/{id}', [ShopController::class, 'getShopById']);
+    Route::get('shop/getShopConfirmed/{id}', [ShopController::class, 'getShopConfirmed']);
+    Route::get('shop/getShopRejected/{id}', [ShopController::class, 'getShopRejected']);
 
 
 
