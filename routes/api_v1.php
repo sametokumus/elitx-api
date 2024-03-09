@@ -1,9 +1,9 @@
 <?php
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Api\Shop\AuthController;
-use App\Http\Controllers\Api\Shop\UserController;
-use App\Http\Controllers\Api\Shop\ResetPasswordController;
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\ResetPasswordController;
 use App\Http\Controllers\Api\Shop\AddressController;
 use App\Http\Controllers\Api\Shop\CountriesController;
 use App\Http\Controllers\Api\Shop\CitiesController;

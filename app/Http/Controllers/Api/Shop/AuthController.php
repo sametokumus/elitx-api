@@ -101,13 +101,11 @@ class AuthController extends Controller
             }
 
             if ($shop->active == 0){
-                Shop::query()->where('email', $request->email)->update([
-                    'active' => 1
-                ]);
+                throw new \Exception('auth-002');
             }
 
             if (!$shop || !Hash::check($request->password, $shop->password)) {
-                throw new \Exception('auth-001');
+                throw new \Exception('auth-003');
             }
 
             $userToken = $shop->createToken('api-token', ['role:shop'])->plainTextToken;
@@ -124,7 +122,11 @@ class AuthController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Exception $exception){
             if ($exception->getMessage() == 'auth-001'){
-                return  response(['message' => 'Eposta veya şifre hatalı.','status' => 'auth-001']);
+                return  response(['message' => 'Eposta hatalı.','status' => 'auth-001']);
+            }else if ($exception->getMessage() == 'auth-002'){
+                return  response(['message' => 'Mağaza kapalı.','status' => 'auth-002']);
+            }else if ($exception->getMessage() == 'auth-003'){
+                return  response(['message' => 'Şifre hatalı.','status' => 'auth-003']);
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'e' => $exception->getMessage()]);
         }

@@ -64,4 +64,24 @@ class ShopController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
+    public function getOpenShop($id){
+        try {
+            Shop::query()->where('id',$id)->update([
+                'active' => 1
+            ]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+    public function getCloseShop($id){
+        try {
+            Shop::query()->where('id',$id)->update([
+                'active' => 0
+            ]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
 }

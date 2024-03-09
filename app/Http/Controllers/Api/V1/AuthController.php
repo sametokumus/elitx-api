@@ -89,15 +89,16 @@ class AuthController extends Controller
             ]);
 
             $user = User::query()->where('email', $request->email)->first();
+            if(!$user){
+                throw new \Exception('auth-001');
+            }
 
             if ($user->active == 0){
-                User::query()->where('email', $request->email)->update([
-                    'active' => 1
-                ]);
+                throw new \Exception('auth-002');
             }
 
             if (!$user || !Hash::check($request->password, $user->password)) {
-                throw new \Exception('auth-001');
+                throw new \Exception('auth-003');
             }
 
             $userToken = $user->createToken('api-token', ['role:user'])->plainTextToken;
@@ -114,7 +115,11 @@ class AuthController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Exception $exception){
             if ($exception->getMessage() == 'auth-001'){
-                return  response(['message' => 'Eposta veya şifre hatalı.','status' => 'auth-001']);
+                return  response(['message' => 'Eposta hatalı.','status' => 'auth-001']);
+            }else if ($exception->getMessage() == 'auth-002'){
+                return  response(['message' => 'Hesap kapalı.','status' => 'auth-002']);
+            }else if ($exception->getMessage() == 'auth-003'){
+                return  response(['message' => 'Şifre hatalı.','status' => 'auth-003']);
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
         }
