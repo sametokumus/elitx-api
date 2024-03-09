@@ -53,7 +53,12 @@ class ShopController extends Controller
     public function getShopRegisterDocuments($id){
         try {
             $shop = Shop::query()->where('id', $id)->first();
-            $documents = ShopDocument::query()->where('active', 1)->where('shop_id', $id)->get();
+            $documents = ShopDocument::query()
+                ->leftJoin('shop_document_types', 'shop_document_types.id', '=', 'shop_documents.file_type')
+                ->selectRaw('shop_documents.*, shop_document_types.name as file_type_name')
+                ->where('shop_documents.active', 1)
+                ->where('shop_documents.shop_id', $id)
+                ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['shop' => $shop, 'documents' => $documents]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
