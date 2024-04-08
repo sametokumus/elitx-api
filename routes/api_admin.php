@@ -49,6 +49,7 @@ use App\Http\Controllers\Api\Admin\ContactController;
 
 Route::post('auth/login', [AuthController::class, 'login'])->name('admin.login');
 Route::get('language/getLibraryByPlatform/{platform}', [LanguageController::class, 'getLibraryByPlatform']);
+Route::get('language/getLibraryLastUpdateByPlatform/{platform}', [LanguageController::class, 'getLibraryLastUpdateByPlatform']);
 
 
 Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){

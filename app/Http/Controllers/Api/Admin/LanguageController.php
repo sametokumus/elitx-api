@@ -3,16 +3,23 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
 use App\Models\LanguageLibrary;
-use App\Models\Product;
-use App\Models\Shop;
+use App\Models\LanguageLibraryOptions;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Nette\Schema\ValidationException;
 
 class LanguageController extends Controller
 {
+    public function getLibraryLastUpdateByPlatform($platform){
+        try {
+            $option = LanguageLibraryOptions::query()->where('platform', $platform)->first();
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['option' => $option]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
     public function getLibraryByPlatform($platform){
         try {
             $libraries = LanguageLibrary::query()->where('platform', $platform)->get();
