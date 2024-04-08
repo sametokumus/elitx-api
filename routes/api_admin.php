@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\Admin\AuthController;
+use App\Http\Controllers\Api\Admin\LanguageController;
 use App\Http\Controllers\Api\Admin\ShopController;
 
 
@@ -47,12 +48,21 @@ use App\Http\Controllers\Api\Admin\ContactController;
 
 
 Route::post('auth/login', [AuthController::class, 'login'])->name('admin.login');
+Route::get('language/getLibraryByPlatform/{platform}', [LanguageController::class, 'getLibraryByPlatform']);
 
 
 Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
     Route::get('logout', [AuthController::class, 'logout'])->name('admin.logout');
     Route::post('register', [AuthController::class, 'register'])->name('admin.register');
+
+
+    //Language Library
+    Route::post('language/addLibrary', [LanguageController::class, 'addLibrary']);
+    Route::post('language/updateLibrary/{id}', [LanguageController::class, 'updateLibrary']);
+    Route::get('language/deleteLibrary/{id}', [LanguageController::class, 'deleteLibrary']);
+
+
 
     Route::get('adminUserComment/getAdminUserComment', [AdminUserComments::class, 'getAdminUserComment']);
     Route::post('adminUserComment/addAdminUserComment', [AdminUserComments::class, 'addAdminUserComment']);
@@ -90,9 +100,6 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('shop/getShopRegisterDocuments/{id}', [ShopController::class, 'getShopRegisterDocuments']);
     Route::get('shop/getOpenShop/{id}', [ShopController::class, 'getOpenShop']);
     Route::get('shop/getCloseShop/{id}', [ShopController::class, 'getCloseShop']);
-
-
-
 
 
 
