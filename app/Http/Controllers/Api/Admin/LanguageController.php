@@ -15,8 +15,14 @@ class LanguageController extends Controller
 {
     public function getLibraryByPlatform($platform){
         try {
-            $library = LanguageLibrary::query()->where('platform', $platform)->get();
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['library' => $library]]);
+            $libraries = LanguageLibrary::query()->where('platform', $platform)->get();
+
+            $libraryById = [];
+            foreach ($libraries as $library) {
+                $libraryById[$library->id] = $library->toArray();
+            }
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => $libraryById]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
