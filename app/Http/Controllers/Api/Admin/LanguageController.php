@@ -22,7 +22,7 @@ class LanguageController extends Controller
                 $libraryById[$library->id] = $library->toArray();
             }
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => $libraryById]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['library' => $libraryById]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
