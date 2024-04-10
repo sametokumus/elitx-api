@@ -24,12 +24,27 @@ class LanguageController extends Controller
         try {
             $libraries = LanguageLibrary::query()->where('platform', $platform)->get();
 
-            $libraryById = [];
+//            $libraryById = [];
+//            foreach ($libraries as $library) {
+//                $libraryById[$library->id] = $library->toArray();
+//            }
+
+            $result = [];
+
             foreach ($libraries as $library) {
-                $libraryById[$library->id] = $library->toArray();
+                $item = ['id' => $library->id];
+
+                $langs = [];
+                $langs['tr'] = $library->tr;
+                $langs['en'] = $library->en;
+                $langs['de'] = $library->de;
+
+                $item['langs'] = $langs;
+
+                array_push($result, $item);
             }
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['library' => $libraryById]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['library' => $result]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
