@@ -24,11 +24,6 @@ class LanguageController extends Controller
         try {
             $libraries = LanguageLibrary::query()->where('platform', $platform)->get();
 
-//            $libraryById = [];
-//            foreach ($libraries as $library) {
-//                $libraryById[$library->id] = $library->toArray();
-//            }
-
             $result = [];
 
             foreach ($libraries as $library) {
@@ -45,6 +40,15 @@ class LanguageController extends Controller
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['library' => $result]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+    public function getLibrary(){
+        try {
+            $libraries = LanguageLibrary::query()->get();
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['libraries' => $libraries]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
