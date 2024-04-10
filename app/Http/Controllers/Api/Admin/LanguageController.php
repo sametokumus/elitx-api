@@ -32,7 +32,7 @@ class LanguageController extends Controller
             $result = [];
 
             foreach ($libraries as $library) {
-                $item = ['id' => $library->id];
+                $item = ['id' => "lib-".$library->id];
 
                 $langs = [];
                 $langs['tr'] = $library->tr;
