@@ -42,7 +42,7 @@ class LanguageController extends Controller
                 }
                 if ($library->err_msg != null) {
                     $err_msg = $library->err_msg;
-                    $attr['err_msg'] = json_decode($err_msg, true);
+                    $attr['data-err-msg'] = json_decode($err_msg, true);
                 }
 
                 $item['attr'] = $attr;
