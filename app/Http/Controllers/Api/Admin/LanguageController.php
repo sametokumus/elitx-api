@@ -29,25 +29,23 @@ class LanguageController extends Controller
             foreach ($libraries as $library) {
                 $item = ['id' => "lib-".$library->id];
 
-                if ($library->placeholder == 0) {
-                    $langs = [];
-                    $langs['tr'] = $library->tr;
-                    $langs['en'] = $library->en;
-                    $langs['de'] = $library->de;
+                if ($library->text != null) {
+                    $langs = $library->text;
 
                     $item['langs'] = $langs;
-                }else{
-                    $placeholder = [];
-                    $placeholder['tr'] = $library->tr;
-                    $placeholder['en'] = $library->en;
-                    $placeholder['de'] = $library->de;
-
-                    $attr = [];
-                    $attr['placeholder'] = $placeholder;
-
-                    $item['attr'] = $attr;
                 }
 
+                $attr = [];
+                if ($library->placeholder != null) {
+                    $placeholder = $library->placeholder;
+                    $attr['placeholder'] = $placeholder;
+                }
+                if ($library->err_msg != null) {
+                    $err_msg = $library->err_msg;
+                    $attr['err_msg'] = $err_msg;
+                }
+
+                $item['attr'] = $attr;
                 array_push($result, $item);
             }
 
