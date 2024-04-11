@@ -20,6 +20,7 @@ class CreateLanguageLibrariesTable extends Migration
             $table->text('de')->nullable();
             $table->text('platform')->nullable();
             $table->text('page')->nullable();
+            $table->tinyInteger('placeholder')->default(0);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
