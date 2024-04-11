@@ -32,17 +32,17 @@ class LanguageController extends Controller
                 if ($library->text != null) {
                     $langs = $library->text;
 
-                    $item['langs'] = $langs;
+                    $item['langs'] = json_decode($langs, true);
                 }
 
                 $attr = [];
                 if ($library->placeholder != null) {
                     $placeholder = $library->placeholder;
-                    $attr['placeholder'] = $placeholder;
+                    $attr['placeholder'] = json_decode($placeholder, true);
                 }
                 if ($library->err_msg != null) {
                     $err_msg = $library->err_msg;
-                    $attr['err_msg'] = $err_msg;
+                    $attr['err_msg'] = json_decode($err_msg, true);
                 }
 
                 $item['attr'] = $attr;
