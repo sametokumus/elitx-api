@@ -32,8 +32,13 @@ class LanguageController extends Controller
 
                 if ($library->text != null) {
                     $langs = $library->text;
-
-                    $item['langs'] = json_decode($langs, true);
+                    $decoded_langs = json_decode($langs, true);
+                    if ($decoded_langs === null) {
+                        echo "JSON decoding error: " . json_last_error_msg();
+                        // Handle the error appropriately, such as logging it or providing a default value
+                    } else {
+                        $item['langs'] = $decoded_langs;
+                    }
                 }
 
                 $attr = [];
