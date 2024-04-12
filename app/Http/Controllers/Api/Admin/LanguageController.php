@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\LanguageLibrary;
 use App\Models\LanguageLibraryOptions;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Nette\Schema\ValidationException;
@@ -71,11 +72,16 @@ class LanguageController extends Controller
                 'platform' => 'required'
             ]);
             LanguageLibrary::query()->insertGetId([
-                'tr' => $request->tr,
-                'en' => $request->en,
-                'de' => $request->de,
+                'text' => $request->text,
+                'placeholder' => $request->placeholder,
+                'err_msg' => $request->err_msg,
                 'platform' => $request->platform,
                 'page' => $request->page
+            ]);
+
+            $date = Carbon::now();
+            LanguageLibraryOptions::query()->where('platform', $request->platform)->update([
+                'last_updated_at' => $date
             ]);
             return response(['message' => 'Ekleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
@@ -94,11 +100,16 @@ class LanguageController extends Controller
             ]);
 
             LanguageLibrary::query()->where('id', $id)->update([
-                'tr' => $request->tr,
-                'en' => $request->en,
-                'de' => $request->de,
+                'text' => $request->text,
+                'placeholder' => $request->placeholder,
+                'err_msg' => $request->err_msg,
                 'platform' => $request->platform,
                 'page' => $request->page
+            ]);
+
+            $date = Carbon::now();
+            LanguageLibraryOptions::query()->where('platform', $request->platform)->update([
+                'last_updated_at' => $date
             ]);
             return response(['message' => 'Güncelleme işlemi başarılı.','status' => 'success']);
         } catch (ValidationException $validationException) {
