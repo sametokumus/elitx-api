@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserContactRule;
 use App\Models\UserDocumentCheck;
 use App\Models\UserProfile;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -142,24 +143,24 @@ class AuthController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
 
-    protected function verify(Request $request)
+    protected function verify($token)
     {
         try {
-            $user = User::query()->where('token', $request['token'])->first();
+            $user = User::query()->where('token', $token)->first();
             if ($user->verified == 1 && $user->email_verified_at != null) {
                 throw new \Exception('validation-002');
             }
-            $user->email_verified_at = now();
-            $user->verified = true;
-            $user->active = true;
-            $user->token = null;
-            $user->save();
+            User::query()->where('id', $user->id)->update([
+                'email_verified_at' => Carbon::now(),
+                'verified' => 1,
+                'token' => null
+            ]);
             /*
                $setDelay = Carbon::parse($user->email_verified_at)->addSeconds(10);
                Bu kısımda isterseniz Kullanıcıya Hoşgeldinizi Maili İçin Gecikme Verebilirsiniz.
                Mail::queue(new \App\Mail\UserWelcome($user->name, $user->email))->delay($setDelay);
               */
-            Mail::queue(new UserWelcome($user->name, $user->email));
+//            Mail::queue(new UserWelcome($user->name, $user->email));
             return response(['message' => 'Kullanıcı epostası doğrulandı.','status' => 'success']);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
