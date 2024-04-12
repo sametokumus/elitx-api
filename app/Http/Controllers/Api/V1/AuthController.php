@@ -170,7 +170,7 @@ class AuthController extends Controller
             if ($exception->getMessage() == 'validation-002'){
                 return response('Eposta adresi daha önceden doğrulanmış.');
             }
-            return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'e'=>$exception->getMessage()]);
         }
 
 
