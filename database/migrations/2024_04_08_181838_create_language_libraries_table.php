@@ -15,9 +15,6 @@ class CreateLanguageLibrariesTable extends Migration
     {
         Schema::create('language_libraries', function (Blueprint $table) {
             $table->id();
-            $table->text('tr')->nullable();
-            $table->text('en')->nullable();
-            $table->text('de')->nullable();
             $table->text('platform')->nullable();
             $table->text('page')->nullable();
             $table->text('text')->nullable();
