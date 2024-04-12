@@ -34,7 +34,7 @@ class LanguageController extends Controller
                     $langs = $library->text;
                     $decoded_langs = json_decode($langs, true);
                     if ($decoded_langs === null) {
-                        echo "JSON decoding error: " . json_last_error_msg();
+                        $item['langs'] = "JSON decoding error: " . json_last_error_msg();
                         // Handle the error appropriately, such as logging it or providing a default value
                     } else {
                         $item['langs'] = $decoded_langs;
