@@ -40,6 +40,8 @@ class AuthController extends Controller
             //Önce Kullanıcıyı oluşturuyor
             $userId = User::query()->insertGetId([
                 'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'name' => $request->name,
                 'password' => Hash::make($request->password),
                 'token' => Str::random(60)
             ]);
@@ -58,7 +60,7 @@ class AuthController extends Controller
             $user = User::query()->whereId($userId)->first();
 
             //Oluşturulan Kullanıcıya mail yolluyor
-            $user->sendApiConfirmAccount($user);
+//            $user->sendApiConfirmAccount($user);
 
             return response(['message' => 'Kullanıcı başarıyla oluşturuldu sisteme giriş için epostanızı kontrol ediniz.','status' => 'success']);
         } catch (ValidationException $validationException) {
