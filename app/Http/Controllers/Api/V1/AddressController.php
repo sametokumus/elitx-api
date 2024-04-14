@@ -126,7 +126,7 @@ class AddressController extends Controller
             $user_id = $user->id;
 
             $address = Address::query()->where('user_id', $user_id)->where('id', $address_id)->where('active',1)->first();
-            if (!$address) {
+            if ($address) {
                 Address::query()->where('user_id', $user_id)->where('id', $address_id)->update([
                     'user_id' => $user_id,
                     'country_id' => $request->country_id,
@@ -170,7 +170,7 @@ class AddressController extends Controller
             $user_id = $user->id;
 
             $address = Address::query()->where('user_id', $user_id)->where('id', $id)->where('active',1)->first();
-            if (!$address) {
+            if ($address) {
 
                 $address = Address::query()->where('id', $id)->update([
                     'active' => 0,
