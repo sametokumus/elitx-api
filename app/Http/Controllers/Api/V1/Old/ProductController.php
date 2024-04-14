@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Old;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\CampaignProduct;
@@ -24,7 +24,6 @@ use App\Models\ProductVariationGroupType;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\UserTypeDiscount;
-use http\QueryString;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

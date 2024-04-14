@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Old;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
@@ -12,7 +12,6 @@ use App\Models\ProductRule;
 use App\Models\User;
 use App\Models\VinovExpiry;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 class CreditCardController extends Controller

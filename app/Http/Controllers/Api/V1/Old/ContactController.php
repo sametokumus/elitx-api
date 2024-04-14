@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Old;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContactForm;
-use App\Models\ProductRule;
-use App\Models\ProductVariation;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Nette\Schema\ValidationException;

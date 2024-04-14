@@ -17,6 +17,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/product/reloadImages',[\App\Http\Controllers\Api\V1\ProductController::class, 'reloadImages']);
-Route::get('/product/downloadImages',[\App\Http\Controllers\Api\V1\ProductController::class, 'downloadImages']);
-Route::get('/product/updateImagesUrl',[\App\Http\Controllers\Api\V1\ProductController::class, 'updateImagesUrl']);
+Route::get('/product/reloadImages',[\App\Http\Controllers\Api\V1\Old\ProductController::class, 'reloadImages']);
+Route::get('/product/downloadImages',[\App\Http\Controllers\Api\V1\Old\ProductController::class, 'downloadImages']);
+Route::get('/product/updateImagesUrl',[\App\Http\Controllers\Api\V1\Old\ProductController::class, 'updateImagesUrl']);

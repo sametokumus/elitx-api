@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Old;
 
+use App\Http\Controllers\Api\V1\Controller;
 use App\Models\ResetPassword;
 use App\Models\User;
 use App\Notifications\ResetPasswordNotify;

@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Old;
 
 use App\Http\Controllers\Controller;
 use App\Models\CustomSeo;
 use App\Models\Popup;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
 
 class PopupController extends Controller
 {

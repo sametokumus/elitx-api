@@ -16,15 +16,16 @@ use Nette\Schema\ValidationException;
 class AddressController extends Controller
 {
 
-    public function getAddressesByUserId($user_id)
+    public function getAddressesByUser()
     {
         try {
+            $user = Auth::user();
+            $user_id = $user->id;
+
             $addresses = Address::query()->where('user_id', $user_id)->where('active',1)->get();
             foreach ($addresses as $address){
-                $address['country'] = Country::query()->where('id',$address->country_id)->first();
-                $address['city'] = City::query()->where('id',$address->city_id)->first();
-                $address['district'] = District::query()->where('id',$address->district_id)->first();
-                $address['neighbourhood'] = Neighbourhood::query()->where('id',$address->neighbourhood_id)->first();
+                $address['country'] = Country::query()->where('id', $address->country_id)->first();
+                $address['city'] = City::query()->where('id', $address->city_id)->first();
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['addresses' => $addresses]]);
@@ -33,22 +34,27 @@ class AddressController extends Controller
         }
     }
 
-    public function getAddressByUserIdAddressId($user_id, $address_id)
+    public function getUserAddress($address_id)
     {
         try {
+            $user = Auth::user();
+            $user_id = $user->id;
+
             $address = Address::query()->where('user_id', $user_id)->where('id', $address_id)->where('active',1)->first();
 
-            if($address->type == 2){
-                $corporate_address = CorporateAddresses::query()->where('address_id', $address_id)->first();
-                $address['company_name'] = $corporate_address->company_name;
-                $address['tax_number'] = $corporate_address->tax_number;
-                $address['tax_office'] = $corporate_address->tax_office;
-            }
+            if(!$address) {
+                if ($address->type == 2) {
+                    $corporate_address = CorporateAddresses::query()->where('address_id', $address_id)->first();
+                    $address['company_name'] = $corporate_address->company_name;
+                    $address['tax_number'] = $corporate_address->tax_number;
+                    $address['tax_office'] = $corporate_address->tax_office;
+                }
 
-            $address['country'] = Country::query()->where('id',$address->country_id)->first();
-            $address['city'] = City::query()->where('id',$address->city_id)->first();
-            $address['district'] = District::query()->where('id',$address->district_id)->first();
-            $address['neighbourhood'] = Neighbourhood::query()->where('id',$address->neighbourhood_id)->first();
+                $address['country'] = Country::query()->where('id', $address->country_id)->first();
+                $address['city'] = City::query()->where('id', $address->city_id)->first();
+            }else{
+                return response(['message' => 'Adres bulunamadı.', 'status' => 'address-001']);
+            }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['address' => $address]]);
         } catch (QueryException $queryException) {
@@ -56,30 +62,28 @@ class AddressController extends Controller
         }
     }
 
-    public function addUserAddresses(Request $request,$user_id)
+    public function addUserAddress(Request $request)
     {
         try {
             $request->validate([
                 'country_id' => 'required|exists:countries,id',
                 'city_id' => 'required|exists:cities,id',
-                'district_id' => 'required|exists:districts,id',
-                'neighbourhood_id' => 'required|exists:neighbourhoods,id',
                 'title' => 'required',
                 'name' => 'required',
-                'surname' => 'required',
                 'address_1' => 'required',
                 'phone' => 'required',
                 'type' => 'required',
             ]);
+
+            $user = Auth::user();
+            $user_id = $user->id;
+
             $address_id = Address::query()->insertGetId([
                 'user_id' => $user_id,
                 'country_id' => $request->country_id,
                 'city_id' => $request->city_id,
-                'district_id' => $request->district_id,
-                'neighbourhood_id' => $request->neighbourhood_id,
                 'title' => $request->title,
                 'name' => $request->name,
-                'surname' => $request->surname,
                 'citizen_number' => $request->citizen_number,
                 'address_1' => $request->address_1,
                 'address_2' => $request->address_2,
@@ -96,9 +100,8 @@ class AddressController extends Controller
                     'tax_office' => $request->tax_office,
                     'company_name' => $request->company_name
                 ]);
-                return response(['message' => 'Kurumsal adres ekleme işlemi başarılı.', 'status' => 'success']);
             }
-            return response(['message' => 'Bireysel adres ekleme işlemi başarılı.', 'status' => 'success']);
+            return response(['message' => 'Adres ekleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
@@ -108,7 +111,7 @@ class AddressController extends Controller
         }
     }
 
-    public function updateUserAddresses(Request $request,$user_id,$address_id){
+    public function updateUserAddress(Request $request, $address_id){
         try {
             $request->validate([
                 'city_id' => 'required|exists:cities,id',
@@ -119,32 +122,35 @@ class AddressController extends Controller
                 'type' => 'required',
             ]);
 
-            $address = Address::query()->where('id',$address_id)->update([
-                'user_id' => $user_id,
-                'country_id' => $request->country_id,
-                'city_id' => $request->city_id,
-                'district_id' => $request->district_id,
-                'neighbourhood_id' => $request->neighbourhood_id,
-                'title' => $request->title,
-                'name' => $request->name,
-                'surname' => $request->surname,
-                'citizen_number' => $request->citizen_number,
-                'address_1' => $request->address_1,
-                'address_2' => $request->address_2,
-                'postal_code' => $request->postal_code,
-                'phone' => $request->phone,
-                'comment' => $request->comment,
-                'type' => $request->type
+            $user = Auth::user();
+            $user_id = $user->id;
+
+            $address = Address::query()->where('user_id', $user_id)->where('id', $address_id)->where('active',1)->first();
+            if (!$address) {
+                Address::query()->where('user_id', $user_id)->where('id', $address_id)->update([
+                    'user_id' => $user_id,
+                    'country_id' => $request->country_id,
+                    'city_id' => $request->city_id,
+                    'title' => $request->title,
+                    'name' => $request->name,
+                    'citizen_number' => $request->citizen_number,
+                    'address_1' => $request->address_1,
+                    'address_2' => $request->address_2,
+                    'postal_code' => $request->postal_code,
+                    'phone' => $request->phone,
+                    'comment' => $request->comment,
+                    'type' => $request->type
                 ]);
 
-            if ($request->type == 2) {
-                CorporateAddresses::query()->where('id',$address_id)->updateOrCreate([
-                    'tax_number' => $request->tax_number,
-                    'tax_office' => $request->tax_office,
-                    'company_name' => $request->company_name
-                ]);
-
-                return response(['message' => 'Kurumsal adres düzenleme işlemi başarılı.', 'status' => 'success']);
+                if ($request->type == 2) {
+                    CorporateAddresses::query()->where('id', $address_id)->updateOrCreate([
+                        'tax_number' => $request->tax_number,
+                        'tax_office' => $request->tax_office,
+                        'company_name' => $request->company_name
+                    ]);
+                }
+            }else{
+                return response(['message' => 'Adres bulunamadı.', 'status' => 'address-001']);
             }
 
             return response(['message' => 'Adres güncelleme işlemi başarılı.','status' => 'success','object' => ['address' => $address]]);
@@ -157,12 +163,23 @@ class AddressController extends Controller
         }
     }
 
-    public function deleteUserAddresses($id){
+    public function deleteUserAddress($id){
         try {
 
-            $address = Address::query()->where('id',$id)->update([
-                'active' => 0,
-            ]);
+            $user = Auth::user();
+            $user_id = $user->id;
+
+            $address = Address::query()->where('user_id', $user_id)->where('id', $id)->where('active',1)->first();
+            if (!$address) {
+
+                $address = Address::query()->where('id', $id)->update([
+                    'active' => 0,
+                ]);
+
+            }else{
+                return response(['message' => 'Adres bulunamadı.', 'status' => 'address-001']);
+            }
+
             return response(['message' => 'Adres silme işlemi başarılı.','status' => 'success','object' => ['address' => $address]]);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);

@@ -18,11 +18,8 @@ class CreateAddressesTable extends Migration
             $table->bigInteger('user_id');
             $table->bigInteger('city_id');
             $table->bigInteger('country_id');
-            $table->bigInteger('district_id');
-            $table->bigInteger('neighbourhood_id');
             $table->string('title');
             $table->string('name');
-            $table->string('surname');
             $table->string('citizen_number')->nullable();
             $table->string('address_1');
             $table->string('address_2')->nullable();

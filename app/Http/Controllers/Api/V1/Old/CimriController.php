@@ -1,23 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Old;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\CimriProduct;
 use App\Models\Product;
 use App\Models\ProductCategory;
-use App\Models\ProductDocument;
-use App\Models\ProductImage;
-use App\Models\ProductRule;
-use App\Models\ProductTags;
-use App\Models\ProductType;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationGroup;
-use App\Models\ProductVariationGroupType;
-use App\Models\Tag;
-use App\Models\User;
-use App\Models\UserTypeDiscount;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

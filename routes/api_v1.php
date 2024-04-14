@@ -1,37 +1,38 @@
 <?php
+
+use App\Http\Controllers\Api\V1\AddressController;
+use App\Http\Controllers\Api\V1\BankBinPairController;
+use App\Http\Controllers\Api\V1\BrandController;
+use App\Http\Controllers\Api\V1\CarrierController;
+use App\Http\Controllers\Api\V1\CartController;
+use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\CimriController;
+use App\Http\Controllers\Api\V1\CitiesController;
+use App\Http\Controllers\Api\V1\ContactController;
+use App\Http\Controllers\Api\V1\ContactRulesController;
+use App\Http\Controllers\Api\V1\CountriesController;
+use App\Http\Controllers\Api\V1\CouponController;
+use App\Http\Controllers\Api\V1\CreditCardController;
+use App\Http\Controllers\Api\V1\OrderController;
+use App\Http\Controllers\Api\V1\PopupController;
+use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\ProductDocumentController;
+use App\Http\Controllers\Api\V1\ProductTypeController;
+use App\Http\Controllers\Api\V1\ProductVariationGroupTypeController;
+use App\Http\Controllers\Api\V1\SearchController;
+use App\Http\Controllers\Api\V1\SeoController;
+use App\Http\Controllers\Api\V1\SliderController;
+use App\Http\Controllers\Api\V1\SubscribeController;
+use App\Http\Controllers\Api\V1\TabController;
+use App\Http\Controllers\Api\V1\TagController;
+use App\Http\Controllers\Api\V1\UserContactRulesController;
+use App\Http\Controllers\Api\V1\UserDocumentChecksController;
+use App\Http\Controllers\Api\V1\UserDocumentController;
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\Old\ResetPasswordController;
+use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\UserController;
-use App\Http\Controllers\Api\V1\ResetPasswordController;
-use App\Http\Controllers\Api\Shop\AddressController;
-use App\Http\Controllers\Api\Shop\CountriesController;
-use App\Http\Controllers\Api\Shop\CitiesController;
-use App\Http\Controllers\Api\Shop\ContactRulesController;
-use App\Http\Controllers\Api\Shop\UserContactRulesController;
-use App\Http\Controllers\Api\Shop\UserDocumentController;
-use App\Http\Controllers\Api\Shop\UserDocumentChecksController;
-use App\Http\Controllers\Api\Shop\BrandController;
-use App\Http\Controllers\Api\Shop\ProductTypeController;
-use App\Http\Controllers\Api\Shop\CategoryController;
-use App\Http\Controllers\Api\Shop\ProductController;
-use App\Http\Controllers\Api\Shop\ProductDocumentController;
-use App\Http\Controllers\Api\Shop\CartController;
-use App\Http\Controllers\Api\Shop\OrderController;
-use App\Http\Controllers\Api\Shop\TabController;
-use App\Http\Controllers\Api\Shop\ProductVariationGroupTypeController;
-use App\Http\Controllers\Api\Shop\TagController;
-use App\Http\Controllers\Api\Shop\CarrierController;
-use App\Http\Controllers\Api\Shop\CreditCardController;
-use App\Http\Controllers\Api\Shop\BankBinPairController;
-use App\Http\Controllers\Api\Shop\SearchController;
-use App\Http\Controllers\Api\Shop\SliderController;
-use App\Http\Controllers\Api\Shop\SeoController;
-use App\Http\Controllers\Api\Shop\CouponController;
-use App\Http\Controllers\Api\Shop\PopupController;
-use App\Http\Controllers\Api\Shop\SubscribeController;
-use App\Http\Controllers\Api\Shop\CimriController;
-use App\Http\Controllers\Api\Shop\ContactController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -71,11 +72,11 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 //    Route::get('/user/getUsers', [UserController::class, 'getUsers']);
 
 
-    Route::get('/addresses/getAddressesByUserId/{user_id}', [AddressController::class, 'getAddressesByUserId']);
-    Route::get('/addresses/getAddressByUserIdAddressId/{user_id}/{address_id}', [AddressController::class, 'getAddressByUserIdAddressId']);
-    Route::post('/addresses/addUserAddresses/{user_id}', [AddressController::class, 'addUserAddresses']);
-    Route::post('/addresses/updateUserAddresses/{address_id}/{user_id}', [AddressController::class, 'updateUserAddresses']);
-    Route::get('/addresses/deleteUserAddresses/{address_id}', [AddressController::class, 'deleteUserAddresses']);
+    Route::get('/addresses/getAddressesByUser', [AddressController::class, 'getAddressesByUser']);
+    Route::get('/addresses/getUserAddress/{address_id}', [AddressController::class, 'getUserAddress']);
+    Route::post('/addresses/addUserAddress', [AddressController::class, 'addUserAddress']);
+    Route::post('/addresses/updateUserAddress/{address_id}', [AddressController::class, 'updateUserAddress']);
+    Route::get('/addresses/deleteUserAddress/{address_id}', [AddressController::class, 'deleteUserAddress']);
 
 
     Route::get('/countries/getCountries', [CountriesController::class, 'getCountries']);

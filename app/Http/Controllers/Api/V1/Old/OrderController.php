@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Old;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
@@ -13,7 +13,6 @@ use App\Models\City;
 use App\Models\CorporateAddresses;
 use App\Models\Country;
 use App\Models\Coupons;
-use App\Models\CreditCard;
 use App\Models\DeliveryPrice;
 use App\Models\District;
 use App\Models\Order;
@@ -29,7 +28,6 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductRule;
 use App\Models\ProductVariation;
-use App\Models\ShippingType;
 use App\Models\User;
 use App\Models\UserTypeDiscount;
 use DateTime;
@@ -37,8 +35,6 @@ use Faker\Provider\Uuid;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Nette\Schema\ValidationException;
 
 class OrderController extends Controller

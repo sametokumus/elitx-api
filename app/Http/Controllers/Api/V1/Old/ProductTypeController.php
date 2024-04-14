@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Old;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProductType;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
 
 class ProductTypeController extends Controller
 {

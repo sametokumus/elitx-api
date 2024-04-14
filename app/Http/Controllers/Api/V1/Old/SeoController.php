@@ -1,13 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Old;
 
 use App\Http\Controllers\Controller;
 use App\Models\CustomSeo;
-use App\Models\Slider;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
-use Nette\Schema\ValidationException;
 
 class SeoController extends Controller
 {

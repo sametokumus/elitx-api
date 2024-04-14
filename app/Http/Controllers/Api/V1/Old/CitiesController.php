@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Old;
 
+use App\Http\Controllers\Api\V1\Controller;
 use App\Models\City;
-use App\Models\Country;
 use App\Models\District;
 use App\Models\Neighbourhood;
 use Illuminate\Database\QueryException;
