@@ -59,6 +59,10 @@ class MessageController extends Controller
                 })
                 ->where('user_product_id', $user_product_id)
                 ->get();
+            foreach ($messages as $message){
+                $message['sender'] = User::query()->where('id', $message->sender_id)->first();
+                $message['receiver'] = User::query()->where('id', $message->receiver_id)->first();
+            }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['messages' => $messages]]);
         } catch (QueryException $queryException) {
