@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\V1\UserDocumentController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ResetPasswordController;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\MessageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -77,6 +78,13 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::post('/addresses/addUserAddress', [AddressController::class, 'addUserAddress']);
     Route::post('/addresses/updateUserAddress/{address_id}', [AddressController::class, 'updateUserAddress']);
     Route::get('/addresses/deleteUserAddress/{address_id}', [AddressController::class, 'deleteUserAddress']);
+
+
+    Route::get('/messages/getMessageListByUser', [MessageController::class, 'getMessageListByUser']);
+//    Route::get('/addresses/getUserAddress/{address_id}', [AddressController::class, 'getUserAddress']);
+//    Route::post('/addresses/addUserAddress', [AddressController::class, 'addUserAddress']);
+//    Route::post('/addresses/updateUserAddress/{address_id}', [AddressController::class, 'updateUserAddress']);
+//    Route::get('/addresses/deleteUserAddress/{address_id}', [AddressController::class, 'deleteUserAddress']);
 
 
     Route::get('/countries/getCountries', [CountriesController::class, 'getCountries']);
