@@ -41,9 +41,8 @@ class AddressController extends Controller
             $user_id = $user->id;
 
             $address = Address::query()->where('user_id', $user_id)->where('id', $address_id)->where('active',1)->first();
-            return response(['message' => $address]);
 
-            if(!$address) {
+            if($address) {
                 if ($address->type == 2) {
                     $corporate_address = CorporateAddresses::query()->where('address_id', $address_id)->first();
                     $address['company_name'] = $corporate_address->company_name;
