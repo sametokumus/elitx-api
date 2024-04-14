@@ -152,7 +152,6 @@ class AuthController extends Controller
             }
             User::query()->where('id', $user->id)->update([
                 'email_verified_at' => Carbon::now(),
-                'verified' => 1,
                 'token' => null
             ]);
             /*
