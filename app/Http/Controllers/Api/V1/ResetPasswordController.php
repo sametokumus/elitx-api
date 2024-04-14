@@ -47,7 +47,8 @@ class ResetPasswordController extends Controller
                 );
             }
             if ($user && $resetpassword) {
-                $user->notify(new ResetPasswordNotify($resetpassword->token));
+                $check = ResetPassword::query()->where('email', $request->email)->first();
+                $user->notify(new ResetPasswordNotify($check->token));
             }
             return response()->json(['message' => 'E-Posta adresinize şifre sıfırlama bağlantısı gönderildi.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
