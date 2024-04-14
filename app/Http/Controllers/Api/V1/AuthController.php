@@ -172,10 +172,10 @@ class AuthController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Exception $exception){
             if ($exception->getMessage() == 'verify-001'){
-                return response('Kullanıcı bulunamadı.');
+                return response(['message' => 'Kullanıcı bulunamadı.','status' => 'verify-001']);
             }
             if ($exception->getMessage() == 'verify-002'){
-                return response('Eposta adresi daha önceden doğrulanmış.');
+                return response(['message' => 'Eposta adresi daha önceden doğrulanmış.','status' => 'verify-002']);
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'e'=>$exception->getMessage()]);
         }
