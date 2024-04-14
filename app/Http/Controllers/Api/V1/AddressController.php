@@ -40,7 +40,7 @@ class AddressController extends Controller
             $user = Auth::user();
             $user_id = $user->id;
 
-            $address = Address::query()->where('user_id', $user_id)->where('id', $address_id)->where('active',1)->first();
+            $address = Address::query()->where('id', $address_id)->where('active',1)->first();
 
             if(!$address) {
                 if ($address->type == 2) {
