@@ -13,6 +13,7 @@ use App\Models\UserFavorite;
 use App\Models\UserProfile;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -75,8 +76,7 @@ class UserController extends Controller
                     'email' => $request->email,
                     'phone_number' => $request->phone_number,
                     'name' => $request->name,
-                    'surname' => $request->surname,
-                    'birthday' => \Illuminate\Support\Carbon::parse($request->birthday)->format('Y-m-d'),
+                    'birthday' => Carbon::parse($request->birthday)->format('Y-m-d'),
                     'gender' => $request->gender
                 ]);
 
