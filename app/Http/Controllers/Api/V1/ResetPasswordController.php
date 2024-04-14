@@ -31,15 +31,21 @@ class ResetPasswordController extends Controller
             if (!$user) {
                 throw new \Exception('forgot-001');
             }
-            $resetpassword = ResetPassword::query()->updateOrCreate(
-                [
-                    'email' => $user->email,
-                ],
-                [
-                    'email' => $user->email,
-                    'token' => Str::random(45),
-                ]
-            );
+            $check = ResetPassword::query()->where('email', $request->email)->first();
+            if ($check){
+                $resetpassword = ResetPassword::query()->where('email', $request->email)->update(
+                    [
+                        'token' => Str::random(45),
+                    ]
+                );
+            }else{
+                $resetpassword = ResetPassword::query()->insert(
+                    [
+                        'email' => $user->email,
+                        'token' => Str::random(45),
+                    ]
+                );
+            }
             if ($user && $resetpassword) {
                 $user->notify(new ResetPasswordNotify($resetpassword->token));
             }
