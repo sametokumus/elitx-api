@@ -147,9 +147,9 @@ class AuthController extends Controller
     {
         try {
             $user = User::query()->where('token', $token)->first();
-            if ($user->verified == 1 && $user->email_verified_at != null) {
-                throw new \Exception('validation-002');
-            }
+//            if ($user->verified == 1 && $user->email_verified_at != null) {
+//                throw new \Exception('validation-002');
+//            }
             User::query()->where('id', $user->id)->update([
                 'email_verified_at' => Carbon::now(),
                 'token' => null
