@@ -41,19 +41,26 @@ class MessageController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
-    public function getMessagesByUserProductIdAndUserId($user_product_id, $user_id)
+    public function getMessagesByUserProductIdAndUserId($user_product_id, $partner_id)
     {
         try {
             $auth_user = Auth::user();
-            $auth_user_id = $auth_user->id;
+            $user_id = $auth_user->id;
 
-            $messages = Message::query()->where('sender_id', $user_id)->where('receiver_id', $user_id)->where('sender_id', $user_id)->where('active',1)->get();
-            foreach ($addresses as $address){
-                $address['country'] = Country::query()->where('id', $address->country_id)->first();
-                $address['city'] = City::query()->where('id', $address->city_id)->first();
-            }
+            $messages = Message::query()
+                ->select('id', 'user_product_id', 'sender_id', 'receiver_id', 'text')
+                ->where(function($query) {
+                    $query->where('sender_id', $user_id)
+                        ->where('receiver_id', $partner_id);
+                })
+                ->orWhere(function($query) {
+                    $query->where('sender_id', $partner_id)
+                        ->where('receiver_id', $user_id);
+                })
+                ->where('user_product_id', $user_product_id)
+                ->get();
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['addresses' => $addresses]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['messages' => $messages]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
