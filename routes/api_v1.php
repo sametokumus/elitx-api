@@ -82,10 +82,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     Route::get('/messages/getMessageListByUser', [MessageController::class, 'getMessageListByUser']);
     Route::get('/messages/getMessagesByUserProductIdAndUserId/{user_product_id}/{partner_id}', [MessageController::class, 'getMessagesByUserProductIdAndUserId']);
-//    Route::get('/addresses/getUserAddress/{address_id}', [AddressController::class, 'getUserAddress']);
-//    Route::post('/addresses/addUserAddress', [AddressController::class, 'addUserAddress']);
-//    Route::post('/addresses/updateUserAddress/{address_id}', [AddressController::class, 'updateUserAddress']);
-//    Route::get('/addresses/deleteUserAddress/{address_id}', [AddressController::class, 'deleteUserAddress']);
+    Route::post('/messages/sendMessage', [MessageController::class, 'sendMessage']);
 
 
     Route::get('/countries/getCountries', [CountriesController::class, 'getCountries']);
