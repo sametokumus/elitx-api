@@ -49,11 +49,11 @@ class MessageController extends Controller
 
             $messages = Message::query()
                 ->select('id', 'user_product_id', 'sender_id', 'receiver_id', 'text')
-                ->where(function($query) {
+                ->where(function($query) use ($user_id, $partner_id) {
                     $query->where('sender_id', $user_id)
                         ->where('receiver_id', $partner_id);
                 })
-                ->orWhere(function($query) {
+                ->orWhere(function($query) use ($user_id, $partner_id) {
                     $query->where('sender_id', $partner_id)
                         ->where('receiver_id', $user_id);
                 })
