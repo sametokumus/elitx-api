@@ -29,7 +29,7 @@ use App\Http\Controllers\Api\V1\UserContactRulesController;
 use App\Http\Controllers\Api\V1\UserDocumentChecksController;
 use App\Http\Controllers\Api\V1\UserDocumentController;
 use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\Old\ResetPasswordController;
+use App\Http\Controllers\Api\V1\ResetPasswordController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,7 +52,7 @@ Route::get('auth/verify/{token}', [AuthController::class, 'verify'])->name('veri
 Route::post('auth/resend-verify-email', [AuthController::class, 'resend']);
 
 Route::get('password/find/{token}', [ResetPasswordController::class, 'find']);
-Route::post('password/sendResetPasswordEmail', [ResetPasswordController::class, 'store']);
+Route::post('password/forgotPasswordByEmail', [ResetPasswordController::class, 'store']);
 Route::post('password/reset',[ResetPasswordController::class, 'resetPassword']);
 
 

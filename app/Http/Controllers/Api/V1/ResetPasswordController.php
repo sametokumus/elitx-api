@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Old;
+namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Api\V1\Controller;
 use App\Models\ResetPassword;
 use App\Models\User;
 use App\Notifications\ResetPasswordNotify;
@@ -30,7 +29,7 @@ class ResetPasswordController extends Controller
 
             $user = User::query()->where('email', $request['email'])->first();
             if (!$user) {
-                throw new \Exception('validation-003');
+                throw new \Exception('forgot-001');
             }
             $resetpassword = ResetPassword::query()->updateOrCreate(
                 [
@@ -50,8 +49,8 @@ class ResetPasswordController extends Controller
         } catch (QueryException $queryException) {
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Exception $exception){
-            if ($exception->getMessage() == 'validation-003'){
-                return response('E-Posta adresi bulunamadı.');
+            if ($exception->getMessage() == 'forgot-001'){
+                return  response(['message' => 'E-Posta adresi bulunamadı.','status' => 'forgot-001']);
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
         }
