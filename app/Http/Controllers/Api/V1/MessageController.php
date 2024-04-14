@@ -60,6 +60,10 @@ class MessageController extends Controller
                 ->where('user_product_id', $user_product_id)
                 ->get();
             foreach ($messages as $message){
+                Message::query()->where('id', $message->id)->update([
+                    'is_read' => 1
+                ]);
+                $message['is_read'] = 1;
                 $message['sender'] = User::query()->where('id', $message->sender_id)->first();
                 $message['receiver'] = User::query()->where('id', $message->receiver_id)->first();
             }
