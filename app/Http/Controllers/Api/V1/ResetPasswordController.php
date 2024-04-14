@@ -58,7 +58,7 @@ class ResetPasswordController extends Controller
             if ($exception->getMessage() == 'forgot-001'){
                 return  response(['message' => 'E-Posta adresi bulunamadı.','status' => 'forgot-001']);
             }
-            return  response(['message' => 'Hatalı işlem.','status' => 'error-001']);
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'e'=>$exception->getMessage()]);
         }
     }
 
