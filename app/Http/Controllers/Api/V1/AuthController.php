@@ -147,8 +147,12 @@ class AuthController extends Controller
     {
         try {
             $user = User::query()->where('token', $token)->first();
-            if ($user && $user->verified == 1 && $user->email_verified_at != null) {
-                throw new \Exception('validation-002');
+            if (!$user) {
+                throw new \Exception('verify-001');
+            }
+            // Check if the user is already verified
+            if ($user->verified == 1 && $user->email_verified_at != null) {
+                throw new \Exception('verify-002');
             }
             User::query()->where('id', $user->id)->update([
                 'email_verified_at' => Carbon::now(),
@@ -167,7 +171,10 @@ class AuthController extends Controller
         } catch (QueryException $queryException) {
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Exception $exception){
-            if ($exception->getMessage() == 'validation-002'){
+            if ($exception->getMessage() == 'verify-001'){
+                return response('Kullanıcı bulunamadı.');
+            }
+            if ($exception->getMessage() == 'verify-002'){
                 return response('Eposta adresi daha önceden doğrulanmış.');
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'e'=>$exception->getMessage()]);
