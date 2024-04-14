@@ -24,16 +24,16 @@ class MessageController extends Controller
             $user_id = $user->id;
 
             $messages = Message::query()
-                ->select(DB::raw('MAX(id) as id'), 'user_product_id')
+                ->select(DB::raw('MAX(id) as id'), 'product_id')
                 ->selectRaw('CASE WHEN sender_id <> '.$user_id.' THEN sender_id ELSE receiver_id END AS conversation_partner_id')
                 ->where('sender_id', $user_id)
                 ->orWhere('receiver_id', $user_id)
-                ->groupBy('conversation_partner_id', 'user_product_id')
+                ->groupBy('conversation_partner_id', 'product_id')
                 ->get();
             foreach ($messages as $message){
                 $message['last_message'] = Message::query()->where('id', $message->id)->first();
                 $message['conversation_partner'] = User::query()->where('id', $message->conversation_partner_id)->first();
-//                $message['user_product'] = UserProduct::query()->where('id', $message->user_product_id)->first();
+//                $message['product'] = Product::query()->where('id', $message->product_id)->first();
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['messages' => $messages]]);
@@ -41,14 +41,14 @@ class MessageController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
-    public function getMessagesByUserProductIdAndUserId($user_product_id, $partner_id)
+    public function getMessagesByUserProductIdAndUserId($product_id, $partner_id)
     {
         try {
             $auth_user = Auth::user();
             $user_id = $auth_user->id;
 
             $messages = Message::query()
-                ->select('id', 'user_product_id', 'sender_id', 'receiver_id', 'text')
+                ->select('id', 'product_id', 'sender_id', 'receiver_id', 'text')
                 ->where(function($query) use ($user_id, $partner_id) {
                     $query->where(function($query) use ($user_id, $partner_id) {
                         $query->where('sender_id', $user_id)
@@ -59,7 +59,7 @@ class MessageController extends Controller
                                 ->where('receiver_id', $user_id);
                         });
                 })
-                ->where('user_product_id', $user_product_id)
+                ->where('product_id', $product_id)
                 ->get();
             foreach ($messages as $message){
                 Message::query()->where('id', $message->id)->update([
@@ -80,7 +80,7 @@ class MessageController extends Controller
     {
         try {
             $request->validate([
-//                'user_product_id' => 'required|exists:user_products,id',
+//                'product_id' => 'required|exists:products,id',
                 'receiver_id' => 'required|exists:users,id',
                 'text' => 'required',
             ]);
@@ -89,7 +89,7 @@ class MessageController extends Controller
             $sender_id = $sender->id;
 
             Message::query()->insert([
-                'user_product_id' => $request->user_product_id,
+                'product_id' => $request->product_id,
                 'sender_id' => $sender_id,
                 'receiver_id' => $request->receiver_id,
                 'text' => $request->text

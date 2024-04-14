@@ -1,6 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\AddressController;
+use App\Http\Controllers\Api\V1\MessageController;
+use App\Http\Controllers\Api\V1\ResetPasswordController;
+use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\ProductController;
+
+
 use App\Http\Controllers\Api\V1\BankBinPairController;
 use App\Http\Controllers\Api\V1\BrandController;
 use App\Http\Controllers\Api\V1\CarrierController;
@@ -15,7 +22,6 @@ use App\Http\Controllers\Api\V1\CouponController;
 use App\Http\Controllers\Api\V1\CreditCardController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PopupController;
-use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\ProductDocumentController;
 use App\Http\Controllers\Api\V1\ProductTypeController;
 use App\Http\Controllers\Api\V1\ProductVariationGroupTypeController;
@@ -28,10 +34,6 @@ use App\Http\Controllers\Api\V1\TagController;
 use App\Http\Controllers\Api\V1\UserContactRulesController;
 use App\Http\Controllers\Api\V1\UserDocumentChecksController;
 use App\Http\Controllers\Api\V1\UserDocumentController;
-use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\ResetPasswordController;
-use App\Http\Controllers\Api\V1\UserController;
-use App\Http\Controllers\Api\V1\MessageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -66,9 +68,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::post('/user/updateUser', [UserController::class, 'updateUser']);
     Route::get('/user/deleteUser', [UserController::class, 'deleteUser']);
     Route::post('/user/changePassword', [UserController::class, 'changePassword']);
-//    Route::post('/user/addUserFavorite', [UserController::class, 'addUserFavorite']);
-//    Route::post('/user/removeUserFavorite', [UserController::class, 'removeUserFavorite']);
-//    Route::get('/user/getUserFavorites/{user_id}', [UserController::class, 'getUserFavorites']);
 //    Route::post('/user/addRefundRequest', [UserController::class, 'addRefundRequest']);
 //    Route::get('/user/getUsers', [UserController::class, 'getUsers']);
 
@@ -109,6 +108,13 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/userDocuments/getUserDocumentChecksByUserId/{user_id}', [UserDocumentChecksController::class, 'getUserDocumentChecksByUserId']);
     Route::post('/userDocuments/updateUserDocumentChecksByUserId/{document_id}/{user_id}', [UserDocumentChecksController::class, 'updateUserDocumentChecksByUserId']);
 //    Route::post('/userDocuments/deleteUserDocumentsChecksByUserId/{document_id}', [UserDocumentChecksController::class, 'deleteUserDocumentsChecksByUserId']);
+
+
+    //Favorites
+    Route::get('/product/addFavorite/{product_id}', [ProductController::class, 'addFavorite']);
+    Route::get('/product/removeFavorite/{product_id}', [ProductController::class, 'removeFavorite']);
+    Route::get('/product/getFavorites', [ProductController::class, 'getFavorites']);
+
 
 
 

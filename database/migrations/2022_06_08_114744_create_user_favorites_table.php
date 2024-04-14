@@ -17,7 +17,6 @@ class CreateUserFavoritesTable extends Migration
             $table->id();
             $table->bigInteger('user_id');
             $table->bigInteger('product_id');
-            $table->bigInteger('variation_id');
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
