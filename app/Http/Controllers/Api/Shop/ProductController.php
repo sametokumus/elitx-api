@@ -45,7 +45,7 @@ class ProductController extends Controller
                 'meta_title' => $request->meta_title,
                 'meta_description' => $request->meta_description,
                 'meta_keywords' => $request->meta_keywords,
-                'status_id' => 0,
+                'status_id' => 1,
                 'owner_type' => 1,
                 'owner_id' => $shop->id,
             ]);

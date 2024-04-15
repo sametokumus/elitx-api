@@ -119,7 +119,7 @@ class ProductController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'stock_quantity' => 1,
-                'status_id' => 0,
+                'status_id' => 1,
                 'owner_type' => 2,
                 'owner_id' => $user->id,
             ]);

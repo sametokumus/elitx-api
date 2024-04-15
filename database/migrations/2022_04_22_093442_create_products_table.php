@@ -25,6 +25,7 @@ class CreateProductsTable extends Migration
             $table->bigInteger('stock_quantity')->default(0);
             $table->tinyInteger('has_variation')->default(0);
             $table->bigInteger('status_id')->default(1);
+            $table->tinyInteger('confirmed')->default(0);
             $table->text('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->text('meta_keywords')->nullable();
