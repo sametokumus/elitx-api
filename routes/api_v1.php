@@ -115,6 +115,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/product/removeFavorite/{product_id}', [ProductController::class, 'removeFavorite']);
     Route::get('/product/getFavorites', [ProductController::class, 'getFavorites']);
 
+    //Product
+    Route::post('product/addProduct', [ProductController::class, 'addProduct']);
+
 
 
 

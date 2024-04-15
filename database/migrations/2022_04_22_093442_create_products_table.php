@@ -24,11 +24,6 @@ class CreateProductsTable extends Migration
             $table->text('thumbnail')->nullable();
             $table->bigInteger('stock_quantity')->default(0);
             $table->tinyInteger('has_variation')->default(0);
-            $table->decimal('base_price')->nullable();
-            $table->decimal('discounted_price')->nullable();
-            $table->tinyInteger('discount_type')->default(0);
-            $table->decimal('discount_rate')->nullable();
-            $table->text('currency')->nullable();
             $table->bigInteger('status_id')->default(1);
             $table->text('meta_title')->nullable();
             $table->text('meta_description')->nullable();
