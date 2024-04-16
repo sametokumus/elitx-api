@@ -6,6 +6,9 @@ use App\Http\Controllers\Api\Admin\AdminRoleController;
 use App\Http\Controllers\Api\Admin\AdminUserComments;
 use App\Http\Controllers\Api\Admin\AuthController;
 use App\Http\Controllers\Api\Admin\LanguageController;
+use App\Http\Controllers\Api\Admin\ProductController;
+
+
 use App\Http\Controllers\Api\Admin\Old\BrandController;
 use App\Http\Controllers\Api\Admin\Old\CarrierController;
 use App\Http\Controllers\Api\Admin\Old\CartController;
@@ -19,7 +22,6 @@ use App\Http\Controllers\Api\Admin\Old\ImportController;
 use App\Http\Controllers\Api\Admin\Old\OrderController;
 use App\Http\Controllers\Api\Admin\Old\OrderStatusController;
 use App\Http\Controllers\Api\Admin\Old\PopupController;
-use App\Http\Controllers\Api\Admin\Old\ProductController;
 use App\Http\Controllers\Api\Admin\Old\ProductTypeController;
 use App\Http\Controllers\Api\Admin\Old\ProductVariationGroupTypeController;
 use App\Http\Controllers\Api\Admin\Old\ProformaController;
