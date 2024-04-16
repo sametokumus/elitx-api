@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Admin\AdminRoleController;
 use App\Http\Controllers\Api\Admin\AdminUserComments;
 use App\Http\Controllers\Api\Admin\AuthController;
 use App\Http\Controllers\Api\Admin\LanguageController;
+use App\Http\Controllers\Api\Admin\ShopController;
 use App\Http\Controllers\Api\Admin\ProductController;
 
 
@@ -32,7 +33,6 @@ use App\Http\Controllers\Api\Admin\Old\SubscribeController;
 use App\Http\Controllers\Api\Admin\Old\TabController;
 use App\Http\Controllers\Api\Admin\Old\TagController;
 use App\Http\Controllers\Api\Admin\Old\UserController;
-use App\Http\Controllers\Api\Admin\ShopController;
 use Illuminate\Support\Facades\Route;
 
 
