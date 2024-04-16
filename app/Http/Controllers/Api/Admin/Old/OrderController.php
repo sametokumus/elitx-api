@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Admin\Old;
 
-use App\Http\Controllers\Controller;
 use App\Helpers\PaymentHelper;
-use App\Models\Address;
-use App\Models\BankRequest;
+use App\Http\Controllers\Controller;
 use App\Models\Carrier;
 use App\Models\CreditCard;
 use App\Models\Order;
@@ -18,7 +16,6 @@ use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\PaymentType;
 use App\Models\ProductImage;
-use App\Models\ShippingType;
 use App\Models\UserProfile;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;

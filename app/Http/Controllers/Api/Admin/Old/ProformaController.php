@@ -1,38 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Admin\Old;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartDetail;
-use App\Models\Category;
 use App\Models\City;
 use App\Models\CorporateAddresses;
 use App\Models\Country;
-use App\Models\Coupons;
 use App\Models\District;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\OrderStatus;
 use App\Models\OrderStatusHistory;
 use App\Models\Product;
-use App\Models\ProductCategory;
-use App\Models\ProductDocument;
-use App\Models\ProductImage;
 use App\Models\ProductRule;
-use App\Models\ProductTags;
-use App\Models\ProductType;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationGroup;
-use App\Models\ProductVariationGroupType;
-use App\Models\Tag;
 use App\Models\User;
 use App\Models\UserTypeDiscount;
 use Faker\Provider\Uuid;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Nette\Schema\ValidationException;
 
 class ProformaController extends Controller

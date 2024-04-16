@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Admin\Old;
 
 use App\Http\Controllers\Controller;
 use App\Imports\NewProducts;
 use App\Imports\PriceImports;
+use App\Imports\ProductImport;
 use App\Imports\ZipCodeImports;
 use App\Models\Address;
 use App\Models\Brand;
@@ -26,9 +27,7 @@ use App\Models\ProductVariationGroup;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\ProductImport;
 use Nette\Schema\ValidationException;
-use Illuminate\Support\Str;
 
 
 class ImportController extends Controller

@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Admin\Old;
 
 use App\Http\Controllers\Controller;
 use App\Models\ShippingType;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
 
 class ShippingTypeController extends Controller
 {

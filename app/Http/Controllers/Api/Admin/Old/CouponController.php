@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Admin\Old;
 
 use App\Http\Controllers\Controller;
 use App\Models\Coupons;
-use App\Models\UsedCoupons;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Nette\Schema\ValidationException;

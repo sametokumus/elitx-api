@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Admin\Old;
 
 use App\Http\Controllers\Controller;
-use App\Mail\UserWelcome;
 use App\Models\User;
 use App\Models\UserContactRule;
 use App\Models\UserDocumentCheck;
@@ -13,7 +12,6 @@ use App\Models\UserTypeDiscount;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Nette\Schema\ValidationException;
 

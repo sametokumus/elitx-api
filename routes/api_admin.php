@@ -1,39 +1,38 @@
 <?php
-use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Api\Admin\AdminController;
+use App\Http\Controllers\Api\Admin\AdminPermissionController;
+use App\Http\Controllers\Api\Admin\AdminRoleController;
+use App\Http\Controllers\Api\Admin\AdminUserComments;
 use App\Http\Controllers\Api\Admin\AuthController;
 use App\Http\Controllers\Api\Admin\LanguageController;
+use App\Http\Controllers\Api\Admin\Old\BrandController;
+use App\Http\Controllers\Api\Admin\Old\CarrierController;
+use App\Http\Controllers\Api\Admin\Old\CartController;
+use App\Http\Controllers\Api\Admin\Old\CategoryController;
+use App\Http\Controllers\Api\Admin\Old\ContactController;
+use App\Http\Controllers\Api\Admin\Old\CouponController;
+use App\Http\Controllers\Api\Admin\Old\CreditCardController;
+use App\Http\Controllers\Api\Admin\Old\DashboardController;
+use App\Http\Controllers\Api\Admin\Old\DeliveryController;
+use App\Http\Controllers\Api\Admin\Old\ImportController;
+use App\Http\Controllers\Api\Admin\Old\OrderController;
+use App\Http\Controllers\Api\Admin\Old\OrderStatusController;
+use App\Http\Controllers\Api\Admin\Old\PopupController;
+use App\Http\Controllers\Api\Admin\Old\ProductController;
+use App\Http\Controllers\Api\Admin\Old\ProductTypeController;
+use App\Http\Controllers\Api\Admin\Old\ProductVariationGroupTypeController;
+use App\Http\Controllers\Api\Admin\Old\ProformaController;
+use App\Http\Controllers\Api\Admin\Old\SeoController;
+use App\Http\Controllers\Api\Admin\Old\ShippingTypeController;
+use App\Http\Controllers\Api\Admin\Old\SliderController;
+use App\Http\Controllers\Api\Admin\Old\SubscribeController;
+use App\Http\Controllers\Api\Admin\Old\TabController;
+use App\Http\Controllers\Api\Admin\Old\TagController;
+use App\Http\Controllers\Api\Admin\Old\UserController;
 use App\Http\Controllers\Api\Admin\ShopController;
+use Illuminate\Support\Facades\Route;
 
-
-use App\Http\Controllers\Api\Admin\AdminUserComments;
-use App\Http\Controllers\Api\Admin\AdminRoleController;
-use App\Http\Controllers\Api\Admin\AdminPermissionController;
-use App\Http\Controllers\Api\Admin\BrandController;
-use App\Http\Controllers\Api\Admin\ProductTypeController;
-use App\Http\Controllers\Api\Admin\CategoryController;
-use App\Http\Controllers\Api\Admin\ProductController;
-use App\Http\Controllers\Api\Admin\AdminController;
-use App\Http\Controllers\Api\Admin\TabController;
-use App\Http\Controllers\Api\Admin\OrderStatusController;
-use App\Http\Controllers\Api\Admin\ProductVariationGroupTypeController;
-use App\Http\Controllers\Api\Admin\TagController;
-use App\Http\Controllers\Api\Admin\CartController;
-use App\Http\Controllers\Api\Admin\CarrierController;
-use App\Http\Controllers\Api\Admin\OrderController;
-use App\Http\Controllers\Api\Admin\ImportController;
-use App\Http\Controllers\Api\Admin\ShippingTypeController;
-use App\Http\Controllers\Api\Admin\CreditCardController;
-use App\Http\Controllers\Api\Admin\UserController;
-use App\Http\Controllers\Api\Admin\SliderController;
-use App\Http\Controllers\Api\Admin\SeoController;
-use App\Http\Controllers\Api\Admin\CouponController;
-use App\Http\Controllers\Api\Admin\DeliveryController;
-use App\Http\Controllers\Api\Admin\PopupController;
-use App\Http\Controllers\Api\Admin\SubscribeController;
-use App\Http\Controllers\Api\Admin\ProformaController;
-use App\Http\Controllers\Api\Admin\DashboardController;
-use App\Http\Controllers\Api\Admin\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,6 +101,14 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('shop/getShopRegisterDocuments/{id}', [ShopController::class, 'getShopRegisterDocuments']);
     Route::get('shop/getOpenShop/{id}', [ShopController::class, 'getOpenShop']);
     Route::get('shop/getCloseShop/{id}', [ShopController::class, 'getCloseShop']);
+
+    //Product
+    Route::get('product/getProducts', [ProductController::class, 'getProducts']);
+
+
+
+
+
 
 
 

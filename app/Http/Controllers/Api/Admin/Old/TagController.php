@@ -1,30 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Admin\Old;
 
 use App\Http\Controllers\Controller;
-use App\Models\ProductTab;
-use App\Models\ProductTabContent;
+use App\Models\Tag;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Nette\Schema\ValidationException;
 
-class TabController extends Controller
+class TagController extends Controller
 {
 
-    public function addTab(Request $request)
+    public function addTag(Request $request)
     {
 
         try {
 
             $request->validate([
-                'title'=>'required'
+                'name'=>'required'
             ]);
-            ProductTab::query()->insert([
-                'title' => $request->title
+            Tag::query()->insert([
+                'name' => $request->name
             ]);
-            return response(['message' => 'Ürün sekmesi ekleme işlemi başarılı.', 'status' => 'success']);
+            return response(['message' => 'Etiket ekleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
@@ -34,13 +32,13 @@ class TabController extends Controller
         }
     }
 
-    public function updateTab(Request $request,$id){
+    public function updateTag(Request $request,$id){
         try {
-            ProductTab::query()->where('id',$id)->update([
-                'title' => $request->title
+            Tag::query()->where('id',$id)->update([
+                'name' => $request->name
             ]);
 
-            return response(['message' => 'Ürün sekmesi güncelleme işlemi başarılı.','status' => 'success']);
+            return response(['message' => 'Etiket güncelleme işlemi başarılı.','status' => 'success']);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
@@ -50,12 +48,12 @@ class TabController extends Controller
         }
     }
 
-    public function deleteTab($id){
+    public function deleteTag($id){
         try {
-            ProductTab::query()->where('id',$id)->update([
+            Tag::query()->where('id',$id)->update([
                 'active'=>0
             ]);
-            return response(['message' => 'Ürün sekmesi silme işlemi başarılı.','status' => 'success']);
+            return response(['message' => 'Etiket silme işlemi başarılı.','status' => 'success']);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
