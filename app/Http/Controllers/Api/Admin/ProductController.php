@@ -16,13 +16,10 @@ class ProductController extends Controller
     public function getProducts()
     {
         try {
-            $shop = Auth::user();
 
             $products = Product::query()
                 ->selectRaw('products.*')
                 ->where('products.active', 1)
-                ->where('products.owner_type', 1)
-                ->where('products.owner_id', $shop->id)
                 ->get();
 
             foreach ($products as $product){
