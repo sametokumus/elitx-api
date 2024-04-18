@@ -106,6 +106,8 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
     //Product
     Route::get('product/getProducts', [ProductController::class, 'getProducts']);
+    Route::get('product/getProductConfirmed/{id}', [ProductController::class, 'getProductConfirmed']);
+    Route::get('product/getProductRejected/{id}', [ProductController::class, 'getProductRejected']);
 
 
 

@@ -26,6 +26,7 @@ class CreateProductsTable extends Migration
             $table->tinyInteger('has_variation')->default(0);
             $table->bigInteger('status_id')->default(1);
             $table->tinyInteger('confirmed')->default(0);
+            $table->timestamp('confirmed_at')->nullable();
             $table->text('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->text('meta_keywords')->nullable();

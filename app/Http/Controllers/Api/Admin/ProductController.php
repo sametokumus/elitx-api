@@ -9,6 +9,7 @@ use App\Models\ProductVariation;
 use App\Models\ProductVariationPrice;
 use App\Models\Shop;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,6 +50,29 @@ class ProductController extends Controller
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+
+    public function getProductConfirmed($id){
+        try {
+            Product::query()->where('id',$id)->update([
+                'confirmed' => 1,
+                'confirmed_at' => Carbon::now()
+            ]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+    public function getProductRejected($id){
+        try {
+            Product::query()->where('id',$id)->update([
+                'confirmed' => 2,
+                'status_id' => 3,
+            ]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
 }
