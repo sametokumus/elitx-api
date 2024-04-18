@@ -36,12 +36,13 @@ class ProductController extends Controller
                 $discounted_price = $request->discounted_price;
             }
 
+            $stock_quantity = ($request->stock_quantity != '') ? $request->stock_quantity : 1;
             $product_id = Product::query()->insertGetId([
                 'brand_id' => $request->brand_id,
                 'sku' => $request->sku,
                 'name' => $request->name,
                 'description' => $request->description,
-                'stock_quantity' => $request->stock_quantity,
+                'stock_quantity' => $stock_quantity,
                 'meta_title' => $request->meta_title,
                 'meta_description' => $request->meta_description,
                 'meta_keywords' => $request->meta_keywords,
@@ -81,11 +82,12 @@ class ProductController extends Controller
                     'has_variation' => 1
                 ]);
                 foreach ($variations as $variation) {
+                    $stock_quantity = ($variation->stock_quantity != '') ? $variation->stock_quantity : 1;
                     $variation_id = ProductVariation::query()->insertGetId([
                         'product_id' => $product_id,
                         'variation_group_id' => $variation->group_id,
                         'name' => $variation->name,
-                        'stock_quantity' => $variation->stock_quantity
+                        'stock_quantity' => $stock_quantity
                     ]);
                     ProductVariationPrice::query()->insert([
                         'product_id' => $product_id,
