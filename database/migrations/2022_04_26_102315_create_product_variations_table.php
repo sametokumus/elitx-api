@@ -18,7 +18,7 @@ class CreateProductVariationsTable extends Migration
             $table->bigInteger('product_id');
             $table->bigInteger('variation_group_id')->nullable();
             $table->string('name')->nullable();
-            $table->bigInteger('stock_quantity')->default(0);
+            $table->bigInteger('stock_quantity')->default(1);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();

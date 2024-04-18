@@ -22,7 +22,7 @@ class CreateProductsTable extends Migration
             $table->text('name');
             $table->text('description')->nullable();
             $table->text('thumbnail')->nullable();
-            $table->bigInteger('stock_quantity')->default(0);
+            $table->bigInteger('stock_quantity')->default(1);
             $table->tinyInteger('has_variation')->default(0);
             $table->bigInteger('status_id')->default(1);
             $table->tinyInteger('confirmed')->default(0);
