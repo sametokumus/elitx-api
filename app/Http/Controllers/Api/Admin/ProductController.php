@@ -34,6 +34,7 @@ class ProductController extends Controller
                         ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
                         ->selectRaw('shop_types.*, types.name as name')
                         ->where('shop_types.shop_id', $shop->id)
+                        ->where('shop_types.active', 1)
                         ->get();
                     $type_words = $types->implode('name', ', ');
                     $shop['types'] = $types;
