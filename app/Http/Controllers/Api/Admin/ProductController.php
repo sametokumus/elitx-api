@@ -8,6 +8,7 @@ use App\Models\ProductPrice;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationPrice;
 use App\Models\Shop;
+use App\Models\ShopType;
 use App\Models\Type;
 use App\Models\User;
 use Carbon\Carbon;
@@ -29,7 +30,11 @@ class ProductController extends Controller
             foreach ($products as $product){
                 if ($product->owner_type == 1){
                     $shop = Shop::query()->where('id', $product->owner_id)->first();
-                    $types = Type::query()->where('shop_id', $shop->id)->get();
+                    $types = ShopType::query()
+                        ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
+                        ->selectRaw('shop_types.*, types.name as name')
+                        ->where('shop_types.shop_id', $shop->id)
+                        ->get();
                     $type_words = $types->implode('name', ', ');
                     $shop['types'] = $types;
                     $shop['type_words'] = $type_words;
