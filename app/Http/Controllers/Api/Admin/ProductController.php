@@ -28,8 +28,10 @@ class ProductController extends Controller
 
             foreach ($products as $product){
                 if ($product->owner_type == 1){
-                    $shop = Shop::with('types')->find($product->owner_id);
-                    $type_words = $shop->types->pluck('name')->implode(', ');
+                    $shop = Shop::query()->where('id', $product->owner_id)->first();
+                    $types = Type::query()->where('shop_id', $shop->id)->get();
+                    $type_words = $types->implode('name', ', ');
+                    $shop['types'] = $types;
                     $shop['type_words'] = $type_words;
                     $product['shop'] = $shop;
                 }else if ($product->owner_type == 2){
