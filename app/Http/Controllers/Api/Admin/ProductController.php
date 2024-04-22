@@ -8,6 +8,7 @@ use App\Models\ProductPrice;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationPrice;
 use App\Models\Shop;
+use App\Models\Type;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
@@ -27,7 +28,10 @@ class ProductController extends Controller
 
             foreach ($products as $product){
                 if ($product->owner_type == 1){
-                    $product['shop'] = Shop::query()->where('id', $product->owner_id)->first();
+                    $shop = Shop::with('types')->find($product->owner_id);
+                    $type_words = $shop->types->pluck('name')->implode(', ');
+                    $shop['type_words'] = $type_words;
+                    $product['shop'] = $shop;
                 }else if ($product->owner_type == 2){
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
