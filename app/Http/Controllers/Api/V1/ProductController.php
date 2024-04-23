@@ -283,9 +283,9 @@ class ProductController extends Controller
                     $query->where('products.owner_type', 1)
                         ->where('shop_types.type_id', 2);
                 })
-                ->orWhere('products.owner_type', 2)
                 ->where('products.confirmed', 1)
                 ->where('products.active', 1)
+                ->orWhere('products.owner_type', 2)
                 ->get();
 
             foreach ($products as $product){
