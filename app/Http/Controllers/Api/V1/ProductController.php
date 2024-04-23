@@ -282,7 +282,7 @@ class ProductController extends Controller
                 ->selectRaw('products.*')
                 ->where(function ($query) {
                     $query->where('products.owner_type', 1)
-                        ->where('shop_types.type_id', 1);
+                        ->where('shop_types.type_id', 2);
                 })
                 ->orWhere('products.owner_type', 2)
                 ->where('products.active', 1)
