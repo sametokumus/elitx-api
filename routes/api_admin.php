@@ -5,15 +5,11 @@ use App\Http\Controllers\Api\Admin\AdminPermissionController;
 use App\Http\Controllers\Api\Admin\AdminRoleController;
 use App\Http\Controllers\Api\Admin\AdminUserComments;
 use App\Http\Controllers\Api\Admin\AuthController;
+use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\LanguageController;
-use App\Http\Controllers\Api\Admin\ShopController;
-use App\Http\Controllers\Api\Admin\ProductController;
-
-
 use App\Http\Controllers\Api\Admin\Old\BrandController;
 use App\Http\Controllers\Api\Admin\Old\CarrierController;
 use App\Http\Controllers\Api\Admin\Old\CartController;
-use App\Http\Controllers\Api\Admin\Old\CategoryController;
 use App\Http\Controllers\Api\Admin\Old\ContactController;
 use App\Http\Controllers\Api\Admin\Old\CouponController;
 use App\Http\Controllers\Api\Admin\Old\CreditCardController;
@@ -33,6 +29,8 @@ use App\Http\Controllers\Api\Admin\Old\SubscribeController;
 use App\Http\Controllers\Api\Admin\Old\TabController;
 use App\Http\Controllers\Api\Admin\Old\TagController;
 use App\Http\Controllers\Api\Admin\Old\UserController;
+use App\Http\Controllers\Api\Admin\ProductController;
+use App\Http\Controllers\Api\Admin\ShopController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -109,7 +107,10 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('product/getProductConfirmed/{id}', [ProductController::class, 'getProductConfirmed']);
     Route::get('product/getProductRejected/{id}', [ProductController::class, 'getProductRejected']);
 
-
+    //Category
+    Route::post('category/addCategory', [CategoryController::class, 'addCategory']);
+    Route::post('category/updateCategory/{id}', [CategoryController::class, 'updateCategory']);
+    Route::get('category/deleteCategory/{id}', [CategoryController::class, 'deleteCategory']);
 
 
 
@@ -127,9 +128,6 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('productType/deleteProductType/{id}', [ProductTypeController::class, 'deleteProductType']);
     Route::post('productType/updateProductTypeOrder', [ProductTypeController::class, 'updateProductTypeOrder']);
 
-    Route::post('category/addCategory', [CategoryController::class, 'addCategory']);
-    Route::post('category/updateCategory/{id}', [CategoryController::class, 'updateCategory']);
-    Route::get('category/deleteCategory/{id}', [CategoryController::class, 'deleteCategory']);
     Route::post('category/updateHomeCategoryBanner/{id}', [CategoryController::class, 'updateHomeCategoryBanner']);
 
     Route::post('product/addFullProduct', [ProductController::class, 'addFullProduct']);
