@@ -126,6 +126,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
 Route::get('/product/getNewProducts', [ProductController::class, 'getNewProducts']);
 Route::get('/product/getSecondHandProducts', [ProductController::class, 'getSecondHandProducts']);
+Route::get('/product/getNewProductsByCategoryId/{category_id}', [ProductController::class, 'getNewProductsByCategoryId']);
+Route::get('/product/getSecondHandProductsByCategoryId/{category_id}', [ProductController::class, 'getSecondHandProductsByCategoryId']);
 
 
 
