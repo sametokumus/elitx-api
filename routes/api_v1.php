@@ -124,6 +124,13 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 });
 
 
+Route::get('/product/getNewProducts', [ProductController::class, 'getNewProducts']);
+Route::get('/product/getSecondHandProducts', [ProductController::class, 'getSecondHandProducts']);
+
+
+
+
+
 
 Route::post('/cart/addCart', [CartController::class, 'addCart']);
 Route::post('/cart/updateCartProduct', [CartController::class, 'updateCartProduct']);
@@ -176,7 +183,6 @@ Route::get('/product/getBrandsWithProductsAndLimit/{limit}', [ProductController:
 Route::get('/product/getAllCampaignProducts/{user_id}', [ProductController::class, 'getAllCampaignProducts']);
 Route::get('/product/getCampaignProductsByLimit/{user_id}/{limit}', [ProductController::class, 'getCampaignProductsByLimit']);
 Route::get('/product/getFeaturedProducts/{user_id}', [ProductController::class, 'getFeaturedProducts']);
-Route::get('/product/getNewProducts/{user_id}', [ProductController::class, 'getNewProducts']);
 Route::get('/product/getSimilarProducts/{product_id}', [ProductController::class, 'getSimilarProducts']);
 
 Route::get('/product/getCheckProductSku/{product_sku}', [ProductController::class, 'getCheckProductSku']);
