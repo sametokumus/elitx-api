@@ -85,7 +85,7 @@ class CategoryController extends Controller
                 ]);
             }
 
-            return response(['message' => 'Kategori güncelleme işlemi başarılı.','status' => 'success','object' => ['category' => $category]]);
+            return response(['message' => 'Kategori güncelleme işlemi başarılı.','status' => 'success']);
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
         } catch (QueryException $queryException) {
