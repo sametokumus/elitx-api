@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Shop\AuthController;
 use App\Http\Controllers\Api\Shop\ResetPasswordController;
 use App\Http\Controllers\Api\Shop\UserController;
 use App\Http\Controllers\Api\Shop\ProductController;
+use App\Http\Controllers\Api\Shop\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,9 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     //Product
     Route::post('product/addProduct', [ProductController::class, 'addProduct']);
     Route::get('product/getProducts', [ProductController::class, 'getProducts']);
+
+    //Category
+    Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
 
 });
 
