@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductImage;
@@ -36,9 +37,16 @@ class ProductController extends Controller
                 $discounted_price = $request->discounted_price;
             }
 
+            $brand_id = null;
+            if ($request->brand_name != null){
+                $brand_id = Brand::query()->insertGetId([
+                    'name' => $request->brand_name
+                ]);
+            }
+
             $stock_quantity = ($request->stock_quantity != '') ? $request->stock_quantity : 1;
             $product_id = Product::query()->insertGetId([
-                'brand_id' => $request->brand_id,
+                'brand_id' => $brand_id,
                 'sku' => $request->sku,
                 'name' => $request->name,
                 'description' => $request->description,
@@ -141,6 +149,16 @@ class ProductController extends Controller
                 ->get();
 
             foreach ($products as $product){
+                $brand = Brand::query()->where('id', $product->brand_id)->first();
+                $product['brand'] = $brand;
+
+                $categories = ProductCategory::query()
+                    ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
+                    ->selectRaw('product_categories.*, categories.name as name')
+                    ->where('product_categories.active', 1)
+                    ->get();
+                $product['categories'] = $categories;
+
                 $price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
                 $product['base_price'] = $price->base_price;
                 $product['discounted_price'] = $price->discounted_price;

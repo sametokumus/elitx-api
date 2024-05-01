@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductImage;
@@ -118,6 +119,16 @@ class ProductController extends Controller
                 }else if ($product->owner_type == 2){
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
+
+                $brand = Brand::query()->where('id', $product->brand_id)->first();
+                $product['brand'] = $brand;
+
+                $categories = ProductCategory::query()
+                    ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
+                    ->selectRaw('product_categories.*, categories.name as name')
+                    ->where('product_categories.active', 1)
+                    ->get();
+                $product['categories'] = $categories;
 
 
                 $price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
@@ -245,6 +256,16 @@ class ProductController extends Controller
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
 
+                $brand = Brand::query()->where('id', $product->brand_id)->first();
+                $product['brand'] = $brand;
+
+                $categories = ProductCategory::query()
+                    ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
+                    ->selectRaw('product_categories.*, categories.name as name')
+                    ->where('product_categories.active', 1)
+                    ->get();
+                $product['categories'] = $categories;
+
 
                 $price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
                 $product['base_price'] = $price->base_price;
@@ -305,6 +326,16 @@ class ProductController extends Controller
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
 
+                $brand = Brand::query()->where('id', $product->brand_id)->first();
+                $product['brand'] = $brand;
+
+                $categories = ProductCategory::query()
+                    ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
+                    ->selectRaw('product_categories.*, categories.name as name')
+                    ->where('product_categories.active', 1)
+                    ->get();
+                $product['categories'] = $categories;
+
 
                 $price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
                 $product['base_price'] = $price->base_price;
@@ -354,6 +385,16 @@ class ProductController extends Controller
                 }else if ($product->owner_type == 2){
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
+
+                $brand = Brand::query()->where('id', $product->brand_id)->first();
+                $product['brand'] = $brand;
+
+                $categories = ProductCategory::query()
+                    ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
+                    ->selectRaw('product_categories.*, categories.name as name')
+                    ->where('product_categories.active', 1)
+                    ->get();
+                $product['categories'] = $categories;
 
 
                 $price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
@@ -409,6 +450,16 @@ class ProductController extends Controller
                 }else if ($product->owner_type == 2){
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
+
+                $brand = Brand::query()->where('id', $product->brand_id)->first();
+                $product['brand'] = $brand;
+
+                $categories = ProductCategory::query()
+                    ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
+                    ->selectRaw('product_categories.*, categories.name as name')
+                    ->where('product_categories.active', 1)
+                    ->get();
+                $product['categories'] = $categories;
 
 
                 $price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
