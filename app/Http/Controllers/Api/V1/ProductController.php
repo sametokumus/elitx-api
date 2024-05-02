@@ -498,7 +498,7 @@ class ProductController extends Controller
             $product = Product::query()
                 ->where('active', 1)
                 ->where('id', $product_id)
-                ->get();
+                ->first();
 
             if ($product->owner_type == 1) {
                 $shop = Shop::query()->where('id', $product->owner_id)->first();
