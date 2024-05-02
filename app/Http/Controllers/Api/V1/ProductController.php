@@ -148,6 +148,7 @@ class ProductController extends Controller
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                         $variation['price'] = $variation_price->price;
                     }
+                    $product['variations'] = $variations;
                 }
             }
 
@@ -287,6 +288,7 @@ class ProductController extends Controller
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                         $variation['price'] = $variation_price->price;
                     }
+                    $product['variations'] = $variations;
                 }
             }
 
@@ -360,6 +362,7 @@ class ProductController extends Controller
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                         $variation['price'] = $variation_price->price;
                     }
+                    $product['variations'] = $variations;
                 }
             }
 
@@ -423,6 +426,7 @@ class ProductController extends Controller
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                         $variation['price'] = $variation_price->price;
                     }
+                    $product['variations'] = $variations;
                 }
             }
 
@@ -491,6 +495,7 @@ class ProductController extends Controller
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                         $variation['price'] = $variation_price->price;
                     }
+                    $product['variations'] = $variations;
                 }
             }
 
@@ -551,6 +556,7 @@ class ProductController extends Controller
                     $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                     $variation['price'] = $variation_price->price;
                 }
+                $product['variations'] = $variations;
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['product' => $product]]);
