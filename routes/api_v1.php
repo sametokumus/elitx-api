@@ -124,6 +124,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 });
 
 
+Route::get('/product/getProductById/{id}', [ProductController::class, 'getProductById']);
 Route::get('/product/getNewProducts', [ProductController::class, 'getNewProducts']);
 Route::get('/product/getSecondHandProducts', [ProductController::class, 'getSecondHandProducts']);
 Route::get('/product/getNewProductsByCategoryId/{category_id}', [ProductController::class, 'getNewProductsByCategoryId']);
@@ -171,7 +172,6 @@ Route::get('/product/getAllProductWithVariationById/{user_id}/{product_id}/{vari
 Route::get('/product/getProduct', [ProductController::class, 'getProduct']);
 Route::post('/product/getFilteredProduct', [ProductController::class, 'getFilteredProduct']);
 Route::post('/product/getProductsByFilter/{user_id}', [ProductController::class, 'getProductsByFilter']);
-Route::get('/product/getProductById/{id}', [ProductController::class, 'getProductById']);
 
 Route::get('/product/getProductsByCategoryId/{category_id}', [ProductController::class, 'getProductsByCategoryId']);
 Route::get('/product/getProductsWithParentCategory/{user_id}', [ProductController::class, 'getProductsWithParentCategory']);

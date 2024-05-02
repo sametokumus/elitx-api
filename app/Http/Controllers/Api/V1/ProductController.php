@@ -25,7 +25,8 @@ use Nette\Schema\ValidationException;
 class ProductController extends Controller
 {
 
-    public function addFavorite($product_id){
+    public function addFavorite($product_id)
+    {
         try {
 
             $user = Auth::user();
@@ -35,14 +36,14 @@ class ProductController extends Controller
                 ->where('user_id', $user_id)
                 ->where('product_id', $product_id)
                 ->count();
-            if ($user_favorite > 0){
+            if ($user_favorite > 0) {
                 UserFavorite::query()
-                    ->where('user_id',$user_id)
-                    ->where('product_id',$product_id)
+                    ->where('user_id', $user_id)
+                    ->where('product_id', $product_id)
                     ->update([
                         'active' => 1
                     ]);
-            }else{
+            } else {
                 UserFavorite::query()->insert([
                     'user_id' => $user_id,
                     'product_id' => $product_id
@@ -54,26 +55,27 @@ class ProductController extends Controller
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','e' => $queryException->getMessage()]);
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
         } catch (\Throwable $throwable) {
-            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001','e'=> $throwable->getMessage()]);
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
         }
     }
 
-    public function removeFavorite($product_id){
+    public function removeFavorite($product_id)
+    {
         try {
 
             $user = Auth::user();
             $user_id = $user->id;
 
             $user_favorite = UserFavorite::query()
-                ->where('user_id',$user_id)
-                ->where('product_id',$product_id)
+                ->where('user_id', $user_id)
+                ->where('product_id', $product_id)
                 ->count();
-            if ($user_favorite > 0){
+            if ($user_favorite > 0) {
                 UserFavorite::query()
-                    ->where('user_id',$user_id)
-                    ->where('product_id',$product_id)
+                    ->where('user_id', $user_id)
+                    ->where('product_id', $product_id)
                     ->update([
                         'active' => 0
                     ]);
@@ -84,13 +86,14 @@ class ProductController extends Controller
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001','e' => $queryException->getMessage()]);
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
         } catch (\Throwable $throwable) {
-            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001','e'=> $throwable->getMessage()]);
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
         }
     }
 
-    public function getFavorites(){
+    public function getFavorites()
+    {
         try {
 
             $user = Auth::user();
@@ -103,8 +106,8 @@ class ProductController extends Controller
                 ->where('user_favorites.user_id', $user_id)
                 ->get();
 
-            foreach ($products as $product){
-                if ($product->owner_type == 1){
+            foreach ($products as $product) {
+                if ($product->owner_type == 1) {
                     $shop = Shop::query()->where('id', $product->owner_id)->first();
                     $types = ShopType::query()
                         ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
@@ -116,7 +119,7 @@ class ProductController extends Controller
                     $shop['types'] = $types;
                     $shop['type_words'] = $type_words;
                     $product['shop'] = $shop;
-                }else if ($product->owner_type == 2){
+                } else if ($product->owner_type == 2) {
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
 
@@ -139,16 +142,16 @@ class ProductController extends Controller
 
                 if ($product->has_variations == 1) {
                     $variations = ProductVariation::query()->where('product_id', $product->id)->where('active', 1)->get();
-                    foreach ($variations as $variation){
+                    foreach ($variations as $variation) {
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                         $variation['price'] = $variation_price->price;
                     }
                 }
             }
 
-            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['products' => $products]]);
-        } catch (QueryException $queryException){
-            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
         }
     }
 
@@ -194,7 +197,7 @@ class ProductController extends Controller
             }
 
             $categories = json_decode($request->categories);
-            foreach ($categories as $category){
+            foreach ($categories as $category) {
                 ProductCategory::query()->insert([
                     'product_id' => $product_id,
                     'category_id' => $category
@@ -225,7 +228,8 @@ class ProductController extends Controller
 
     }
 
-    public function getNewProducts(){
+    public function getNewProducts()
+    {
         try {
 
             $products = Product::query()
@@ -239,8 +243,8 @@ class ProductController extends Controller
                 ->where('products.active', 1)
                 ->get();
 
-            foreach ($products as $product){
-                if ($product->owner_type == 1){
+            foreach ($products as $product) {
+                if ($product->owner_type == 1) {
                     $shop = Shop::query()->where('id', $product->owner_id)->first();
                     $types = ShopType::query()
                         ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
@@ -252,7 +256,7 @@ class ProductController extends Controller
                     $shop['types'] = $types;
                     $shop['type_words'] = $type_words;
                     $product['shop'] = $shop;
-                }else if ($product->owner_type == 2){
+                } else if ($product->owner_type == 2) {
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
 
@@ -275,20 +279,21 @@ class ProductController extends Controller
 
                 if ($product->has_variations == 1) {
                     $variations = ProductVariation::query()->where('product_id', $product->id)->where('active', 1)->get();
-                    foreach ($variations as $variation){
+                    foreach ($variations as $variation) {
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                         $variation['price'] = $variation_price->price;
                     }
                 }
             }
 
-            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['products' => $products]]);
-        } catch (QueryException $queryException){
-            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
         }
     }
 
-    public function getSecondHandProducts(){
+    public function getSecondHandProducts()
+    {
         try {
             $products = Product::query()
                 ->leftJoin('shops', function ($join) {
@@ -309,8 +314,8 @@ class ProductController extends Controller
                 ->where('products.active', 1)
                 ->get();
 
-            foreach ($products as $product){
-                if ($product->owner_type == 1){
+            foreach ($products as $product) {
+                if ($product->owner_type == 1) {
                     $shop = Shop::query()->where('id', $product->owner_id)->first();
                     $types = ShopType::query()
                         ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
@@ -322,7 +327,7 @@ class ProductController extends Controller
                     $shop['types'] = $types;
                     $shop['type_words'] = $type_words;
                     $product['shop'] = $shop;
-                }else if ($product->owner_type == 2){
+                } else if ($product->owner_type == 2) {
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
 
@@ -345,20 +350,21 @@ class ProductController extends Controller
 
                 if ($product->has_variations == 1) {
                     $variations = ProductVariation::query()->where('product_id', $product->id)->where('active', 1)->get();
-                    foreach ($variations as $variation){
+                    foreach ($variations as $variation) {
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                         $variation['price'] = $variation_price->price;
                     }
                 }
             }
 
-            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['products' => $products]]);
-        } catch (QueryException $queryException){
-            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
         }
     }
 
-    public function getNewProductsByCategoryId($category_id){
+    public function getNewProductsByCategoryId($category_id)
+    {
         try {
 
             $products = Product::query()
@@ -369,8 +375,8 @@ class ProductController extends Controller
                 ->where('products.active', 1)
                 ->get();
 
-            foreach ($products as $product){
-                if ($product->owner_type == 1){
+            foreach ($products as $product) {
+                if ($product->owner_type == 1) {
                     $shop = Shop::query()->where('id', $product->owner_id)->first();
                     $types = ShopType::query()
                         ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
@@ -382,7 +388,7 @@ class ProductController extends Controller
                     $shop['types'] = $types;
                     $shop['type_words'] = $type_words;
                     $product['shop'] = $shop;
-                }else if ($product->owner_type == 2){
+                } else if ($product->owner_type == 2) {
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
 
@@ -405,20 +411,21 @@ class ProductController extends Controller
 
                 if ($product->has_variations == 1) {
                     $variations = ProductVariation::query()->where('product_id', $product->id)->where('active', 1)->get();
-                    foreach ($variations as $variation){
+                    foreach ($variations as $variation) {
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                         $variation['price'] = $variation_price->price;
                     }
                 }
             }
 
-            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['products' => $products]]);
-        } catch (QueryException $queryException){
-            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
         }
     }
 
-    public function getSecondHandProductsByCategoryId($category_id){
+    public function getSecondHandProductsByCategoryId($category_id)
+    {
         try {
             $products = Product::query()
                 ->leftJoin('shop_types', function ($join) {
@@ -434,8 +441,8 @@ class ProductController extends Controller
                 ->where('products.active', 1)
                 ->get();
 
-            foreach ($products as $product){
-                if ($product->owner_type == 1){
+            foreach ($products as $product) {
+                if ($product->owner_type == 1) {
                     $shop = Shop::query()->where('id', $product->owner_id)->first();
                     $types = ShopType::query()
                         ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
@@ -447,7 +454,7 @@ class ProductController extends Controller
                     $shop['types'] = $types;
                     $shop['type_words'] = $type_words;
                     $product['shop'] = $shop;
-                }else if ($product->owner_type == 2){
+                } else if ($product->owner_type == 2) {
                     $product['user'] = User::query()->where('id', $product->owner_id)->first();
                 }
 
@@ -470,16 +477,73 @@ class ProductController extends Controller
 
                 if ($product->has_variations == 1) {
                     $variations = ProductVariation::query()->where('product_id', $product->id)->where('active', 1)->get();
-                    foreach ($variations as $variation){
+                    foreach ($variations as $variation) {
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                         $variation['price'] = $variation_price->price;
                     }
                 }
             }
 
-            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['products' => $products]]);
-        } catch (QueryException $queryException){
-            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','err' => $queryException->getMessage()]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
+        }
+    }
+
+    public function getProductById($product_id)
+    {
+        try {
+
+
+            $product = Product::query()
+                ->where('active', 1)
+                ->where('id', $product_id)
+                ->get();
+
+            if ($product->owner_type == 1) {
+                $shop = Shop::query()->where('id', $product->owner_id)->first();
+                $types = ShopType::query()
+                    ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
+                    ->selectRaw('shop_types.*, types.name as name')
+                    ->where('shop_types.shop_id', $shop->id)
+                    ->where('shop_types.active', 1)
+                    ->get();
+                $type_words = $types->implode('name', ', ');
+                $shop['types'] = $types;
+                $shop['type_words'] = $type_words;
+                $product['shop'] = $shop;
+            } else if ($product->owner_type == 2) {
+                $product['user'] = User::query()->where('id', $product->owner_id)->first();
+            }
+
+            $brand = Brand::query()->where('id', $product->brand_id)->first();
+            $product['brand'] = $brand;
+
+            $categories = ProductCategory::query()
+                ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
+                ->selectRaw('product_categories.*, categories.name as name')
+                ->where('product_categories.active', 1)
+                ->get();
+            $product['categories'] = $categories;
+
+
+            $price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
+            $product['base_price'] = $price->base_price;
+            $product['discounted_price'] = $price->discounted_price;
+            $product['discount_rate'] = $price->discount_rate;
+            $product['currency'] = $price->currency;
+
+            if ($product->has_variations == 1) {
+                $variations = ProductVariation::query()->where('product_id', $product->id)->where('active', 1)->get();
+                foreach ($variations as $variation) {
+                    $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
+                    $variation['price'] = $variation_price->price;
+                }
+            }
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
         }
     }
 }
