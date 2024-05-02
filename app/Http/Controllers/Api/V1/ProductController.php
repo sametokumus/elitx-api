@@ -130,6 +130,7 @@ class ProductController extends Controller
                     ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
                     ->selectRaw('product_categories.*, categories.name as name')
                     ->where('product_categories.active', 1)
+                    ->where('product_categories.product_id', $product->id)
                     ->get();
                 $product['categories'] = $categories;
 
@@ -267,6 +268,7 @@ class ProductController extends Controller
                     ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
                     ->selectRaw('product_categories.*, categories.name as name')
                     ->where('product_categories.active', 1)
+                    ->where('product_categories.product_id', $product->id)
                     ->get();
                 $product['categories'] = $categories;
 
@@ -338,6 +340,7 @@ class ProductController extends Controller
                     ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
                     ->selectRaw('product_categories.*, categories.name as name')
                     ->where('product_categories.active', 1)
+                    ->where('product_categories.product_id', $product->id)
                     ->get();
                 $product['categories'] = $categories;
 
@@ -399,6 +402,7 @@ class ProductController extends Controller
                     ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
                     ->selectRaw('product_categories.*, categories.name as name')
                     ->where('product_categories.active', 1)
+                    ->where('product_categories.product_id', $product->id)
                     ->get();
                 $product['categories'] = $categories;
 
@@ -465,6 +469,7 @@ class ProductController extends Controller
                     ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
                     ->selectRaw('product_categories.*, categories.name as name')
                     ->where('product_categories.active', 1)
+                    ->where('product_categories.product_id', $product->id)
                     ->get();
                 $product['categories'] = $categories;
 
@@ -523,6 +528,7 @@ class ProductController extends Controller
                 ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
                 ->selectRaw('product_categories.*, categories.name as name')
                 ->where('product_categories.active', 1)
+                ->where('product_categories.product_id', $product->id)
                 ->get();
             $product['categories'] = $categories;
 
