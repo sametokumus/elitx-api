@@ -45,6 +45,7 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     //Product
     Route::post('product/addProduct', [ProductController::class, 'addProduct']);
     Route::get('product/getProducts', [ProductController::class, 'getProducts']);
+    Route::get('product/getProductById/{id}', [ProductController::class, 'getProductById']);
 
     //Category
     Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
