@@ -139,6 +139,7 @@ class ProductController extends Controller
                 $product['base_price'] = $price->base_price;
                 $product['discounted_price'] = $price->discounted_price;
                 $product['discount_rate'] = $price->discount_rate;
+                $product['discount_type'] = $price->discount_type;
                 $product['currency'] = $price->currency;
 
                 if ($product->has_variations == 1) {
@@ -277,6 +278,7 @@ class ProductController extends Controller
                 $product['base_price'] = $price->base_price;
                 $product['discounted_price'] = $price->discounted_price;
                 $product['discount_rate'] = $price->discount_rate;
+                $product['discount_type'] = $price->discount_type;
                 $product['currency'] = $price->currency;
 
                 if ($product->has_variations == 1) {
@@ -349,6 +351,7 @@ class ProductController extends Controller
                 $product['base_price'] = $price->base_price;
                 $product['discounted_price'] = $price->discounted_price;
                 $product['discount_rate'] = $price->discount_rate;
+                $product['discount_type'] = $price->discount_type;
                 $product['currency'] = $price->currency;
 
                 if ($product->has_variations == 1) {
@@ -411,6 +414,7 @@ class ProductController extends Controller
                 $product['base_price'] = $price->base_price;
                 $product['discounted_price'] = $price->discounted_price;
                 $product['discount_rate'] = $price->discount_rate;
+                $product['discount_type'] = $price->discount_type;
                 $product['currency'] = $price->currency;
 
                 if ($product->has_variations == 1) {
@@ -478,6 +482,7 @@ class ProductController extends Controller
                 $product['base_price'] = $price->base_price;
                 $product['discounted_price'] = $price->discounted_price;
                 $product['discount_rate'] = $price->discount_rate;
+                $product['discount_type'] = $price->discount_type;
                 $product['currency'] = $price->currency;
 
                 if ($product->has_variations == 1) {
@@ -537,6 +542,7 @@ class ProductController extends Controller
             $product['base_price'] = $price->base_price;
             $product['discounted_price'] = $price->discounted_price;
             $product['discount_rate'] = $price->discount_rate;
+            $product['discount_type'] = $price->discount_type;
             $product['currency'] = $price->currency;
 
             if ($product->has_variations == 1) {
