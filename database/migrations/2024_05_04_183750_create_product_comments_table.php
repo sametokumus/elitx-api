@@ -17,7 +17,6 @@ class CreateProductCommentsTable extends Migration
             $table->id();
             $table->bigInteger('product_id')->nullable();
             $table->bigInteger('user_id')->nullable();
-            $table->bigInteger('shop_id')->nullable();
             $table->text('message')->nullable();
             $table->tinyInteger('confirmed')->default(0);
             $table->timestamp('confirmed_at')->nullable();

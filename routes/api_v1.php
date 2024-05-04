@@ -120,7 +120,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::post('product/addProduct', [ProductController::class, 'addProduct']);
 
     //Comment
-    Route::post('product/getCommentsByProductId/{product_id}', [CommentController::class, 'getCommentsByProductId']);
+    Route::post('product/addProductComment', [CommentController::class, 'addProductComment']);
+    Route::get('product/getCommentsByProductId/{product_id}', [CommentController::class, 'getCommentsByProductId']);
 
     //Category
     Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
