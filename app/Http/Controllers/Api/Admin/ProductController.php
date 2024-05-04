@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductConfirm;
 use App\Models\ProductPrice;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationPrice;
@@ -68,6 +69,14 @@ class ProductController extends Controller
     public function getProductConfirmed($id){
         try {
             Product::query()->where('id',$id)->update([
+                'confirmed' => 1,
+                'confirmed_at' => Carbon::now()
+            ]);
+
+            $admin = Auth::user();
+            $last_confirm = ProductConfirm::query()->where('product_id', $id)->orderByDesc('id')->first();
+            ProductConfirm::query()->where('id', $last_confirm->id)->update([
+                'admin_id' => $admin->id,
                 'confirmed' => 1,
                 'confirmed_at' => Carbon::now()
             ]);

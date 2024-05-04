@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductConfirm;
 use App\Models\ProductImage;
 use App\Models\ProductPrice;
 use App\Models\ProductStatusHistory;
@@ -219,6 +220,10 @@ class ProductController extends Controller
                     ]);
                 }
             }
+
+            ProductConfirm::query()->insert([
+                'product_id' => $product_id
+            ]);
 
             return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $product_id]]);
         } catch (ValidationException $validationException) {
