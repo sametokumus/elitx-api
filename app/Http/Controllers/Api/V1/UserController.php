@@ -65,20 +65,33 @@ class UserController extends Controller
 
     public function updateUser(Request $request){
         try {
-            $request->validate([
-                'email' => 'required',
+            $profile = json_decode($request->profile);
+            $productArray = $this->objectToArray($profile);
+            Validator::make($productArray, [
+                'email' => 'required'
             ]);
 
             $user = Auth::user();
 
             if ($user) {
                 User::query()->where('id', $user->id)->update([
-                    'email' => $request->email,
-                    'phone_number' => $request->phone_number,
-                    'name' => $request->name,
-                    'birthday' => Carbon::parse($request->birthday)->format('Y-m-d'),
-                    'gender' => $request->gender
+                    'email' => $profile->email,
+                    'phone_number' => $profile->phone_number,
+                    'name' => $profile->name,
+                    'birthday' => Carbon::parse($profile->birthday)->format('Y-m-d'),
+                    'gender' => $profile->gender
                 ]);
+
+                if ($request->hasFile('profile_photo')) {
+                    $rand = uniqid();
+                    $image = $request->file('profile_photo');
+                    $image_name = $rand . "-" . $image->getClientOriginalName();
+                    $image->move(public_path('/images/ProfilePhoto/'), $image_name);
+                    $image_path = "/images/ProfilePhoto/" . $image_name;
+                    User::query()->where('id',$user->id)->update([
+                        'profile_photo' => $image_path
+                    ]);
+                }
 
                 $user_document_checks = $request->user_document_checks;
                 foreach ($user_document_checks as $user_document_check) {
