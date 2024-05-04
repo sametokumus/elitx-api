@@ -97,9 +97,9 @@ class UserController extends Controller
                 foreach ($user_document_checks as $user_document_check) {
                     UserDocumentCheck::query()
                         ->where('user_id', $user->id)
-                        ->where('document_id', $user_document_check['document_id'])
+                        ->where('document_id', $user_document_check->document_id)
                         ->update([
-                            'value' => $user_document_check['value']
+                            'value' => $user_document_check->value
                         ]);
                 }
 
