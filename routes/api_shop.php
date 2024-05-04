@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Shop\ResetPasswordController;
 use App\Http\Controllers\Api\Shop\UserController;
 use App\Http\Controllers\Api\Shop\ProductController;
 use App\Http\Controllers\Api\Shop\CategoryController;
+use App\Http\Controllers\Api\Shop\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,10 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     Route::post('product/updateProduct/{id}', [ProductController::class, 'updateProduct']);
     Route::get('product/getProducts', [ProductController::class, 'getProducts']);
     Route::get('product/getProductById/{id}', [ProductController::class, 'getProductById']);
+
+    //Comment
+    Route::post('product/addProductCommentAnswer', [CommentController::class, 'addProductCommentAnswer']);
+    Route::get('product/getCommentsByProductId/{product_id}', [CommentController::class, 'getCommentsByProductId']);
 
     //Category
     Route::get('category/getCategories', [CategoryController::class, 'getCategories']);

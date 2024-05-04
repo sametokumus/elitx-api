@@ -1,17 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\ProductCategory;
 use App\Models\ProductComment;
 use App\Models\ProductCommentAnswer;
-use App\Models\ProductConfirm;
-use App\Models\ProductImage;
-use App\Models\ProductPrice;
-use App\Models\ProductStatusHistory;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,19 +12,19 @@ use Nette\Schema\ValidationException;
 
 class CommentController extends Controller
 {
-    public function addProductComment(Request $request)
+    public function addProductCommentAnswer(Request $request)
     {
         try {
             $request->validate([
                 'message' => 'required',
-                'product_id' => 'required'
+                'comment_id' => 'required'
             ]);
-            $user = Auth::user();
+            $shop = Auth::user();
 
-            ProductComment::query()->insertGetId([
+            ProductCommentAnswer::query()->insertGetId([
                 'message' => $request->message,
-                'product_id' => $request->product_id,
-                'user_id' => $user->id,
+                'comment_id' => $request->comment_id,
+                'shop_id' => $shop->id,
             ]);
 
             return response(['message' => 'Yorum ekleme işlemi başarılı.', 'status' => 'success']);
