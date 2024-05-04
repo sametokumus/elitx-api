@@ -120,6 +120,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
 
 
+    //Category
+    Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
+
 
 });
 
