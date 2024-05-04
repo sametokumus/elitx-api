@@ -6,13 +6,14 @@ use App\Http\Controllers\Api\V1\MessageController;
 use App\Http\Controllers\Api\V1\ResetPasswordController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\CommentController;
 
 
 use App\Http\Controllers\Api\V1\BankBinPairController;
 use App\Http\Controllers\Api\V1\BrandController;
 use App\Http\Controllers\Api\V1\CarrierController;
 use App\Http\Controllers\Api\V1\CartController;
-use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CimriController;
 use App\Http\Controllers\Api\V1\CitiesController;
 use App\Http\Controllers\Api\V1\ContactController;
@@ -118,7 +119,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     //Product
     Route::post('product/addProduct', [ProductController::class, 'addProduct']);
 
-
+    //Comment
+    Route::post('product/getCommentsByProductId/{product_id}', [CommentController::class, 'getCommentsByProductId']);
 
     //Category
     Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
