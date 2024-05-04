@@ -259,7 +259,7 @@ class ProductController extends Controller
                             'stock_quantity' => $stock_quantity,
                             'active' => 1
                         ]);
-                        $old_price = ProductVariationPrice::query()->where('product_id', $product_id)->where('variation_id', $old_variation->id)->first();
+                        $old_price = ProductVariationPrice::query()->where('product_id', $product_id)->where('variation_id', $old_variation->id)->orderByDesc('id')->first();
                         if ($old_price->price != $variation->price){
                             ProductVariationPrice::query()->insert([
                                 'product_id' => $product_id,
