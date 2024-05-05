@@ -61,10 +61,14 @@ class CommentController extends Controller
 
                 foreach ($answers as $answer){
                     $shop = Shop::query()->where('id', $answer->shop_id)->first();
-                    $shop['logo'] = ShopDocument::query()
+                    $shop_doc = ShopDocument::query()
                         ->where('shop_id', $answer->shop_id)
                         ->where('file_type', 1)
                         ->first();
+                    $shop['logo'] = null;
+                    if ($shop_doc){
+                        $shop['logo'] = $shop_doc->file_url;
+                    }
                     $answer['shop'] = $shop;
                 }
 
