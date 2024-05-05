@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api\Shop;
 use App\Http\Controllers\Controller;
 use App\Models\ProductComment;
 use App\Models\ProductCommentAnswer;
+use App\Models\Shop;
+use App\Models\ShopDocument;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,11 +50,23 @@ class CommentController extends Controller
                 ->get();
 
             foreach ($comments as $comment){
+                $user = User::query()->where('id', $comment->user_id)->first();
+                $comment['user'] = $user;
+
                 $answers = ProductCommentAnswer::query()
                     ->where('comment_id', $comment->id)
                     ->where('confirmed', 1)
                     ->where('active', 1)
                     ->get();
+
+                foreach ($answers as $answer){
+                    $shop = Shop::query()->where('id', $answer->shop_id)->first();
+                    $shop['logo'] = ShopDocument::query()
+                        ->where('shop_id', $answer->shop_id)
+                        ->where('file_type', 1)
+                        ->first();
+                    $answer['shop'] = $shop;
+                }
 
                 $comment['answers'] = $answers;
             }
