@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\ProductComment;
 use App\Models\ProductCommentAnswer;
 use App\Models\Shop;
@@ -76,6 +77,64 @@ class CommentController extends Controller
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['comments' => $comments]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
+    public function getCommentedProducts()
+    {
+        try {
+
+            $shop = Auth::user();
+
+            $products = Product::query()
+                ->selectRaw('products.*')
+                ->leftJoin('product_comments', 'products.id', '=', 'product_comments.product_id')
+                ->where('products.owner_type', 1)
+                ->where('products.owner_id', $shop->id)
+                ->where('product_comments.confirmed', 1)
+                ->distinct()
+                ->get();
+
+            foreach ($products as $product) {
+
+                $comments = ProductComment::query()
+                    ->where('product_id', $product->id)
+                    ->where('confirmed', 1)
+                    ->where('active', 1)
+                    ->get();
+
+                foreach ($comments as $comment) {
+                    $user = User::query()->where('id', $comment->user_id)->first();
+                    $comment['user'] = $user;
+
+                    $answers = ProductCommentAnswer::query()
+                        ->where('comment_id', $comment->id)
+                        ->where('confirmed', 1)
+                        ->where('active', 1)
+                        ->get();
+
+                    foreach ($answers as $answer) {
+                        $shop = Shop::query()->where('id', $answer->shop_id)->first();
+                        $shop_doc = ShopDocument::query()
+                            ->where('shop_id', $answer->shop_id)
+                            ->where('file_type', 1)
+                            ->first();
+                        $shop['logo'] = null;
+                        if ($shop_doc) {
+                            $shop['logo'] = $shop_doc->file_url;
+                        }
+                        $answer['shop'] = $shop;
+                    }
+
+                    $comment['answers'] = $answers;
+                }
+
+                $product['comments'] = $comments;
+
+            }
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
         }

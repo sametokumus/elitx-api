@@ -52,6 +52,7 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     //Comment
     Route::post('product/addProductCommentAnswer', [CommentController::class, 'addProductCommentAnswer']);
     Route::get('product/getCommentsByProductId/{product_id}', [CommentController::class, 'getCommentsByProductId']);
+    Route::get('product/getCommentedProducts', [CommentController::class, 'getCommentedProducts']);
 
     //Category
     Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
