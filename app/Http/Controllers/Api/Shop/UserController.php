@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function getShopProfile(){
+        try {
+            $shop = Auth::user();
+
+            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['shop' => $shop]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        }
+    }
     public function checkRegisterDocuments(){
         try {
             $user = Auth::user();
