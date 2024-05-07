@@ -119,6 +119,8 @@ class SupportController extends Controller
                 ->where('support_requests.id', $request_id)
                 ->first();
 
+            $support['messages'] = SupportMessage::query()->where('request_id', $request_id)->where('active', 1)->get();
+
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['support' => $support]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
