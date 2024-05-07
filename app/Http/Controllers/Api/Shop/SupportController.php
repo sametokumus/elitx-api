@@ -75,7 +75,7 @@ class SupportController extends Controller
                 'user_type' => 2,
             ]);
 
-            SupportMessage::query()->where('id', $request->request_id)->update([
+            SupportRequest::query()->where('id', $request->request_id)->update([
                 'status_id' => 1,
             ]);
 
