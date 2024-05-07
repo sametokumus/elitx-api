@@ -64,7 +64,7 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     Route::post('support/addSupportRequest', [SupportController::class, 'addSupportRequest']);
     Route::post('support/addSupportMessage', [SupportController::class, 'addSupportMessage']);
     Route::get('support/getSupportList', [SupportController::class, 'getSupportList']);
-    Route::get('support/getSupportConversation', [SupportController::class, 'getSupportConversation']);
+    Route::get('support/getSupportConversation/{request_id}', [SupportController::class, 'getSupportConversation']);
 
 });
 
