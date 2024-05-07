@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Shop\UserController;
 use App\Http\Controllers\Api\Shop\ProductController;
 use App\Http\Controllers\Api\Shop\CategoryController;
 use App\Http\Controllers\Api\Shop\CommentController;
+use App\Http\Controllers\Api\Shop\SupportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,13 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
 
     //Category
     Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
+
+    //Support
+    Route::get('support/getSupportCategories', [SupportController::class, 'getSupportCategories']);
+    Route::post('support/addSupportRequest', [SupportController::class, 'addSupportRequest']);
+    Route::post('support/addSupportMessage', [SupportController::class, 'addSupportMessage']);
+    Route::get('support/getSupportList', [SupportController::class, 'getSupportList']);
+    Route::get('support/getSupportConversation', [SupportController::class, 'getSupportConversation']);
 
 });
 
