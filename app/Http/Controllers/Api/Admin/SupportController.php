@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Shop;
 use App\Models\SupportCategory;
 use App\Models\SupportMessage;
 use App\Models\SupportRequest;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,6 +81,7 @@ class SupportController extends Controller
                 ->where('support_requests.id', $request_id)
                 ->first();
 
+            $support['shop'] = Shop::query()->where('id', $support->user_id)->first();
             $support['messages'] = SupportMessage::query()->where('request_id', $request_id)->where('active', 1)->get();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['support' => $support]]);
