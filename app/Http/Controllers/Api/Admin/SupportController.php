@@ -99,7 +99,7 @@ class SupportController extends Controller
             $support = SupportRequest::query()
                 ->where('support_requests.id', $request_id)
                 ->update([
-                    'active' => 0
+                    'status_id' => 3
                 ]);
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['support' => $support]]);
