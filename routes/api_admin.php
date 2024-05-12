@@ -7,6 +7,9 @@ use App\Http\Controllers\Api\Admin\AdminUserComments;
 use App\Http\Controllers\Api\Admin\AuthController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\LanguageController;
+use App\Http\Controllers\Api\Admin\SupportController;
+
+
 use App\Http\Controllers\Api\Admin\Old\BrandController;
 use App\Http\Controllers\Api\Admin\Old\CarrierController;
 use App\Http\Controllers\Api\Admin\Old\CartController;
@@ -113,6 +116,20 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('category/addCategory', [CategoryController::class, 'addCategory']);
     Route::post('category/updateCategory/{id}', [CategoryController::class, 'updateCategory']);
     Route::get('category/deleteCategory/{id}', [CategoryController::class, 'deleteCategory']);
+
+    //Support
+    Route::get('support/getSupportCategories', [SupportController::class, 'getSupportCategories']);
+    Route::post('support/addSupportMessage', [SupportController::class, 'addSupportMessage']);
+    Route::get('support/getSupportList', [SupportController::class, 'getSupportList']);
+    Route::get('support/getSupportConversation/{request_id}', [SupportController::class, 'getSupportConversation']);
+
+
+
+
+
+
+
+
 
 
 
