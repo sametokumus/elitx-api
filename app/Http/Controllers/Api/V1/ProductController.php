@@ -151,6 +151,9 @@ class ProductController extends Controller
                     }
                     $product['variations'] = $variations;
                 }
+
+                $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
+                $product['fav_count'] = $fav_count;
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
@@ -295,6 +298,9 @@ class ProductController extends Controller
                     }
                     $product['variations'] = $variations;
                 }
+
+                $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
+                $product['fav_count'] = $fav_count;
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
@@ -369,6 +375,9 @@ class ProductController extends Controller
                     }
                     $product['variations'] = $variations;
                 }
+
+                $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
+                $product['fav_count'] = $fav_count;
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
@@ -433,6 +442,9 @@ class ProductController extends Controller
                     }
                     $product['variations'] = $variations;
                 }
+
+                $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
+                $product['fav_count'] = $fav_count;
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
@@ -502,6 +514,9 @@ class ProductController extends Controller
                     }
                     $product['variations'] = $variations;
                 }
+
+                $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
+                $product['fav_count'] = $fav_count;
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
@@ -563,6 +578,9 @@ class ProductController extends Controller
                 }
                 $product['variations'] = $variations;
             }
+
+            $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
+            $product['fav_count'] = $fav_count;
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['product' => $product]]);
         } catch (QueryException $queryException) {
