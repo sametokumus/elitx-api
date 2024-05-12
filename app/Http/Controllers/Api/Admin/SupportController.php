@@ -93,4 +93,18 @@ class SupportController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
         }
     }
+    public function getCloseSupportRequest($request_id)
+    {
+        try {
+            $support = SupportRequest::query()
+                ->where('support_requests.id', $request_id)
+                ->update([
+                    'active' => 0
+                ]);
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['support' => $support]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        }
+    }
 }

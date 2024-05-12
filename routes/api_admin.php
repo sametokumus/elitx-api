@@ -122,6 +122,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('support/addSupportMessage', [SupportController::class, 'addSupportMessage']);
     Route::get('support/getSupportList', [SupportController::class, 'getSupportList']);
     Route::get('support/getSupportConversation/{request_id}', [SupportController::class, 'getSupportConversation']);
+    Route::get('support/getCloseSupportRequest/{request_id}', [SupportController::class, 'getCloseSupportRequest']);
 
 
 
