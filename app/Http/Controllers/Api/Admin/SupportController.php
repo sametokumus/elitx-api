@@ -65,6 +65,10 @@ class SupportController extends Controller
                 ->where('support_requests.active', 1)
                 ->get();
 
+            foreach ($supports as $support){
+                $support['shop'] = Shop::query()->where('id', $support->user_id)->first();
+            }
+
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['supports' => $supports]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
