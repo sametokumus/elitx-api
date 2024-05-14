@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Old;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
@@ -13,8 +13,10 @@ use App\Models\IncreasingDesi;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductMaterial;
+use App\Models\ProductPrice;
 use App\Models\ProductRule;
 use App\Models\ProductVariation;
+use App\Models\ProductVariationPrice;
 use App\Models\User;
 use App\Models\UserTypeDiscount;
 use Faker\Provider\Uuid;
@@ -28,75 +30,72 @@ class CartController extends Controller
     public function addCart(Request $request){
         try {
 
-            if(!empty($request->cart_id)){
-                $cart_id = $request->cart_id;
-            }else{
-                $cart_id = Uuid::uuid();
-                $added_cart_id = Cart::query()->insertGetId([
-                    'cart_id' => $cart_id
-                ]);
-            }
+            $product = Product::query()->where('id', $request->product_id)->first();
 
+            if ($product->owner_type == 1) {
 
-            $rule = ProductRule::query()->where('variation_id',$request->variation_id)->first();
-            if (!empty($request->user_id)) {
-                $product = Product::query()->where('id', $request->product_id)->first();
-
-                $user = User::query()->where('id', $request->user_id)->where('active', 1)->first();
-                $total_user_discount = $user->user_discount;
-
-                $type_discount = UserTypeDiscount::query()->where('user_type_id', $user->user_type)->where('brand_id', $product->brand_id)->where('type_id', $product->type_id)->where('active', 1)->first();
-                if (!empty($type_discount)) {
-                    $total_user_discount = $total_user_discount + $type_discount->discount;
+                //sepet oluşturuldu
+                if(!empty($request->cart_id)){
+                    $cart_id = $request->cart_id;
+                }else{
+                    $cart_id = Uuid::uuid();
+                    $added_cart_id = Cart::query()->insertGetId([
+                        'cart_id' => $cart_id
+                    ]);
                 }
 
-                if ($total_user_discount > 0) {
-                    if ($rule->discount_rate > 0) {
-                        $price = $rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate));
-                    } else {
-                        $price = $rule->regular_price - ($rule->regular_price / 100 * $total_user_discount);
+                //ürün fiyatı
+                $product_price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
+                $price = $product_price->base_price;
+                if ($product_price->discounted_price != null && $product_price->discount_rate != null && $product_price->discount_rate != '0.00') {
+                    $price = $product_price->discounted_price;
+                }
+                $currency = $product_price->currency;
+
+                if (!empty($request->variation_id)) {
+                    $variation = ProductVariation::query()->where('product_id', $product->id)->where('variation_id', $request->variation_id)->where('active', 1)->first();
+
+                    if ($variation) {
+                        $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $request->variation_id)->orderByDesc('id')->first();
+                        $price = $variation_price->price;
                     }
-                } else {
-                    if ($rule->discount_rate > 0) {
-                        $price = $rule->discounted_price;
-                    } else {
-                        $price = $rule->regular_price;
-                    }
-                }
-            }else{
-                if ($rule->discount_rate > 0) {
-                    $price = $rule->discounted_price;
-                } else {
-                    $price = $rule->regular_price;
-                }
-            }
-            $cart_detail = CartDetail::query()->where('variation_id',$request->variation_id)
-                ->where('cart_id',$cart_id)
-                ->where('product_id',$request->product_id)
-                ->where('active',1)
-                ->first();
-            if (isset($cart_detail)){
-                $quantity = $cart_detail->quantity+$request->quantity;
-                CartDetail::query()->where('cart_id',$cart_id)
-                    ->where('variation_id',$request->variation_id)
-                    ->where('product_id',$request->product_id)
-                    ->update([
-                    'quantity' => $quantity
-                ]);
-            }else{
-                CartDetail::query()->insert([
-                    'cart_id' => $cart_id,
-                    'product_id' => $request->product_id,
-                    'variation_id' => $request->variation_id,
-                    'quantity' => $request->quantity,
-                    'price' => $price,
-                ]);
-            }
 
-            if (!empty($request->user_id)){
-                Cart::query()->where('cart_id',$cart_id)->update([
-                    'user_id' => $request->user_id
-                ]);
+                }
+
+
+                //sepet detay
+                $cart_detail = CartDetail::query()->where('variation_id', $request->variation_id)
+                    ->where('cart_id', $cart_id)
+                    ->where('product_id', $request->product_id)
+                    ->where('active', 1)
+                    ->first();
+
+                if (isset($cart_detail)) {
+                    $quantity = $cart_detail->quantity + $request->quantity;
+                    CartDetail::query()->where('cart_id', $cart_id)
+                        ->where('variation_id', $request->variation_id)
+                        ->where('product_id', $request->product_id)
+                        ->update([
+                            'quantity' => $quantity
+                        ]);
+                } else {
+                    CartDetail::query()->insert([
+                        'cart_id' => $cart_id,
+                        'product_id' => $request->product_id,
+                        'variation_id' => $request->variation_id,
+                        'quantity' => $request->quantity,
+                        'price' => $price,
+                    ]);
+                }
+
+                if (!empty($request->user_id)) {
+                    Cart::query()->where('cart_id', $cart_id)->update([
+                        'user_id' => $request->user_id
+                    ]);
+                }
+
+            }else{
+                return response(['message' => 'Bu ürün sepete eklenemez.', 'status' => 'auth-010']);
             }
 
             return response(['message' => 'Sepet ekleme işlemi başarılı.', 'status' => 'success','cart' => $cart_id]);
