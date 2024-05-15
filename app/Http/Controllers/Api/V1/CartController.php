@@ -205,6 +205,7 @@ class CartController extends Controller
                 $cart_price += $total_price;
 
                 $cart_detail['total_price'] = number_format($total_price, 2,",",".");
+                $cart_detail['currency'] = $currency;
 
             }
             $cart['cart_details'] = $cart_details;
