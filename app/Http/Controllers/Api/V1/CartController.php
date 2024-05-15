@@ -173,143 +173,43 @@ class CartController extends Controller
             $cart = Cart::query()->where('cart_id',$cart_id)->first();
             $cart_details = CartDetail::query()->where('cart_id',$cart->cart_id)->where('active',1)->get();
             $cart_price = 0;
-            $cart_tax = 0;
-            $weight = 0;
             foreach ($cart_details as $cart_detail){
                 $product = Product::query()->where('id',$cart_detail->product_id)->first();
-                $variation = ProductVariation::query()->where('id',$cart_detail->variation_id)->first();
-                $rule = ProductRule::query()->where('variation_id',$cart_detail->variation_id)->first();
-                $image = ProductImage::query()->where('variation_id',$cart_detail->variation_id)->first();
 
-                if($cart->user_id != null) {
-                    $user = User::query()->where('id', $cart->user_id)->where('active', 1)->first();
-                    $total_user_discount = $user->user_discount;
+                $product_price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
+                $price = $product_price->base_price;
+                if ($product_price->discounted_price != null && $product_price->discount_rate != null && $product_price->discount_rate != '0.00') {
+                    $price = $product_price->discounted_price;
+                }
+                $currency = $product_price->currency;
 
-                    $type_discount = UserTypeDiscount::query()->where('user_type_id',$user->user_type)->where('brand_id',$product->brand_id)->where('type_id',$product->type_id)->where('active', 1)->first();
-                    if(!empty($type_discount)){
-                        $total_user_discount = $total_user_discount + $type_discount->discount;
-                    }
+                if (!empty($cart_detail->variation_id)) {
+                    $variation = ProductVariation::query()->where('product_id', $product->id)->where('id', $cart_detail->variation_id)->where('active', 1)->first();
 
-                    $rule['extra_discount'] = 0;
-                    $rule['extra_discount_price'] = 0;
-                    $rule['extra_discount_tax'] = 0;
-                    $rule['extra_discount_rate'] = number_format($total_user_discount, 2,".","");
-                    if ($total_user_discount > 0){
-                        $rule['extra_discount'] = 1;
-                        if ($rule->discounted_price == null || $rule->discount_rate == 0){
-                            $price = $rule->regular_price - ($rule->regular_price / 100 * $total_user_discount);
-                        }else{
-                            $price = $rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate));
-                        }
-                        $rule['extra_discount_price'] = number_format($price, 2,".","");
-                        $rule['extra_discount_tax'] = number_format(($price / 100 * $product->tax_rate), 2,".","");
+                    if ($variation) {
+                        $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $cart_detail->variation_id)->orderByDesc('id')->first();
+                        $price = $variation_price->price;
 
-
-                        $cart_detail_price = $price * $cart_detail->quantity;
-                        $cart_detail_tax = ($price * $cart_detail->quantity) / 100 * $rule->tax_rate;
-                    }else{
-                        if ($rule->discounted_price == null || $rule->discount_rate == 0){
-                            $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
-                            $cart_detail_tax = $rule->regular_tax * $cart_detail->quantity;
-                        }else{
-                            $cart_detail_price = $rule->discounted_price * $cart_detail->quantity;
-                            $cart_detail_tax = $rule->discounted_tax * $cart_detail->quantity;
-                        }
-                    }
-                }else{
-                    if ($rule->discounted_price == null || $rule->discount_rate == 0){
-                        $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
-                        $cart_detail_tax = $rule->regular_tax * $cart_detail->quantity;
-                    }else{
-                        $cart_detail_price = $rule->discounted_price * $cart_detail->quantity;
-                        $cart_detail_tax = $rule->discounted_tax * $cart_detail->quantity;
+                        $product['variation'] = $variation;
                     }
                 }
 
-                if ($rule->currency == "EUR"){
-                    $try_currency = array();
-                    $try_currency['regular_price'] = convertEURtoTRY($rule->regular_price);
-                    $try_currency['regular_tax'] = convertEURtoTRY($rule->regular_tax);
-                    $try_currency['discounted_price'] = convertEURtoTRY($rule->discounted_price);
-                    $try_currency['discounted_tax'] = convertEURtoTRY($rule->discounted_tax);
-                    $try_currency['currency'] = "TL";
-                    if ($rule['extra_discount'] == 1){
-                        $try_currency['extra_discount_price'] = convertEURtoTRY($rule['extra_discount_price']);
-                        $try_currency['extra_discount_tax'] = convertEURtoTRY($rule['extra_discount_tax']);
-                    }
-                    $rule['try_currency'] = $try_currency;
-                }else if ($rule->currency == "USD") {
-                    $try_currency = array();
-                    $try_currency['regular_price'] = convertUSDtoTRY($rule->regular_price);
-                    $try_currency['regular_tax'] = convertUSDtoTRY($rule->regular_tax);
-                    $try_currency['discounted_price'] = convertUSDtoTRY($rule->discounted_price);
-                    $try_currency['discounted_tax'] = convertUSDtoTRY($rule->discounted_tax);
-                    $try_currency['currency'] = "TL";
-                    if ($rule['extra_discount'] == 1){
-                        $try_currency['extra_discount_price'] = convertUSDtoTRY($rule['extra_discount_price']);
-                        $try_currency['extra_discount_tax'] = convertUSDtoTRY($rule['extra_discount_tax']);
-                    }
-                    $rule['try_currency'] = $try_currency;
-                }
+                $product['price'] = $price;
+                $product['currency'] = $currency;
 
-                $variation['rule'] = $rule;
-                $variation['image'] = $image;
-                $product['variation'] = $variation;
+
+
                 $cart_detail['product'] = $product;
 
-                $weight = $weight + $rule->weight;
-//                if($product->is_free_shipping == 1){
-//                    $cart_detail_delivery_price = 0.00;
-//                }
-                $cart_detail['sub_total_price'] = number_format($cart_detail_price, 2,",",".");
-                $cart_detail['sub_total_tax'] = number_format($cart_detail_tax, 2,",",".");
-                $cart_detail['sub_total_price_with_tax'] = number_format(($cart_detail_price + $cart_detail_tax), 2,",",".");
-                $cart_detail['currency'] = "TL";
+                $total_price = $price * $cart_detail->quantity;
+                $cart_price += $total_price;
 
-
-                if ($rule->currency == "EUR"){
-                    $cart_detail['currency'] = "EUR";
-                    $try_currency = array();
-                    $try_currency['price'] = convertEURtoTRY($cart_detail_price);
-                    $try_currency['sub_total_price'] = number_format(convertEURtoTRY($cart_detail_price), 2,",",".");
-                    $try_currency['sub_total_tax'] = number_format(convertEURtoTRY($cart_detail_tax), 2,",",".");
-                    $try_currency['sub_total_price_with_tax'] = number_format(convertEURtoTRY($cart_detail_price + $cart_detail_tax), 2,",",".");
-                    $try_currency['currency'] = "TL";
-                    $cart_detail['try_currency'] = $try_currency;
-                }else if ($rule->currency == "USD") {
-                    $cart_detail['currency'] = "USD";
-                    $try_currency = array();
-                    $try_currency['price'] = convertUSDtoTRY($cart_detail_price);
-                    $try_currency['sub_total_price'] = number_format(convertUSDtoTRY($cart_detail_price), 2,",",".");
-                    $try_currency['sub_total_tax'] = number_format(convertUSDtoTRY($cart_detail_tax), 2,",",".");
-                    $try_currency['sub_total_price_with_tax'] = number_format(convertUSDtoTRY($cart_detail_price + $cart_detail_tax), 2,",",".");
-                    $try_currency['currency'] = "TL";
-                    $cart_detail['try_currency'] = $try_currency;
-                }
-
-
-                if ($rule->currency == "EUR"){
-                    $cart_price += convertEURtoTRY($cart_detail_price);
-                    $cart_tax += convertEURtoTRY($cart_detail_tax);
-                }else if ($rule->currency == "USD") {
-                    $cart_price += convertUSDtoTRY($cart_detail_price);
-                    $cart_tax += convertUSDtoTRY($cart_detail_tax);
-                }else{
-
-                    $cart_price += $cart_detail_price;
-                    $cart_tax += $cart_detail_tax;
-                }
+                $cart_detail['total_price'] = number_format($total_price, 2,",",".");
 
             }
             $cart['cart_details'] = $cart_details;
-            $cart['total_price'] = number_format($cart_price, 2,",",".");$cart_price;
-            $cart['total_tax'] = number_format($cart_tax, 2,",",".");$cart_tax;
-            $cart['total_price_with_tax'] = number_format(($cart_price + $cart_tax), 2,",",".");
-
-
-            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
-            $cart['total_delivery'] = $delivery_price;
-            $cart['total_weight'] = $weight;
+            $cart['total_price'] = number_format($cart_price, 2,",",".");
+            $cart['currency'] = $currency;
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['cart' => $cart]]);
         } catch (QueryException $queryException) {
@@ -319,7 +219,7 @@ class CartController extends Controller
 
     public function getUserAllCartById($user_id){
         try {
-            $user_cart = Cart::query()->where('user_id',$user_id)->get();
+            $user_cart = Cart::query()->where('user_id', $user_id)->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['user_cart' => $user_cart]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
