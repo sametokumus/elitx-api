@@ -16,6 +16,7 @@ class CreateCartDetailsTable extends Migration
         Schema::create('cart_details', function (Blueprint $table) {
             $table->id();
             $table->string('cart_id');
+            $table->bigInteger('shop_id');
             $table->bigInteger('product_id');
             $table->bigInteger('variation_id')->nullable();
             $table->decimal('price')->nullable();

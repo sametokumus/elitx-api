@@ -17,6 +17,7 @@ use App\Models\ProductPrice;
 use App\Models\ProductRule;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationPrice;
+use App\Models\Shop;
 use App\Models\User;
 use App\Models\UserTypeDiscount;
 use Faker\Provider\Uuid;
@@ -81,6 +82,7 @@ class CartController extends Controller
                 } else {
                     CartDetail::query()->insert([
                         'cart_id' => $cart_id,
+                        'shop_id' => $product->owner_id,
                         'product_id' => $request->product_id,
                         'variation_id' => $request->variation_id,
                         'quantity' => $request->quantity,
@@ -197,6 +199,7 @@ class CartController extends Controller
                 $product['price'] = $price;
                 $product['currency'] = $currency;
 
+                $product['shop'] = Shop::query()->where('id', $product->owner_id)->first();
 
 
                 $cart_detail['product'] = $product;
