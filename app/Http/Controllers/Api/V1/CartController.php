@@ -299,7 +299,6 @@ class CartController extends Controller
 
             $cart_id = $request->cart_id;
             $user_id = $request->user_id;
-            $address_id = $request->address_id;
             $coupon_code = $request->coupon_code;
 
             $checkout_prices = array();
@@ -314,100 +313,18 @@ class CartController extends Controller
             $total_price_with_delivery = null;
 
 
-            $address = Address::query()->where('id', $address_id)->where('active', 1)->first();
-            $carriers = Carrier::query()
-                ->leftJoin('district_deliveries', 'district_deliveries.carrier_id', '=', 'carriers.id')
-                ->selectRaw('carriers.*, district_deliveries.category as category')
-                ->where('carriers.active', 1)
-                ->where('district_deliveries.active', 1)
-                ->where('district_deliveries.district_id', $address->district_id)
-                ->get();
-            foreach ($carriers as $carrier){
-                if ($carrier->category == 0){
-                    $carrier['is_delivery'] = 0;
-                }else{
-                    $carrier['is_delivery'] = 1;
-                }
-            }
-
-
-            $material_array = array();
-            $materials = ProductMaterial::query()->where('active', 1)->get();
-            foreach ($materials as $material){
-                $material['desi'] = 0;
-                $material_array[$material->id] = $material;
-            }
-
-
-//            $user_discount_rate = User::query()->where('id', $user_id)->where('active', 1)->first()->user_discount;
-//            if($user_discount_rate > 0){$user_discount = true;}
-
-
             //ürünlerin ara toplam fiyatı
-            //ürünlerin kullanıcı indirimi dahil ara toplam fiyatı
-
             // products_subtotal_price, user_discount_rate, coupon_subtotal_price, delivery_price, total_price, total_price_with_delivery
 
             $cart = Cart::query()->where('cart_id',$cart_id)->first();
             $cart_details = CartDetail::query()->where('cart_id',$cart->cart_id)->where('active',1)->get();
             $cart_price = 0;
-            $cart_tax = 0;
-            $weight = 0;
-            $all_free_shipping = 1;
+            $currency = "";
             foreach ($cart_details as $cart_detail){
-                $rule = ProductRule::query()->where('variation_id',$cart_detail->variation_id)->first();
                 $product = Product::query()->where('id',$cart_detail->product_id)->first();
+                $currency = $product->currency;
+                $cart_price += $cart_detail->price;
 
-                $user = User::query()->where('id', $user_id)->first();
-                $total_user_discount = $user->user_discount;
-
-                $type_discount = UserTypeDiscount::query()->where('user_type_id', $user->user_type)->where('brand_id', $product->brand_id)->where('type_id', $product->type_id)->where('active', 1)->first();
-                if (!empty($type_discount)) {
-                    $total_user_discount = $total_user_discount + $type_discount->discount;
-                }
-
-                if ($total_user_discount > 0) {
-                    $extra_discount = true;
-                }
-
-                if ($rule->discounted_price == null || $rule->discount_rate == 0){
-                    if($extra_discount){
-                        $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * $total_user_discount)) * $cart_detail->quantity;
-                        $cart_detail_tax = $cart_detail_price / 100 * $rule->tax_rate;
-                    }else{
-                        $cart_detail_price = $rule->regular_price * $cart_detail->quantity;
-                        $cart_detail_tax = $rule->regular_tax * $cart_detail->quantity;
-                    }
-                }else{
-                    if($extra_discount){
-                        $cart_detail_price = ($rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate))) * $cart_detail->quantity;
-                        $cart_detail_tax = $cart_detail_price / 100 * $rule->tax_rate;
-                    }else{
-                        $cart_detail_price = $rule->discounted_price * $cart_detail->quantity;
-                        $cart_detail_tax = $rule->discounted_tax * $cart_detail->quantity;
-                    }
-                }
-                if ($product->is_free_shipping == 0) {
-                    $weight = $weight + ($cart_detail->quantity * $rule->weight);
-                    $material_array[$rule->material]['desi'] = $material_array[$rule->material]['desi'] + ($cart_detail->quantity * $rule->weight);
-
-                    $all_free_shipping = 0;
-                }else{
-                    $weight = $weight + 0;
-                    $material_array[$rule->material]['desi'] = $material_array[$rule->material]['desi'] + 0;
-                }
-
-                $step_desi = $rule->weight * $rule->quantity_step;
-                foreach ($carriers as $carrier){
-                    if ($carrier->category == 1){
-                        if ($step_desi > $carrier->max_desi) {
-                            $carrier['is_delivery'] = 0;
-                        }
-                    }
-                }
-
-//                $cart_price += $cart_detail_price;
-//                $cart_tax += $cart_detail_tax;
 
                 if ($rule->currency == "EUR"){
                     $cart_price += convertEURtoTRY($cart_detail_price);
@@ -421,10 +338,8 @@ class CartController extends Controller
                 }
 
             }
-            $products_cart_price = $cart_price;
-            $products_cart_tax = $cart_tax;
-            $products_subtotal_price = $cart_price + $cart_tax;
-            $total_price = $products_subtotal_price;
+
+            $cart['currency'] = $currency;
 
             if($coupon_code != "null"){
                 $coupon = Coupons::query()->where('code', $coupon_code)->first();
@@ -439,14 +354,8 @@ class CartController extends Controller
             }
 
 
-            $checkout_prices['products_subtotal_price'] = number_format($products_subtotal_price, 2,",",".");
-            $checkout_prices['products_cart_price'] = number_format($products_cart_price, 2,",",".");
-            $checkout_prices['products_cart_tax'] = number_format($products_cart_tax, 2,",",".");
-//            $checkout_prices['user_discount'] = $user_discount;
-//            $checkout_prices['user_discount_rate'] = $user_discount_rate;
-            $checkout_prices['all_free_shipping'] = $all_free_shipping;
+            $checkout_prices['cart_price'] = number_format($cart_price, 2,",",".");
             $checkout_prices['coupon_code'] = $coupon_code;
-            $checkout_prices['material'] = $material_array;
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
             $checkout_prices['total_price'] = number_format($total_price, 2,",",".");

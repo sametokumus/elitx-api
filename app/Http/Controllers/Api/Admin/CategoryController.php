@@ -14,6 +14,11 @@ class CategoryController extends Controller
     {
         try {
             $categories = Category::query()->where('active', 1)->get();
+            foreach ($categories as $category){
+                if ($category->parent_id != null && $category->parent_id != 0){
+                    $category['parent'] = Category::query()->where('id', $category->parent_id)->first();
+                }
+            }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['categories' => $categories]]);
         } catch (QueryException $queryException) {
