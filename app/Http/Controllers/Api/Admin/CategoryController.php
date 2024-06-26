@@ -53,7 +53,14 @@ class CategoryController extends Controller
                 'name' => 'required',
                 'slug' => 'required'
             ]);
+
+            $parent_id = null;
+            if ($request->parent_id != 0){
+                $parent_id = $request->parent_id;
+            }
+
             $category_id = Category::query()->insertGetId([
+                'parent_id' => $parent_id,
                 'name' => $request->name,
                 'slug' => $request->slug
             ]);
@@ -85,7 +92,13 @@ class CategoryController extends Controller
                 'slug' => 'required',
             ]);
 
+            $parent_id = null;
+            if ($request->parent_id != 0){
+                $parent_id = $request->parent_id;
+            }
+
             $category = Category::query()->where('id', $category_id)->update([
+                'parent_id' => $parent_id,
                 'name' => $request->name,
                 'slug' => $request->slug,
             ]);
