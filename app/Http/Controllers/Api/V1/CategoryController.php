@@ -40,7 +40,7 @@ class CategoryController extends Controller
         try {
             $categories = Category::query()->where('active', 1)->where('parent_id', $id)->get();
 
-//            $categoryTree = $this->buildTree($categories);
+            $categoryTree = $this->buildTree($categories, $id);
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['categories' => $categories]]);
         } catch (QueryException $queryException) {
