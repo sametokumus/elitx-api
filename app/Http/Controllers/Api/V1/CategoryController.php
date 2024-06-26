@@ -38,7 +38,7 @@ class CategoryController extends Controller
     public function getCategoriesByParentId($id)
     {
         try {
-            $categories = Category::query()->where('active', 1)->where('parent_id', $id)->toSql();
+            $categories = Category::query()->where('active', 1)->where('parent_id', $id)->get();
 
 //            $categoryTree = $this->buildTree($categories);
 
