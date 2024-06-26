@@ -42,7 +42,7 @@ class CategoryController extends Controller
 
             $categoryTree = $this->buildTree($categories, $id);
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['categories' => $categories]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['categories' => $categoryTree]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'error' => $queryException->getMessage()]);
         }
