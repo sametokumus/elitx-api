@@ -38,11 +38,11 @@ class CategoryController extends Controller
     public function getCategoriesByParentId($id)
     {
         try {
-            $categories = Category::query()->where('active', 1)->where('parent_id', $id)->get();
+            $categories = Category::query()->where('active', 1)->where('parent_id', $id)->toSql();
 
             $categoryTree = $this->buildTree($categories);
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['categories' => $categoryTree]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['categories' => $categories]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'error' => $queryException->getMessage()]);
         }
