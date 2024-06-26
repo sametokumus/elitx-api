@@ -123,9 +123,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::post('product/addProductComment', [CommentController::class, 'addProductComment']);
     Route::get('product/getCommentsByProductId/{product_id}', [CommentController::class, 'getCommentsByProductId']);
 
-    //Category
-    Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
-
 
 });
 
@@ -135,6 +132,13 @@ Route::get('/product/getNewProducts', [ProductController::class, 'getNewProducts
 Route::get('/product/getSecondHandProducts', [ProductController::class, 'getSecondHandProducts']);
 Route::get('/product/getNewProductsByCategoryId/{category_id}', [ProductController::class, 'getNewProductsByCategoryId']);
 Route::get('/product/getSecondHandProductsByCategoryId/{category_id}', [ProductController::class, 'getSecondHandProductsByCategoryId']);
+
+
+
+
+//Category
+Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
+Route::get('category/getCategoriesByParentId/{id}', [CategoryController::class, 'getCategoriesByParentId']);
 
 
 
@@ -167,9 +171,6 @@ Route::get('/brand/getBrands', [BrandController::class, 'getBrands']);
 Route::get('/brand/getBrandById/{id}', [BrandController::class, 'getBrandById']);
 Route::get('/productType/getProductType', [ProductTypeController::class, 'getProductType']);
 Route::get('/productType/getProductTypeById/{type_id}', [ProductTypeController::class, 'getProductTypeById']);
-Route::get('/category/getCategory', [CategoryController::class, 'getCategory']);
-Route::get('/category/getParentCategory', [CategoryController::class, 'getParentCategory']);
-Route::get('/category/getCategoryById/{category_id}', [CategoryController::class, 'getCategoryById']);
 
 Route::get('/product/getAllProduct', [ProductController::class, 'getAllProduct']);
 Route::get('/product/getAllProductById/{id}', [ProductController::class, 'getAllProductById']);

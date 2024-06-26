@@ -9,14 +9,42 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    private function buildTree($categories, $parentId = null)
+    {
+        $branch = [];
+        foreach ($categories as $category) {
+            if ($category->parent_id == $parentId) {
+                $children = $this->buildTree($categories, $category->id);
+                if ($children) {
+                    $category['children'] = $children;
+                }
+                $branch[] = $category;
+            }
+        }
+        return $branch;
+    }
     public function getCategories()
     {
         try {
             $categories = Category::query()->where('active', 1)->get();
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['categories' => $categories]]);
+            $categoryTree = $this->buildTree($categories);
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['categories' => $categoryTree]]);
         } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'error' => $queryException->getMessage()]);
+        }
+    }
+    public function getCategoriesByParentId($id)
+    {
+        try {
+            $categories = Category::query()->where('active', 1)->where('parent_id', $id)->get();
+
+            $categoryTree = $this->buildTree($categories);
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['categories' => $categoryTree]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'error' => $queryException->getMessage()]);
         }
     }
 }
