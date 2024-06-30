@@ -7,6 +7,7 @@ use App\Mail\UserWelcome;
 use App\Models\Brand;
 use App\Models\Shop;
 use App\Models\ShopDocument;
+use App\Models\ShopType;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,9 @@ class AuthController extends Controller
                 'user_name' => 'required',
                 'email' => 'required|email',
                 'phone_number' => 'required',
-                'password' => 'required'
+                'password' => 'required',
+                'vat_number' => 'required',
+                'shop_type' => 'required'
             ]);
 
             $shopActiveCheck = Shop::query()->where('email', $request->email)->where('active', 0)->count();
@@ -46,11 +49,18 @@ class AuthController extends Controller
                 throw new \Exception('shop-003');
             }
 
+            $vatCheck = Shop::query()->where('vat_number', $request->vat_number)->where('active', 1)->count();
+
+            if ($vatCheck > 0) {
+                throw new \Exception('shop-005');
+            }
+
             $userId = Shop::query()->insertGetId([
                 'email' => $request->email,
                 'name' => $request->name,
                 'user_name' => $request->user_name,
                 'phone_number' => $request->phone_number,
+                'vat_number' => $request->vat_number,
                 'password' => Hash::make($request->password),
                 'token' => Str::random(60)
             ]);
@@ -63,6 +73,12 @@ class AuthController extends Controller
             ]);
 
             $shop->token = $userToken;
+
+            //ShopType
+            ShopType::query()->insert([
+                'shop_id' => $shop->id,
+                'type_id' => $request->shop_type
+            ]);
 
             //Oluşturulan Kullanıcıyı mail yolluyor
 //            $user->sendApiConfirmAccount($user);
@@ -80,7 +96,10 @@ class AuthController extends Controller
                 return  response(['message' => 'Girdiğiniz telefon numarası kullanılmaktadır.','status' => 'auth-003']);
             }
             if ($exception->getMessage() == 'shop-004'){
-                return  response(['message' => 'Bu e-posta adresi ile bir mağaza bulunmaktadır. Yeniden giriş yaparak hesabınızı aktifleştirebilirsiniz.','status' => 'auth-003']);
+                return  response(['message' => 'Bu e-posta adresi ile bir mağaza bulunmaktadır.','status' => 'auth-004']);
+            }
+            if ($exception->getMessage() == 'shop-004'){
+                return  response(['message' => 'Bu vergi numarası ile bir mağaza bulunmaktadır.','status' => 'auth-005']);
             }
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'err' => $exception->getMessage()]);
         }

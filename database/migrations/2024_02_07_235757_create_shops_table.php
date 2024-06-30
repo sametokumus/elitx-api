@@ -17,7 +17,9 @@ class CreateShopsTable extends Migration
             $table->id();
             $table->string('email')->unique();
             $table->string('phone_number')->nullable();
+            $table->string('user_name')->nullable();
             $table->string('name')->nullable();
+            $table->string('vat_number')->nullable();
             $table->string('password');
             $table->string('token')->unique()->nullable();
             $table->rememberToken();
