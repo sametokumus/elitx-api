@@ -69,6 +69,15 @@ class LanguageController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
+    public function getLibraryById($id){
+        try {
+            $library = LanguageLibrary::query()->where('id', $id)->first();
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['library' => $library]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
 
     public function addLibrary(Request $request)
     {

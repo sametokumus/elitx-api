@@ -62,6 +62,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
     //Language Library
     Route::get('language/getLibrary', [LanguageController::class, 'getLibrary']);
+    Route::get('language/getLibraryById/{id}', [LanguageController::class, 'getLibraryById']);
     Route::post('language/addLibrary', [LanguageController::class, 'addLibrary']);
     Route::post('language/updateLibrary/{id}', [LanguageController::class, 'updateLibrary']);
     Route::get('language/deleteLibrary/{id}', [LanguageController::class, 'deleteLibrary']);
