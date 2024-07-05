@@ -319,12 +319,12 @@ class ProductController extends Controller
                 }
             }
 
-            $old_confirm = ProductConfirm::query()->where('product_id', $product_id)->orderByDesc('id')->first();
-            if ($old_confirm->confirmed != 0) {
-                ProductConfirm::query()->insert([
-                    'product_id' => $product_id
-                ]);
-            }
+//            $old_confirm = ProductConfirm::query()->where('product_id', $product_id)->orderByDesc('id')->first();
+//            if ($old_confirm->confirmed != 0) {
+//                ProductConfirm::query()->insert([
+//                    'product_id' => $product_id
+//                ]);
+//            }
 
             return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $product_id]]);
         } catch (ValidationException $validationException) {
