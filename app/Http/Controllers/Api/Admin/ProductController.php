@@ -74,8 +74,8 @@ class ProductController extends Controller
             ]);
 
             $admin = Auth::user();
-            $last_confirm = ProductConfirm::query()->where('product_id', $id)->orderByDesc('id')->first();
-            ProductConfirm::query()->where('id', $last_confirm->id)->update([
+            ProductConfirm::query()->insert([
+                'product_id' => $id,
                 'admin_id' => $admin->id,
                 'confirmed' => 1,
                 'confirmed_at' => Carbon::now()
