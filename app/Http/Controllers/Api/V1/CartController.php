@@ -313,6 +313,8 @@ class CartController extends Controller
             $cart_price = 0;
             $currency = "";
             foreach ($cart_details as $cart_detail){
+
+                $cart_product_price = null;
                 $product = Product::query()->where('id',$cart_detail->product_id)->first();
 
                 $product_price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
@@ -331,8 +333,8 @@ class CartController extends Controller
                     }
                 }
 
-                $total_price = $price * $cart_detail->quantity;
-                $cart_price += $total_price;
+                $cart_product_price = $price * $cart_detail->quantity;
+                $total_price += $cart_product_price;
             }
 
             $cart['currency'] = $currency;
@@ -350,7 +352,6 @@ class CartController extends Controller
             }
 
 
-            $checkout_prices['cart_price'] = number_format($cart_price, 2,",",".");
             $checkout_prices['coupon_code'] = $coupon_code;
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
