@@ -95,6 +95,9 @@ class ProductController extends Controller
     }
     public function getProductRejected($id){
         try {
+            Product::query()->where('id',$id)->update([
+                'status_id' => 3
+            ]);
             $admin = Auth::user();
             ProductConfirm::query()->insert([
                 'product_id' => $id,
