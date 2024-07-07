@@ -246,12 +246,13 @@ class ProductController extends Controller
             $products = Product::query()
                 ->leftJoin('shops', 'shops.id', '=', 'products.owner_id')
                 ->leftJoin('shop_types', 'shop_types.shop_id', '=', 'products.owner_id')
+                ->leftJoin(DB::raw('(SELECT * FROM product_confirms WHERE id IN (SELECT MAX(id) FROM product_confirms GROUP BY product_id)) as pc'), 'pc.product_id', '=', 'products.id')
                 ->selectRaw('products.*')
                 ->where('products.owner_type', 1)
                 ->where('shop_types.type_id', 1)
-                ->where('products.confirmed', 1)
                 ->where('shops.confirmed', 1)
                 ->where('products.active', 1)
+                ->where('pc.confirmed', 1)
                 ->get();
 
             foreach ($products as $product) {
