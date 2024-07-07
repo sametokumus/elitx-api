@@ -59,6 +59,19 @@ class ProductController extends Controller
                         $variation['price'] = $variation_price->price;
                     }
                 }
+
+                $confirm = ProductConfirm::query()->where('product_id', $product->id)->orderByDesc('id')->first();
+                if ($confirm) {
+                    if ($confirm->confirmed == 0) {
+                        $product['confirmed'] = 0;
+                    }else if ($confirm->confirmed == 1) {
+                        $product['confirmed'] = 1;
+                    }else if ($confirm->confirmed == 2) {
+                        $product['confirmed'] = 2;
+                    }
+                }else{
+                    $product['confirmed'] = 0;
+                }
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
@@ -68,11 +81,6 @@ class ProductController extends Controller
 
     public function getProductConfirmed($id){
         try {
-            Product::query()->where('id',$id)->update([
-                'confirmed' => 1,
-                'confirmed_at' => Carbon::now()
-            ]);
-
             $admin = Auth::user();
             ProductConfirm::query()->insert([
                 'product_id' => $id,
@@ -87,9 +95,12 @@ class ProductController extends Controller
     }
     public function getProductRejected($id){
         try {
-            Product::query()->where('id',$id)->update([
+            $admin = Auth::user();
+            ProductConfirm::query()->insert([
+                'product_id' => $id,
+                'admin_id' => $admin->id,
                 'confirmed' => 2,
-                'status_id' => 3,
+                'confirmed_at' => Carbon::now()
             ]);
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
         } catch (QueryException $queryException) {
