@@ -322,13 +322,15 @@ class ProductController extends Controller
                     $join->on('shop_types.shop_id', '=', 'products.owner_id')
                         ->where('shop_types.type_id', '=', 2);
                 })
+
+                ->leftJoin(DB::raw('(SELECT * FROM product_confirms WHERE id IN (SELECT MAX(id) FROM product_confirms GROUP BY product_id)) as pc'), 'pc.product_id', '=', 'products.id')
                 ->selectRaw('products.*')
                 ->where(function ($query) {
                     $query->where('products.owner_type', 1)
                         ->where('shop_types.type_id', 2)
                         ->orWhere('products.owner_type', 2);
                 })
-                ->where('products.confirmed', 1)
+                ->where('pc.confirmed', 1)
                 ->where('products.active', 1)
                 ->get();
 
