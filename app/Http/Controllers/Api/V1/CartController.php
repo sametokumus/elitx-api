@@ -303,18 +303,10 @@ class CartController extends Controller
 
             $checkout_prices = array();
             $products_subtotal_price = null;
-            $products_cart_price = null;
-            $products_cart_tax = null;
-            $extra_discount = false;
             $coupon_message = null;
             $coupon_subtotal_price = null;
-            $delivery_price = null;
             $total_price = null;
-            $total_price_with_delivery = null;
 
-
-            //ürünlerin ara toplam fiyatı
-            // products_subtotal_price, user_discount_rate, coupon_subtotal_price, delivery_price, total_price, total_price_with_delivery
 
             $cart = Cart::query()->where('cart_id',$cart_id)->first();
             $cart_details = CartDetail::query()->where('cart_id',$cart->cart_id)->where('active',1)->get();
@@ -322,26 +314,30 @@ class CartController extends Controller
             $currency = "";
             foreach ($cart_details as $cart_detail){
                 $product = Product::query()->where('id',$cart_detail->product_id)->first();
-                $currency = $product->currency;
-                $cart_price += $cart_detail->price;
 
+                $product_price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
+                $price = $product_price->base_price;
+                if ($product_price->discounted_price != null && $product_price->discount_rate != null && $product_price->discount_rate != '0.00') {
+                    $price = $product_price->discounted_price;
+                }
+                $currency = $product_price->currency;
 
-                if ($rule->currency == "EUR"){
-                    $cart_price += convertEURtoTRY($cart_detail_price);
-                    $cart_tax += convertEURtoTRY($cart_detail_tax);
-                }else if ($rule->currency == "USD") {
-                    $cart_price += convertUSDtoTRY($cart_detail_price);
-                    $cart_tax += convertUSDtoTRY($cart_detail_tax);
-                }else{
-                    $cart_price += $cart_detail_price;
-                    $cart_tax += $cart_detail_tax;
+                if (!empty($cart_detail->variation_id)) {
+                    $variation = ProductVariation::query()->where('product_id', $product->id)->where('id', $cart_detail->variation_id)->where('active', 1)->first();
+
+                    if ($variation) {
+                        $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $cart_detail->variation_id)->orderByDesc('id')->first();
+                        $price = $variation_price->price;
+                    }
                 }
 
+                $total_price = $price * $cart_detail->quantity;
+                $cart_price += $total_price;
             }
 
             $cart['currency'] = $currency;
 
-            if($coupon_code != "null"){
+            if($coupon_code != null){
                 $coupon = Coupons::query()->where('code', $coupon_code)->first();
                 if ($coupon->discount_type == 1){
                     $coupon_message = $coupon->discount." TL indirim.";
@@ -360,61 +356,6 @@ class CartController extends Controller
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
             $checkout_prices['total_price'] = number_format($total_price, 2,",",".");
 
-            foreach ($carriers as $carrier){
-                if ($carrier['is_delivery'] == 1){
-                    $shipment_price = 0;
-                    foreach ($materials as $material){
-
-                        $weight = $material_array[$material->id]['desi'];
-
-                        //Kargo Çarpanı
-
-                        $weight = $weight * $material->multiplier;
-
-                        if ($weight == 0){
-                        }else{
-
-                            $delivery_price = DeliveryPrice::query()->where('carrier_id', $carrier->id)->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
-                            if ($delivery_price){
-                                $shipment_price += $delivery_price->{'cat_'.$carrier->category.'_price'};
-                            }else{
-                                $delivery_price_max = DeliveryPrice::query()->where('carrier_id', $carrier->id)->orderByDesc('max_value')->first();
-                                $increses_weight = IncreasingDesi::query()->where('carrier_id', $carrier->id)->first();
-
-                                $diff_price = ($weight - $delivery_price_max->max_value) * ($increses_weight->{'cat_'.$carrier->category.'_price'});
-                                $shipment_price += ($delivery_price_max->{'cat_'.$carrier->category.'_price'} + $diff_price);
-
-                            }
-
-                        }
-
-                    }
-                    $delivery_price_without_tax = $shipment_price / 118 * 100;
-                    $delivery_price_tax = $shipment_price - $delivery_price_without_tax;
-                    $total_price_with_delivery = $total_price + $shipment_price;
-
-                    $carrier['delivery_price'] = number_format($shipment_price, 2,",",".");
-                    $carrier['delivery_price_without_tax'] = number_format($delivery_price_without_tax, 2,",",".");
-                    $carrier['delivery_price_tax'] = number_format($delivery_price_tax, 2,",",".");
-                    $carrier['total_price_with_delivery'] = number_format($total_price_with_delivery, 2,",",".");
-                }
-            }
-
-            $checkout_prices['carriers'] = $carriers;
-
-//            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
-//            $regional_delivery_price = RegionalDeliveryPrice::query()->where('delivery_price_id', $delivery_price->id)->where('city_id', $address->city_id)->first();
-//            $regional_delivery_price_without_tax = $regional_delivery_price->price / 118 * 100;
-//            $regional_delivery_price_tax = $regional_delivery_price->price - $regional_delivery_price_without_tax;
-//            $total_price_with_delivery = $total_price + $regional_delivery_price->price;
-
-
-//
-//            $checkout_prices['delivery_price'] = number_format($regional_delivery_price->price, 2,",",".");
-//            $checkout_prices['delivery_price_tax'] = number_format($regional_delivery_price_tax, 2,",",".");
-//            $checkout_prices['delivery_price_without_tax'] = number_format($regional_delivery_price_without_tax, 2,",",".");
-//
-//            $checkout_prices['total_price_with_delivery'] = number_format($total_price_with_delivery, 2,",",".");
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['checkout_prices' => $checkout_prices]]);
         } catch (QueryException $queryException) {
