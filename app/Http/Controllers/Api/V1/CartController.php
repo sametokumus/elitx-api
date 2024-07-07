@@ -339,6 +339,8 @@ class CartController extends Controller
 
             $cart['currency'] = $currency;
 
+            $products_subtotal_price = $total_price;
+
             if($coupon_code != null){
                 $coupon = Coupons::query()->where('code', $coupon_code)->first();
                 if ($coupon->discount_type == 1){
@@ -355,6 +357,7 @@ class CartController extends Controller
             $checkout_prices['coupon_code'] = $coupon_code;
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
+            $checkout_prices['products_subtotal_price'] = number_format($products_subtotal_price, 2,",",".");
             $checkout_prices['total_price'] = number_format($total_price, 2,",",".");
 
 
