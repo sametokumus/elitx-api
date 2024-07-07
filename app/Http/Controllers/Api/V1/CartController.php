@@ -344,7 +344,7 @@ class CartController extends Controller
             if($coupon_code != null){
                 $coupon = Coupons::query()->where('code', $coupon_code)->first();
                 if ($coupon->discount_type == 1){
-                    $coupon_message = $coupon->discount." TL indirim.";
+                    $coupon_message = $coupon->discount." ".$currency." indirim.";
                     $coupon_subtotal_price = $products_subtotal_price - $coupon->discount;
                 }elseif ($coupon->discount_type == 2){
                     $coupon_message = "%".$coupon->discount." indirim.";
