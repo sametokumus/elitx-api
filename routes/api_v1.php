@@ -124,6 +124,18 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('product/getCommentsByProductId/{product_id}', [CommentController::class, 'getCommentsByProductId']);
 
 
+
+    //Order
+    Route::post('/order/addOrder',[OrderController::class,'addOrder']);
+
+    Route::post('order/addBankRequest', [OrderController::class, 'addBankRequest']);
+    Route::post('order/updateBankRequest', [OrderController::class, 'updateBankRequest']);
+    Route::get('/order/getOrdersByUserId/{user_id}',[OrderController::class,'getOrdersByUserId']);
+    Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
+    Route::get('/order/getOrderByPaymentId/{payment_id}',[OrderController::class,'getOrderByPaymentId']);
+    Route::post('/order/addPayment',[OrderController::class,'addPayment']);
+    Route::post('/order/updatePayment',[OrderController::class,'updatePayment']);
+    Route::get('/order/getOrderPaymentStatusByPaymentId/{payment_id}',[OrderController::class,'getOrderPaymentStatusByPaymentId']);
 });
 
 
@@ -156,18 +168,6 @@ Route::get('/cart/getUserToCart/{user_id}/{cart_id}', [CartController::class, 'g
 Route::post('/cart/getCheckoutPrices', [CartController::class, 'getCheckoutPrices']);
 Route::get('/cart/setIsOrder/{cart_id}/{is_order}', [CartController::class, 'setIsOrder']);
 
-
-//Order
-Route::post('/order/addOrder',[OrderController::class,'addOrder']);
-
-Route::post('order/addBankRequest', [OrderController::class, 'addBankRequest']);
-Route::post('order/updateBankRequest', [OrderController::class, 'updateBankRequest']);
-Route::get('/order/getOrdersByUserId/{user_id}',[OrderController::class,'getOrdersByUserId']);
-Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
-Route::get('/order/getOrderByPaymentId/{payment_id}',[OrderController::class,'getOrderByPaymentId']);
-Route::post('/order/addPayment',[OrderController::class,'addPayment']);
-Route::post('/order/updatePayment',[OrderController::class,'updatePayment']);
-Route::get('/order/getOrderPaymentStatusByPaymentId/{payment_id}',[OrderController::class,'getOrderPaymentStatusByPaymentId']);
 
 Route::get('/brand/getBrands', [BrandController::class, 'getBrands']);
 Route::get('/brand/getBrandById/{id}', [BrandController::class, 'getBrandById']);
