@@ -88,6 +88,7 @@ class OrderController extends Controller
                     'comment' => $request->comment,
                     'subtotal' => $request->subtotal,
                     'total' => $request->total,
+                    'currency' => $request->currency,
                     'coupon_code' => $request->coupon_code
                 ]);
 
