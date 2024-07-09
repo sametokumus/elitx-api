@@ -97,7 +97,6 @@ class OrderController extends Controller
                     'active' => 0
                 ]);
 
-                $user_discount = User::query()->where('id', $request->user_id)->first()->user_discount;
                 $carts = CartDetail::query()->where('cart_id', $request->cart_id)->get();
                 foreach ($carts as $cart) {
                     $product = Product::query()->where('id', $cart->product_id)->first();
