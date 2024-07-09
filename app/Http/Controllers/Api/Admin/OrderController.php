@@ -75,7 +75,7 @@ class OrderController extends Controller
                 ->leftJoin('order_statuses', 'order_statuses.id', '=', 'orders.status_id')
                 ->where('order_statuses.run_on', 1)
                 ->where('orders.active', 1)
-                ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.total', 'orders.status_id',
+                ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.updated_at as order_update_date', 'orders.total', 'orders.status_id',
                     'orders.user_id', 'orders.is_paid'
                 ]);
             foreach ($orders as $order) {
