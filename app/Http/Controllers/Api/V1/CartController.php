@@ -298,11 +298,9 @@ class CartController extends Controller
         try {
 
             $cart_id = $request->cart_id;
-            $user_id = $request->user_id;
             $coupon_code = $request->coupon_code;
 
             $checkout_prices = array();
-            $products_subtotal_price = null;
             $coupon_message = null;
             $coupon_subtotal_price = null;
             $total_price = null;
@@ -310,11 +308,9 @@ class CartController extends Controller
 
             $cart = Cart::query()->where('cart_id',$cart_id)->first();
             $cart_details = CartDetail::query()->where('cart_id',$cart->cart_id)->where('active',1)->get();
-            $cart_price = 0;
             $currency = "";
             foreach ($cart_details as $cart_detail){
 
-                $cart_product_price = null;
                 $product = Product::query()->where('id',$cart_detail->product_id)->first();
 
                 $product_price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();

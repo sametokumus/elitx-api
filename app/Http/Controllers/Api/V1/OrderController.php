@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Old;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
@@ -26,8 +26,10 @@ use App\Models\PaymentMethod;
 use App\Models\PaymentType;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductPrice;
 use App\Models\ProductRule;
 use App\Models\ProductVariation;
+use App\Models\ProductVariationPrice;
 use App\Models\User;
 use App\Models\UserTypeDiscount;
 use DateTime;
@@ -35,6 +37,7 @@ use Faker\Provider\Uuid;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Nette\Schema\ValidationException;
 
 class OrderController extends Controller
@@ -44,6 +47,7 @@ class OrderController extends Controller
     {
         try {
             $cart = Cart::query()->where('cart_id', $request->cart_id)->where('active', 1)->first();
+            $user = Auth::user();
 
             if(isset($cart)) {
 
@@ -54,9 +58,8 @@ class OrderController extends Controller
                 $shipping = Address::query()->where('id', $shipping_id)->first();
                 $country = Country::query()->where('id', $shipping->country_id)->first();
                 $city = City::query()->where('id', $shipping->city_id)->first();
-                $district = District::query()->where('id', $shipping->district_id)->first();
 
-                $shipping_address = $shipping->name . " " . $shipping->surname . " - " . $shipping->address_1 . " " . $shipping->address_2 . " - " . $shipping->postal_code . " - " . $shipping->phone . " - " . $district->name . " / " . $city->name . " / " . $country->name;
+                $shipping_address = $shipping->name . " " . $shipping->surname . " - " . $shipping->address_1 . " " . $shipping->address_2 . " - " . $shipping->postal_code . " - " . $shipping->phone . " - " . $city->name . " / " . $country->name;
                 if ($shipping->type == 2){
                     $shipping_corporate_address = CorporateAddresses::query()->where('address_id',$shipping_id)->first();
                     $shipping_address = $shipping_address." - ".$shipping_corporate_address->tax_number." - ".$shipping_corporate_address->tax_office." - ".$shipping_corporate_address->company_name;
@@ -66,18 +69,16 @@ class OrderController extends Controller
                 $billing = Address::query()->where('id', $billing_id)->first();
                 $billing_country = Country::query()->where('id', $billing->country_id)->first();
                 $billing_city = City::query()->where('id', $billing->city_id)->first();
-                $billing_district = District::query()->where('id', $billing->district_id)->first();
-                $billing_address = $billing->name . " " . $billing->surname . " - " . $billing->address_1 . " " . $billing->address_2 . " - " . $billing->postal_code . " - " . $billing->phone . " - " . $billing_district->name . " / " . $billing_city->name . " / " . $billing_country->name;
+                $billing_address = $billing->name . " " . $billing->surname . " - " . $billing->address_1 . " " . $billing->address_2 . " - " . $billing->postal_code . " - " . $billing->phone . " - " . $billing_city->name . " / " . $billing_country->name;
 
-                if ($shipping->type == 2){
+                if ($billing->type == 2){
                     $billing_corporate_address = CorporateAddresses::query()->where('address_id',$billing_id)->first();
                     $billing_address = $billing_address." - ".$billing_corporate_address->tax_number." - ".$billing_corporate_address->tax_office." - ".$billing_corporate_address->company_name;
                 }
 
                 $order_id = Order::query()->insertGetId([
                     'order_id' => $order_quid,
-                    'user_id' => $request->user_id,
-                    'carrier_id' => $request->carrier_id,
+                    'user_id' => $user->id,
                     'cart_id' => $request->cart_id,
                     'status_id' => $order_status->id,
                     'shipping_address_id' => $request->shipping_address_id,
@@ -85,49 +86,57 @@ class OrderController extends Controller
                     'shipping_address' => $shipping_address,
                     'billing_address' => $billing_address,
                     'comment' => $request->comment,
-                    'shipping_type' => $request->delivery_type,
                     'payment_method' => $request->payment_method,
                     'shipping_price' => $request->shipping_price,
                     'subtotal' => $request->subtotal,
-                    'total' => ($request->subtotal + $request->shipping_price),
-                    'is_partial' => $request->is_partial,
-                    'is_paid' => $request->is_paid,
+                    'total' => $request->total,
                     'coupon_code' => $request->coupon_code
                 ]);
 
                 Cart::query()->where('cart_id', $request->cart_id)->update([
-                    'user_id' => $request->user_id,
+                    'user_id' => $user->id,
                     'is_order' => 1,
                     'active' => 0
                 ]);
+
                 $user_discount = User::query()->where('id', $request->user_id)->first()->user_discount;
                 $carts = CartDetail::query()->where('cart_id', $request->cart_id)->get();
                 foreach ($carts as $cart) {
                     $product = Product::query()->where('id', $cart->product_id)->first();
-                    $variation = ProductVariation::query()->where('id', $cart->variation_id)->first();
-                    $rule = ProductRule::query()->where('variation_id', $variation->id)->first();
-                    if ($rule->discounted_price == null || $rule->discount_rate == 0){
-                        $price = $rule->regular_price - ($rule->regular_price / 100 * $user_discount);
-                        $tax = $price / 100 * $rule->tax_rate;
-                        $total = ($price + $tax) * $request->quantity;
-                    }else{
-                        $price = $rule->regular_price - ($rule->regular_price / 100 * ($user_discount + $rule->discount_rate));
-                        $tax = $price / 100 * $rule->tax_rate;
-                        $total = ($price + $tax) * $request->quantity;
+
+                    $product_price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
+                    $price = $product_price->base_price;
+                    $discounted_price = null;
+                    if ($product_price->discounted_price != null && $product_price->discount_rate != null && $product_price->discount_rate != '0.00') {
+                        $discounted_price = $product_price->discounted_price;
                     }
+                    $currency = $product_price->currency;
+
+                    if (!empty($cart->variation_id)) {
+                        $variation = ProductVariation::query()->where('product_id', $product->id)->where('id', $request->variation_id)->where('active', 1)->first();
+
+                        if ($variation) {
+                            $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $request->variation_id)->orderByDesc('id')->first();
+                            $price = $variation_price->price;
+                        }
+
+                        $discounted_price = null;
+                    }
+
+                    if ($discounted_price == null){
+                        $total = $price * $cart->quantity;
+                    }else{
+                        $total = $discounted_price * $cart->quantity;
+                    }
+
                     OrderProduct::query()->insert([
                         'order_id' => $order_quid,
                         'product_id' => $product->id,
-                        'variation_id' => $variation->id,
+                        'variation_id' => $cart->variation_id,
                         'name' => $product->name,
-                        'sku' => $variation->sku,
-                        'regular_price' => $rule->regular_price,
-                        'regular_tax' => $rule->regular_tax,
-                        'discounted_price' => $rule->discounted_price,
-                        'discounted_tax' => $rule->discounted_tax,
-                        'discount_rate' => $rule->discount_rate,
-                        'tax_rate' => $rule->tax_rate,
-                        'user_discount' => $user_discount,
+                        'sku' => $product->sku,
+                        'price' => $price,
+                        'discounted_price' => $discounted_price,
                         'quantity' => $cart->quantity,
                         'total' => $total
                     ]);
@@ -151,119 +160,54 @@ class OrderController extends Controller
                     ]);
                 }
 
-                return response(['message' => 'Sipariş ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['order_id' => $order_quid]]);
+
+                //ÖDEME
+                if ($request->payment_type == 1){
+                    //Kredi Kartı
+                    $response_code = 200;
+
+                    if ($response_code == 200){
+                        Order::query()->where('id', $order_id)->update([
+                            'is_paid' => 1
+                        ]);
+                        $payment_quid = Uuid::uuid();
+                        Payment::query()->insert([
+                            'order_id' => $order_quid,
+                            'payment_id' => $payment_quid,
+                            'price' => $request->total,
+                            'type' => $request->payment_type,
+                            'installment' => $request->installment_count,
+                            'is_paid' => 1
+                        ]);
+                    }else{
+                        return response(['message' => 'Ödeme Hatası.', 'status' => 'pay-001']);
+                    }
+                }else{
+                    //Diğer
+                    $response_code = 200;
+
+                    if ($response_code == 200){
+                        Order::query()->where('id', $order_id)->update([
+                            'is_paid' => 1
+                        ]);
+                        $payment_quid = Uuid::uuid();
+                        Payment::query()->insert([
+                            'order_id' => $order_quid,
+                            'payment_id' => $payment_quid,
+                            'price' => $request->total,
+                            'type' => $request->payment_type,
+                            'installment' => $request->installment_count,
+                            'is_paid' => 1
+                        ]);
+                    }else{
+                        return response(['message' => 'Ödeme Hatası.', 'status' => 'pay-001']);
+                    }
+                }
+
+                return response(['message' => 'Sipariş başarılı.', 'status' => 'success', 'object' => ['order_id' => $order_quid]]);
             }else{
 
-                $cart = Cart::query()->where('cart_id', $request->cart_id)->where('active', 0)->first();
-
-                if(isset($cart)) {
-
-                    $order = Order::query()->where('cart_id', $request->cart_id)->where('active', 1)->first();
-
-                    $order_status = OrderStatus::query()->where('is_default', 1)->first();
-                    $order_quid = $order->order_id;
-                    $shipping_id = $request->shipping_address_id;
-                    $billing_id = $request->billing_address_id;
-                    $shipping = Address::query()->where('id', $shipping_id)->first();
-                    $country = Country::query()->where('id', $shipping->country_id)->first();
-                    $city = City::query()->where('id', $shipping->city_id)->first();
-                    $district = District::query()->where('id', $shipping->district_id)->first();
-
-                    $shipping_address = $shipping->name . " " . $shipping->surname . " - " . $shipping->address_1 . " " . $shipping->address_2 . " - " . $shipping->postal_code . " - " . $shipping->phone . " - " . $district->name . " / " . $city->name . " / " . $country->name;
-                    if ($shipping->type == 2){
-                        $shipping_corporate_address = CorporateAddresses::query()->where('address_id',$shipping_id)->first();
-                        $shipping_address = $shipping_address." - ".$shipping_corporate_address->tax_number." - ".$shipping_corporate_address->tax_office." - ".$shipping_corporate_address->company_name;
-                    }
-
-
-                    $billing = Address::query()->where('id', $billing_id)->first();
-                    $billing_country = Country::query()->where('id', $billing->country_id)->first();
-                    $billing_city = City::query()->where('id', $billing->city_id)->first();
-                    $billing_district = District::query()->where('id', $billing->district_id)->first();
-                    $billing_address = $billing->name . " " . $billing->surname . " - " . $billing->address_1 . " " . $billing->address_2 . " - " . $billing->postal_code . " - " . $billing->phone . " - " . $billing_district->name . " / " . $billing_city->name . " / " . $billing_country->name;
-
-                    if ($shipping->type == 2){
-                        $billing_corporate_address = CorporateAddresses::query()->where('address_id',$billing_id)->first();
-                        $billing_address = $billing_address." - ".$billing_corporate_address->tax_number." - ".$billing_corporate_address->tax_office." - ".$billing_corporate_address->company_name;
-                    }
-
-                    Order::query()->where('order_id', $order_quid)->update([
-                        'carrier_id' => $request->carrier_id,
-                        'shipping_address_id' => $request->shipping_address_id,
-                        'billing_address_id' => $request->billing_address_id,
-                        'shipping_address' => $shipping_address,
-                        'billing_address' => $billing_address,
-                        'comment' => $request->comment,
-                        'shipping_type' => $request->delivery_type,
-                        'payment_method' => $request->payment_method,
-                        'shipping_price' => $request->shipping_price,
-                        'subtotal' => $request->subtotal,
-                        'total' => ($request->subtotal + $request->shipping_price),
-                        'is_partial' => $request->is_partial,
-                        'is_paid' => $request->is_paid,
-                        'coupon_code' => $request->coupon_code
-                    ]);
-
-                    OrderProduct::query()->where('order_id', $order_quid)->delete();
-
-
-                    $user_discount = User::query()->where('id', $request->user_id)->first()->user_discount;
-                    $carts = CartDetail::query()->where('cart_id', $request->cart_id)->get();
-                    foreach ($carts as $cart) {
-                        $product = Product::query()->where('id', $cart->product_id)->first();
-                        $variation = ProductVariation::query()->where('id', $cart->variation_id)->first();
-                        $rule = ProductRule::query()->where('variation_id', $variation->id)->first();
-                        if ($rule->discounted_price == null || $rule->discount_rate == 0){
-                            $price = $rule->regular_price - ($rule->regular_price / 100 * $user_discount);
-                            $tax = $price / 100 * $rule->tax_rate;
-                            $total = ($price + $tax) * $request->quantity;
-                        }else{
-                            $price = $rule->regular_price - ($rule->regular_price / 100 * ($user_discount + $rule->discount_rate));
-                            $tax = $price / 100 * $rule->tax_rate;
-                            $total = ($price + $tax) * $request->quantity;
-                        }
-                        OrderProduct::query()->insert([
-                            'order_id' => $order_quid,
-                            'product_id' => $product->id,
-                            'variation_id' => $variation->id,
-                            'name' => $product->name,
-                            'sku' => $variation->sku,
-                            'regular_price' => $rule->regular_price,
-                            'regular_tax' => $rule->regular_tax,
-                            'discounted_price' => $rule->discounted_price,
-                            'discounted_tax' => $rule->discounted_tax,
-                            'discount_rate' => $rule->discount_rate,
-                            'tax_rate' => $rule->tax_rate,
-                            'user_discount' => $user_discount,
-                            'quantity' => $cart->quantity,
-                            'total' => $total
-                        ]);
-                    }
-
-                    OrderStatusHistory::query()->insert([
-                        'order_id' => $order_quid,
-                        'status_id' => $order_status->id
-                    ]);
-
-                    if ($request->coupon_code != "") {
-                        $coupon_info = Coupons::query()->where('code', $request->coupon_code)->where('active', 1)->first();
-                        $used_count = $coupon_info->count_of_used + 1;
-                        $coupon_active = 1;
-                        if ($coupon_info->count_of_uses == $used_count) {
-                            $coupon_active = 0;
-                        }
-                        Coupons::query()->where('code', $request->coupon_code)->where('active', 1)->update([
-                            'count_of_used' => $used_count,
-                            'active' => $coupon_active
-                        ]);
-                    }
-
-                    return response(['message' => 'Sipariş ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['order_id' => $order_quid]]);
-                }else{
-
-
-                    return response(['message' => 'Sepet Bulunamadı.', 'status' => 'cart-001']);
-                }
+                return response(['message' => 'Sepet Bulunamadı.', 'status' => 'cart-001']);
             }
 
         } catch (ValidationException $validationException) {

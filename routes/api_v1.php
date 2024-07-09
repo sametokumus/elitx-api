@@ -8,12 +8,13 @@ use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CommentController;
+use App\Http\Controllers\Api\V1\CartController;
+use App\Http\Controllers\Api\V1\OrderController;
 
 
 use App\Http\Controllers\Api\V1\BankBinPairController;
 use App\Http\Controllers\Api\V1\BrandController;
 use App\Http\Controllers\Api\V1\CarrierController;
-use App\Http\Controllers\Api\V1\CartController;
 use App\Http\Controllers\Api\V1\CimriController;
 use App\Http\Controllers\Api\V1\CitiesController;
 use App\Http\Controllers\Api\V1\ContactController;
@@ -21,7 +22,6 @@ use App\Http\Controllers\Api\V1\ContactRulesController;
 use App\Http\Controllers\Api\V1\CountriesController;
 use App\Http\Controllers\Api\V1\CouponController;
 use App\Http\Controllers\Api\V1\CreditCardController;
-use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PopupController;
 use App\Http\Controllers\Api\V1\ProductDocumentController;
 use App\Http\Controllers\Api\V1\ProductTypeController;
@@ -156,10 +156,12 @@ Route::get('/cart/getUserToCart/{user_id}/{cart_id}', [CartController::class, 'g
 Route::post('/cart/getCheckoutPrices', [CartController::class, 'getCheckoutPrices']);
 Route::get('/cart/setIsOrder/{cart_id}/{is_order}', [CartController::class, 'setIsOrder']);
 
+
+//Order
+Route::post('/order/addOrder',[OrderController::class,'addOrder']);
+
 Route::post('order/addBankRequest', [OrderController::class, 'addBankRequest']);
 Route::post('order/updateBankRequest', [OrderController::class, 'updateBankRequest']);
-
-Route::post('/order/addOrder',[OrderController::class,'addOrder']);
 Route::get('/order/getOrdersByUserId/{user_id}',[OrderController::class,'getOrdersByUserId']);
 Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
 Route::get('/order/getOrderByPaymentId/{payment_id}',[OrderController::class,'getOrderByPaymentId']);
