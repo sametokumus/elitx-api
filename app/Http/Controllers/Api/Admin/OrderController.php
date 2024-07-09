@@ -76,37 +76,23 @@ class OrderController extends Controller
                 ->where('order_statuses.run_on', 1)
                 ->where('orders.active', 1)
                 ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.total', 'orders.status_id',
-                    'orders.user_id'
+                    'orders.user_id', 'orders.is_paid'
                 ]);
             foreach ($orders as $order) {
                 $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
                 $order['status_name'] = $status_name;
                 $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
+                $order['product_count'] = $product_count;
                 $products = OrderProduct::query()->where('order_id', $order->order_id)->get();
                 foreach ($products as $product){
                     $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
                 }
 
-                $payments = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->get();
-                $is_paids = true;
-                $is_paid_credit_card = false;
-                $is_preauth_credit_card = false;
-                foreach ($payments as $payment){
-                    if ($payment->is_paid == 0){
-                        $is_paids = false;
-                    }
-                    if ($payment->is_paid == 1 && $payment->is_refund == 0 && $payment->type == 1){
-                        $is_paid_credit_card = true;
-                    }
-                    if ($payment->is_preauth == 1 && $payment->is_paid == 0 && $payment->is_refund == 0 && $payment->is_cancel_preauth == 0 && $payment->type == 1){
-                        $is_preauth_credit_card = true;
-                    }
+                if ($order->is_paid == 1){
+                    $payment = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->where('is_paid', 1)->first();
+                    $order['payment'] = $payment;
                 }
 
-
-                $order['is_paids'] = $is_paids;
-                $order['is_paid_credit_card'] = $is_paid_credit_card;
-                $order['is_preauth_credit_card'] = $is_preauth_credit_card;
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['orders' => $orders]]);
         } catch (QueryException $queryException) {
