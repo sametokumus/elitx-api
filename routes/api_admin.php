@@ -7,9 +7,6 @@ use App\Http\Controllers\Api\Admin\AdminUserComments;
 use App\Http\Controllers\Api\Admin\AuthController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\LanguageController;
-use App\Http\Controllers\Api\Admin\SupportController;
-
-
 use App\Http\Controllers\Api\Admin\Old\BrandController;
 use App\Http\Controllers\Api\Admin\Old\CarrierController;
 use App\Http\Controllers\Api\Admin\Old\CartController;
@@ -19,7 +16,6 @@ use App\Http\Controllers\Api\Admin\Old\CreditCardController;
 use App\Http\Controllers\Api\Admin\Old\DashboardController;
 use App\Http\Controllers\Api\Admin\Old\DeliveryController;
 use App\Http\Controllers\Api\Admin\Old\ImportController;
-use App\Http\Controllers\Api\Admin\Old\OrderController;
 use App\Http\Controllers\Api\Admin\Old\OrderStatusController;
 use App\Http\Controllers\Api\Admin\Old\PopupController;
 use App\Http\Controllers\Api\Admin\Old\ProductTypeController;
@@ -32,8 +28,10 @@ use App\Http\Controllers\Api\Admin\Old\SubscribeController;
 use App\Http\Controllers\Api\Admin\Old\TabController;
 use App\Http\Controllers\Api\Admin\Old\TagController;
 use App\Http\Controllers\Api\Admin\Old\UserController;
+use App\Http\Controllers\Api\Admin\OrderController;
 use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\ShopController;
+use App\Http\Controllers\Api\Admin\SupportController;
 use Illuminate\Support\Facades\Route;
 
 

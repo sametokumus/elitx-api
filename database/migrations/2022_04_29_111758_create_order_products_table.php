@@ -18,6 +18,7 @@ class CreateOrderProductsTable extends Migration
             $table->bigInteger('order_id');
             $table->bigInteger('product_id');
             $table->bigInteger('variation_id');
+            $table->bigInteger('status_id')->default(1);
             $table->string('name');
             $table->string('sku');
             $table->decimal('regular_price');

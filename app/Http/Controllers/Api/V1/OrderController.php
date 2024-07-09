@@ -131,6 +131,7 @@ class OrderController extends Controller
                         'order_id' => $order_quid,
                         'product_id' => $product->id,
                         'variation_id' => $cart->variation_id,
+                        'status_id' => $order_status->id,
                         'name' => $product->name,
                         'sku' => $product->sku,
                         'price' => $price,
