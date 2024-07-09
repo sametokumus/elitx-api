@@ -86,8 +86,6 @@ class OrderController extends Controller
                     'shipping_address' => $shipping_address,
                     'billing_address' => $billing_address,
                     'comment' => $request->comment,
-                    'payment_method' => $request->payment_method,
-                    'shipping_price' => $request->shipping_price,
                     'subtotal' => $request->subtotal,
                     'total' => $request->total,
                     'coupon_code' => $request->coupon_code
