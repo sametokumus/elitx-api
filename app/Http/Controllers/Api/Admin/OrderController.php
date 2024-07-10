@@ -108,63 +108,25 @@ class OrderController extends Controller
                 ->leftJoin('order_statuses', 'order_statuses.id', '=', 'orders.status_id')
                 ->where('order_statuses.run_on', 0)
                 ->where('orders.active', 1)
-                ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.total', 'orders.status_id',
-                    'orders.shipping_type', 'orders.user_id', 'orders.payment_method'
+                ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.updated_at as order_update_date', 'orders.total', 'orders.currency', 'orders.status_id',
+                    'orders.user_id', 'orders.is_paid'
                 ]);
             foreach ($orders as $order) {
-                $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
-                $product = OrderProduct::query()->where('order_id', $order->order_id)->first();
-                $product_image_row = ProductImage::query()->where('variation_id', $product->variation_id)->first();
-                if ($product_image_row) {
-                    $product_image = $product_image_row->image;
-                }
                 $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
-//                $shipping_type = ShippingType::query()->where('id', $order->shipping_type)->first()->name;
-                if ($order->shipping_type == 0){
-                    $shipping_type = "Mağazadan Teslimat";
-                }else {
-                    $shipping_type = Carrier::query()->where('id', $order->shipping_type)->first()->name;
-                }
-                $user_profile = UserProfile::query()->where('user_id', $order->user_id)->first(['name', 'surname']);
-                $payment_method = PaymentMethod::query()->where('id', $order->payment_method)->first()->name;
-
-                $payment_by_types = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->groupBy('type')->get('type');
-                $payment_types = '';
-                foreach ($payment_by_types as $payment){
-                    $payment_type = PaymentType::query()->where('id', $payment->type)->first();
-                    $payment_types .= $payment_type->name.', ';
-                }
-                $payment_types = rtrim($payment_types, ", ");
-
-                $payments = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->get();
-                $is_paids = true;
-                $is_paid_credit_card = false;
-                $is_preauth_credit_card = false;
-                foreach ($payments as $payment){
-                    if ($payment->is_paid == 0){
-                        $is_paids = false;
-                    }
-                    if ($payment->is_paid == 1 && $payment->is_refund == 0 && $payment->type == 1){
-                        $is_paid_credit_card = true;
-                    }
-                    if ($payment->is_preauth == 1 && $payment->is_paid == 0 && $payment->is_refund == 0 && $payment->is_cancel_preauth == 0 && $payment->type == 1){
-                        $is_preauth_credit_card = true;
-                    }
-                }
-
-
-                $order['product_count'] = $product_count;
-                $order['product_image'] = $product_image;
-                $order['payment_method'] = $order->payment_method;
                 $order['status_name'] = $status_name;
-                $order['shipping_number'] = $order->shipping_number;
-                $order['shipping_type_name'] = $shipping_type;
-                $order['user_profile'] = $user_profile;
-                $order['payment_method_name'] = $payment_method;
-                $order['payment_types'] = $payment_types;
-                $order['is_paids'] = $is_paids;
-                $order['is_paid_credit_card'] = $is_paid_credit_card;
-                $order['is_preauth_credit_card'] = $is_preauth_credit_card;
+                $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
+                $order['product_count'] = $product_count;
+                $products = OrderProduct::query()->where('order_id', $order->order_id)->get();
+                foreach ($products as $product){
+                    $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
+                }
+
+                if ($order->is_paid == 1){
+                    $payment = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->where('is_paid', 1)->first();
+                    $order['payment'] = $payment;
+                }
+                $order['user'] = User::query()->where('id', $order->user_id)->first();
+
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['orders' => $orders]]);
         } catch (QueryException $queryException) {
