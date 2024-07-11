@@ -272,162 +272,21 @@ class OrderController extends Controller
     public function getOrderById($order_id){
         try {
             $order = Order::query()->where('order_id',$order_id)->first();
-            $order['status_name'] = OrderStatus::query()->where('id', $order->status_id)->first()->name;
-            if ($order->carrier_id != 0) {
-                $order['carrier_name'] = Carrier::query()->where('id', $order->carrier_id)->first()->name;
+
+            $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
+            $order['status_name'] = $status_name;
+            $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
+            $order['product_count'] = $product_count;
+            $products = OrderProduct::query()->where('order_id', $order->order_id)->get();
+            foreach ($products as $product){
+                $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
             }
-            if ($order->shipping_type == 0){
-                $shipping_type = "Mağazadan Teslimat";
-            }else {
-                $shipping_type = Carrier::query()->where('id', $order->shipping_type)->first()->name;
+
+            if ($order->is_paid == 1){
+                $payment = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->where('is_paid', 1)->first();
+                $order['payment'] = $payment;
             }
-            $order['shipping_name'] = $shipping_type;
-            $order['payment_method'] = PaymentMethod::query()->where('id', $order->payment_method)->first()->name;
-            $order_details = OrderProduct::query()->where('order_id', $order_id)->get();
-            $order_price = 0;
-            $order_tax = 0;
-            $weight = 0;
-            foreach ($order_details as $order_detail){
-                $product = Product::query()->where('id',$order_detail->product_id)->first();
-                $brand_name = Brand::query()->where('id',$product->brand_id)->first()->name;
-                $variation = ProductVariation::query()->where('id',$order_detail->variation_id)->first();
-                $rule = ProductRule::query()->where('variation_id',$order_detail->variation_id)->first();
-                $image = ProductImage::query()->where('variation_id',$order_detail->variation_id)->first();
-
-
-
-                if ($rule->currency == "EUR"){
-                    $try_currency = array();
-                    $try_currency['regular_price'] = convertEURtoTRY($rule->regular_price);
-                    $try_currency['regular_tax'] = convertEURtoTRY($rule->regular_tax);
-                    $try_currency['discounted_price'] = convertEURtoTRY($rule->discounted_price);
-                    $try_currency['discounted_tax'] = convertEURtoTRY($rule->discounted_tax);
-                    $try_currency['currency'] = "TL";
-                    if ($rule['extra_discount'] == 1){
-                        $try_currency['extra_discount_price'] = convertEURtoTRY($rule['extra_discount_price']);
-                        $try_currency['extra_discount_tax'] = convertEURtoTRY($rule['extra_discount_tax']);
-                    }
-                    $rule['try_currency'] = $try_currency;
-                }else if ($rule->currency == "USD") {
-                    $try_currency = array();
-                    $try_currency['regular_price'] = convertUSDtoTRY($rule->regular_price);
-                    $try_currency['regular_tax'] = convertUSDtoTRY($rule->regular_tax);
-                    $try_currency['discounted_price'] = convertUSDtoTRY($rule->discounted_price);
-                    $try_currency['discounted_tax'] = convertUSDtoTRY($rule->discounted_tax);
-                    $try_currency['currency'] = "TL";
-                    if ($rule['extra_discount'] == 1){
-                        $try_currency['extra_discount_price'] = convertUSDtoTRY($rule['extra_discount_price']);
-                        $try_currency['extra_discount_tax'] = convertUSDtoTRY($rule['extra_discount_tax']);
-                    }
-                    $rule['try_currency'] = $try_currency;
-                }
-
-                $variation['rule'] = $rule;
-                $variation['image'] = $image;
-                $product['variation'] = $variation;
-                $product['brand_name'] = $brand_name;
-                $order_detail['product'] = $product;
-
-                if($order->user_id != null) {
-                    $user = User::query()->where('id', $order->user_id)->first();
-                    $total_user_discount = $user->user_discount;
-
-                    $type_discount = UserTypeDiscount::query()->where('user_type_id',$user->user_type)->where('brand_id',$product->brand_id)->where('type_id',$product->type_id)->where('active', 1)->first();
-                    if(!empty($type_discount)){
-                        $total_user_discount = $total_user_discount + $type_discount->discount;
-                    }
-
-                    $rule['extra_discount'] = 0;
-                    $rule['extra_discount_price'] = 0;
-                    $rule['extra_discount_tax'] = 0;
-                    $rule['extra_discount_rate'] = number_format($total_user_discount, 2,".","");
-                    if ($total_user_discount > 0){
-                        $rule['extra_discount'] = 1;
-                        if ($order_detail->discounted_price == null || $order_detail->discount_rate == 0){
-                            $price = $order_detail->regular_price - ($order_detail->regular_price / 100 * $total_user_discount);
-                        }else{
-                            $price = $order_detail->regular_price - ($order_detail->regular_price / 100 * ($total_user_discount + $order_detail->discount_rate));
-                        }
-                        $rule['extra_discount_price'] = number_format($price, 2,".","");
-                        $rule['extra_discount_tax'] = number_format(($price / 100 * $product->tax_rate), 2,".","");
-
-
-                        $order_detail_price = $price * $order_detail->quantity;
-                        $order_detail_tax = ($price * $order_detail->quantity) / 100 * $rule->tax_rate;
-                    }else{
-                        if ($order_detail->discounted_price == null || $order_detail->discount_rate == 0){
-                            $order_detail_price = $order_detail->regular_price * $order_detail->quantity;
-                            $order_detail_tax = $order_detail->regular_tax * $order_detail->quantity;
-                        }else{
-                            $order_detail_price = $order_detail->discounted_price * $order_detail->quantity;
-                            $order_detail_tax = $order_detail->discounted_tax * $order_detail->quantity;
-                        }
-                    }
-                }else{
-                    if ($order_detail->discounted_price == null || $order_detail->discount_rate == 0){
-                        $order_detail_price = $order_detail->regular_price * $order_detail->quantity;
-                        $order_detail_tax = $order_detail->regular_tax * $order_detail->quantity;
-                    }else{
-                        $order_detail_price = $order_detail->discounted_price * $order_detail->quantity;
-                        $order_detail_tax = $order_detail->discounted_tax * $order_detail->quantity;
-                    }
-                }
-
-
-//                if ($order_detail->discounted_price == null || $order_detail->discount_rate == 0){
-//                    $order_detail_price = $order_detail->regular_price * $order_detail->quantity;
-//                    $order_detail_tax = $order_detail->regular_tax * $order_detail->quantity;
-//                }else{
-//                    $order_detail_price = $order_detail->discounted_price * $order_detail->quantity;
-//                    $order_detail_tax = $order_detail->discounted_tax * $order_detail->quantity;
-//                }
-                $weight = $weight + $rule->weight;
-//                if($product->is_free_shipping == 1){
-//                    $order_detail_delivery_price = 0.00;
-//                }
-
-
-                if ($rule->currency == "EUR"){
-                    $order_detail['sub_total_price'] = convertEURtoTRY($order_detail_price);
-                    $order_detail['sub_total_tax'] = convertEURtoTRY($order_detail_tax);
-//                    $order_price += convertEURtoTRY($order_detail_price);
-//                    $order_tax += convertEURtoTRY($order_detail_tax);
-                }else if ($rule->currency == "USD") {
-                    $order_detail['sub_total_price'] = convertUSDtoTRY($order_detail_price);
-                    $order_detail['sub_total_tax'] = convertUSDtoTRY($order_detail_tax);
-//                    $order_price += convertUSDtoTRY($order_detail_price);
-//                    $order_tax += convertUSDtoTRY($order_detail_tax);
-                }else{
-
-                    $order_detail['sub_total_price'] = $order_detail_price;
-                    $order_detail['sub_total_tax'] = $order_detail_tax;
-//                    $order_price += $order_detail_price;
-//                    $order_tax += $order_detail_tax;
-                }
-
-            }
-            $order['order_details'] = $order_details;
-//            $order['total_price'] = number_format($order_price, 2,".","");
-//            $order['total_tax'] = number_format($order_tax, 2,".","");
-//
-//            if($order->coupon_code != "null"){
-//                $coupon = Coupons::query()->where('code', $order->coupon_code)->where('active', 1)->first();
-//                if ($coupon->discount_type == 1){
-//                    $coupon_message = $coupon->discount." TL indirim.";
-//                    $coupon_price = ($order_price + $order_tax) - $coupon->discount;
-//                }elseif ($coupon->discount_type == 2){
-//                    $coupon_message = "%".$coupon->discount." indirim.";
-//                    $coupon_price = $order_price - (($order_price + $order_tax) / 100 * $coupon->discount);
-//                }
-//
-//                $order['coupon_price'] = number_format($coupon_price, 2,".","");
-//                $order['coupon_message'] = $coupon_message;
-//            }
-
-
-//            $delivery_price = DeliveryPrice::query()->where('min_value', '<=', $weight)->where('max_value', '>', $weight)->first();
-//            $order['total_delivery'] = $delivery_price;
-            $order['total_weight'] = $weight;
+            $order['user'] = User::query()->where('id', $order->user_id)->first();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['order' => $order]]);
         } catch (QueryException $queryException) {

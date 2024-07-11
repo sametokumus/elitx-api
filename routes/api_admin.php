@@ -123,6 +123,20 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('support/getSupportConversation/{request_id}', [SupportController::class, 'getSupportConversation']);
     Route::get('support/getCloseSupportRequest/{request_id}', [SupportController::class, 'getCloseSupportRequest']);
 
+    //Order
+    Route::get('/order/getOnGoingOrders',[OrderController::class,'getOnGoingOrders']);
+    Route::get('/order/getCompletedOrders',[OrderController::class,'getCompletedOrders']);
+    Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
+
+
+    Route::post('order/updateOrder/{id}', [OrderController::class, 'updateOrder']);
+    Route::get('order/getOrderStatusHistoriesById/{order_id}', [OrderController::class, 'getOrderStatusHistoriesById']);
+    Route::post('order/updateOrderStatus', [OrderController::class, 'updateOrderStatus']);
+    Route::get('order/deleteOrder/{order_id}', [OrderController::class, 'deleteOrder']);
+    Route::get('order/confirmOrder/{order_id}', [OrderController::class, 'confirmOrder']);
+    Route::get('order/cancelOrder/{order_id}', [OrderController::class, 'cancelOrder']);
+    Route::get('order/cancelProvision/{order_id}', [OrderController::class, 'cancelProvision']);
+
 
 
 
@@ -213,17 +227,6 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('orderStatus/deleteOrderStatus/{id}', [OrderStatusController::class, 'deleteOrderStatus']);
     Route::get('orderStatus/getOrderStatuses', [OrderStatusController::class, 'getOrderStatuses']);
     Route::get('orderStatus/getOrderStatusById/{id}', [OrderStatusController::class, 'getOrderStatusById']);
-
-
-    Route::post('order/updateOrder/{id}', [OrderController::class, 'updateOrder']);
-    Route::get('/order/getOnGoingOrders',[OrderController::class,'getOnGoingOrders']);
-    Route::get('/order/getCompletedOrders',[OrderController::class,'getCompletedOrders']);
-    Route::get('order/getOrderStatusHistoriesById/{order_id}', [OrderController::class, 'getOrderStatusHistoriesById']);
-    Route::post('order/updateOrderStatus', [OrderController::class, 'updateOrderStatus']);
-    Route::get('order/deleteOrder/{order_id}', [OrderController::class, 'deleteOrder']);
-    Route::get('order/confirmOrder/{order_id}', [OrderController::class, 'confirmOrder']);
-    Route::get('order/cancelOrder/{order_id}', [OrderController::class, 'cancelOrder']);
-    Route::get('order/cancelProvision/{order_id}', [OrderController::class, 'cancelProvision']);
 
     Route::post('order/updateOrderInfo/{order_id}', [OrderController::class, 'updateOrderInfo']);
     Route::post('order/updateOrderShipment/{order_id}', [OrderController::class, 'updateOrderShipment']);
