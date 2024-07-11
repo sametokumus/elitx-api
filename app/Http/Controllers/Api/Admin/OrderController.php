@@ -154,6 +154,7 @@ class OrderController extends Controller
 
                 if ($order->is_paid == 1){
                     $payment = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->where('is_paid', 1)->first();
+                    $payment['type_name'] = PaymentType::query()->where('id', $payment->type)->first()->name;
                     $order['payment'] = $payment;
                 }
                 $order['user'] = User::query()->where('id', $order->user_id)->first();
