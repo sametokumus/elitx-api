@@ -173,10 +173,15 @@ class OrderController extends Controller
         }
     }
 
-    public function getOrderStatusHistoriesById($order_id)
+    public function getOrderStatusHistoriesById($id)
     {
         try {
-            $order_status_histories = OrderStatusHistory::query()->where('order_id', $order_id)->get();
+            $order_guid = Order::query()->where('id', $id)->first()->order_id;
+            $order_status_histories = OrderStatusHistory::query()
+                ->leftJoin('order_statuses', 'order_statuses.id', '=', 'orders.status_id')
+                ->selectRaw('order_status_histories.*, order_statuses.is_notified as notify')
+                ->where('id', $order_guid)
+                ->get();
             return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'order_status_histories' => $order_status_histories]);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
