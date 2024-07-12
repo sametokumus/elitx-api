@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Shop\ProductController;
 use App\Http\Controllers\Api\Shop\CategoryController;
 use App\Http\Controllers\Api\Shop\CommentController;
 use App\Http\Controllers\Api\Shop\SupportController;
+use App\Http\Controllers\Api\Shop\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +66,12 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     Route::post('support/addSupportMessage', [SupportController::class, 'addSupportMessage']);
     Route::get('support/getSupportList', [SupportController::class, 'getSupportList']);
     Route::get('support/getSupportConversation/{request_id}', [SupportController::class, 'getSupportConversation']);
+
+    //Order
+    Route::get('/order/getOnGoingOrders',[OrderController::class,'getOnGoingOrders']);
+    Route::get('/order/getCompletedOrders',[OrderController::class,'getCompletedOrders']);
+    Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
+    Route::get('order/getOrderStatusHistoriesById/{id}', [OrderController::class, 'getOrderStatusHistoriesById']);
 
 });
 
