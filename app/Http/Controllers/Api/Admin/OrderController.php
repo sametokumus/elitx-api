@@ -20,6 +20,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductRule;
 use App\Models\ProductVariation;
+use App\Models\Shop;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\UserTypeDiscount;
@@ -155,6 +156,7 @@ class OrderController extends Controller
                         $variation = ProductVariation::query()->where('product_id', $product->id)->where('id', $product->variation_id)->first();
                         $detail['variation'] = $variation;
                     }
+                    $detail['owner_name'] = Shop::query()->where('id', $product->owner_id)->first()->name;
                     $product['detail'] = $detail;
                 }
 
