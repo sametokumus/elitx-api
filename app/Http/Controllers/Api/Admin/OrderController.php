@@ -81,7 +81,7 @@ class OrderController extends Controller
                 ->where('order_statuses.run_on', 1)
                 ->where('orders.active', 1)
                 ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.updated_at as order_update_date', 'orders.total', 'orders.currency', 'orders.status_id',
-                    'orders.user_id', 'orders.is_paid'
+                    'orders.user_id', 'orders.is_paid', 'orders.commission_total'
                 ]);
             foreach ($orders as $order) {
                 $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
@@ -114,7 +114,7 @@ class OrderController extends Controller
                 ->where('order_statuses.run_on', 0)
                 ->where('orders.active', 1)
                 ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.updated_at as order_update_date', 'orders.total', 'orders.currency', 'orders.status_id',
-                    'orders.user_id', 'orders.is_paid'
+                    'orders.user_id', 'orders.is_paid', 'orders.commission_total'
                 ]);
             foreach ($orders as $order) {
                 $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
