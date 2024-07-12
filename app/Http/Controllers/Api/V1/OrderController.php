@@ -21,6 +21,7 @@ use App\Models\OrderRefund;
 use App\Models\OrderRefundStatus;
 use App\Models\OrderStatus;
 use App\Models\OrderStatusHistory;
+use App\Models\OrderProductStatusHistory;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\PaymentType;
@@ -124,7 +125,7 @@ class OrderController extends Controller
                         $total_commission += $product_commission;
                     }
 
-                    OrderProduct::query()->insert([
+                    $order_product_id = OrderProduct::query()->insertGetId([
                         'order_id' => $order_quid,
                         'product_id' => $product->id,
                         'variation_id' => $cart->variation_id,
@@ -137,6 +138,12 @@ class OrderController extends Controller
                         'total' => $total,
                         'commission_rate' => $commission_rate,
                         'commission_total' => $product_commission
+                    ]);
+
+                    OrderProductStatusHistory::query()->insert([
+                        'status_id' => $order_status->id,
+                        'order_id' => $order_quid,
+                        'order_product_id' => $order_product_id
                     ]);
                 }
 
