@@ -182,7 +182,7 @@ class OrderController extends Controller
                 ->selectRaw('order_status_histories.*, order_statuses.is_notified as notify')
                 ->where('order_id', $order_guid)
                 ->get();
-            return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'order_status_histories' => $order_status_histories]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['order_status_histories' => $order_status_histories]]);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
