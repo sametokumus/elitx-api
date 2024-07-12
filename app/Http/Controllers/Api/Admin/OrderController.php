@@ -179,7 +179,7 @@ class OrderController extends Controller
             $order_guid = Order::query()->where('id', $id)->first()->order_id;
             $order_status_histories = OrderStatusHistory::query()
                 ->leftJoin('order_statuses', 'order_statuses.id', '=', 'order_status_histories.status_id')
-                ->selectRaw('order_status_histories.*, order_statuses.is_notified as notify')
+                ->selectRaw('order_status_histories.*, order_statuses.is_notified as notify, order_statuses.name as status_name')
                 ->where('order_id', $order_guid)
                 ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['order_status_histories' => $order_status_histories]]);
