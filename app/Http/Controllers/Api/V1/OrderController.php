@@ -30,6 +30,7 @@ use App\Models\ProductPrice;
 use App\Models\ProductRule;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationPrice;
+use App\Models\Shop;
 use App\Models\User;
 use App\Models\UserTypeDiscount;
 use DateTime;
@@ -98,6 +99,8 @@ class OrderController extends Controller
                     'active' => 0
                 ]);
 
+                $total_commission = 0;
+
                 $carts = CartDetail::query()->where('cart_id', $request->cart_id)->get();
                 foreach ($carts as $cart) {
                     $product = Product::query()->where('id', $cart->product_id)->first();
@@ -127,6 +130,14 @@ class OrderController extends Controller
                         $total = $discounted_price * $cart->quantity;
                     }
 
+                    $product_commission = 0;
+                    if ($product->owner_type == 1) {
+                        $shop = Shop::query()->where('id', $product->owner_id)->first();
+                        $commission_rate = $shop->commission_rate;
+                        $product_commission = $total / 100 * $commission_rate;
+                        $total_commission += $product_commission;
+                    }
+
                     OrderProduct::query()->insert([
                         'order_id' => $order_quid,
                         'product_id' => $product->id,
@@ -137,9 +148,15 @@ class OrderController extends Controller
                         'price' => $price,
                         'discounted_price' => $discounted_price,
                         'quantity' => $cart->quantity,
-                        'total' => $total
+                        'total' => $total,
+                        'commission_rate' => $commission_rate,
+                        'commission_total' => $product_commission
                     ]);
                 }
+
+                Order::query()->where('id', $order_id)->update([
+                    'commission_total' => $total_commission
+                ]);
 
                 OrderStatusHistory::query()->insert([
                     'order_id' => $order_quid,

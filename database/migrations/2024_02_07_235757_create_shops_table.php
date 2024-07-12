@@ -29,6 +29,7 @@ class CreateShopsTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->boolean('confirmed')->default(false);
             $table->timestamp('account_confirmed_at')->nullable();
+            $table->decimal('commission_rate')->default(0);
             $table->timestamp('deleted_at')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();

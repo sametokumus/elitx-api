@@ -31,6 +31,7 @@ class CreateOrdersTable extends Migration
             $table->string('currency')->nullable();
             $table->string('coupon_code');
             $table->tinyInteger('is_paid')->default(0);
+            $table->decimal('commission_total')->default(0);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
