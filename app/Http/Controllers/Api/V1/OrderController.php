@@ -77,28 +77,13 @@ class OrderController extends Controller
                     $billing_address = $billing_address." - ".$billing_corporate_address->tax_number." - ".$billing_corporate_address->tax_office." - ".$billing_corporate_address->company_name;
                 }
 
-                $order_id = Order::query()->insertGetId([
-                    'order_id' => $order_quid,
-                    'user_id' => $user->id,
-                    'cart_id' => $request->cart_id,
-                    'status_id' => $order_status->id,
-                    'shipping_address_id' => $request->shipping_address_id,
-                    'billing_address_id' => $request->billing_address_id,
-                    'shipping_address' => $shipping_address,
-                    'billing_address' => $billing_address,
-                    'comment' => $request->comment,
-                    'subtotal' => $request->subtotal,
-                    'total' => $request->total,
-                    'currency' => $request->currency,
-                    'coupon_code' => $request->coupon_code
-                ]);
-
                 Cart::query()->where('cart_id', $request->cart_id)->update([
                     'user_id' => $user->id,
                     'is_order' => 1,
                     'active' => 0
                 ]);
 
+                $total_price = null;
                 $total_commission = 0;
 
                 $carts = CartDetail::query()->where('cart_id', $request->cart_id)->get();
@@ -129,6 +114,7 @@ class OrderController extends Controller
                     }else{
                         $total = $discounted_price * $cart->quantity;
                     }
+                    $total_price += $total;
 
                     $product_commission = 0;
                     if ($product->owner_type == 1) {
@@ -154,7 +140,34 @@ class OrderController extends Controller
                     ]);
                 }
 
-                Order::query()->where('id', $order_id)->update([
+
+                $products_subtotal_price = $total_price;
+
+                if($request->coupon_code != null && $request->coupon_code != ''){
+                    $coupon = Coupons::query()->where('code', $request->coupon_code)->first();
+                    if ($coupon->discount_type == 1){
+                        $coupon_subtotal_price = $products_subtotal_price - $coupon->discount;
+                    }elseif ($coupon->discount_type == 2){
+                        $coupon_subtotal_price = $products_subtotal_price - ($products_subtotal_price / 100 * $coupon->discount);
+                    }
+                    $total_price = $coupon_subtotal_price;
+                }
+
+
+                $order_id = Order::query()->insertGetId([
+                    'order_id' => $order_quid,
+                    'user_id' => $user->id,
+                    'cart_id' => $request->cart_id,
+                    'status_id' => $order_status->id,
+                    'shipping_address_id' => $request->shipping_address_id,
+                    'billing_address_id' => $request->billing_address_id,
+                    'shipping_address' => $shipping_address,
+                    'billing_address' => $billing_address,
+                    'comment' => $request->comment,
+                    'subtotal' => $products_subtotal_price,
+                    'total' => $total_price,
+                    'currency' => $request->currency,
+                    'coupon_code' => $request->coupon_code,
                     'commission_total' => $total_commission
                 ]);
 
