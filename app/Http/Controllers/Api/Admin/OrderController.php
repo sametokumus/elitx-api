@@ -150,6 +150,12 @@ class OrderController extends Controller
                 $products = OrderProduct::query()->where('order_id', $order->order_id)->get();
                 foreach ($products as $product){
                     $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
+                    $detail = Product::query()->where('id', $product->product_id)->first();
+                    if (!empty($product->variation_id)){
+                        $variation = ProductVariation::query()->where('product_id', $product->id)->where('id', $product->variation_id)->first();
+                        $detail['variation'] = $variation;
+                    }
+                    $product['detail'] = $detail;
                 }
 
                 if ($order->is_paid == 1){
