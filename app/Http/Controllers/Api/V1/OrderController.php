@@ -203,7 +203,7 @@ class OrderController extends Controller
                         Payment::query()->insert([
                             'order_id' => $order_quid,
                             'payment_id' => $payment_quid,
-                            'price' => $request->total,
+                            'price' => $total_price,
                             'type' => $request->payment_type,
                             'installment' => $request->installment_count,
                             'is_paid' => 1
@@ -223,7 +223,7 @@ class OrderController extends Controller
                         Payment::query()->insert([
                             'order_id' => $order_quid,
                             'payment_id' => $payment_quid,
-                            'price' => $request->total,
+                            'price' => $total_price,
                             'type' => $request->payment_type,
                             'installment' => $request->installment_count,
                             'is_paid' => 1
