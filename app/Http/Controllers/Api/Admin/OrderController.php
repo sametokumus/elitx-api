@@ -157,6 +157,7 @@ class OrderController extends Controller
                     $payment['type_name'] = PaymentType::query()->where('id', $payment->type)->first()->name;
                     $order['payment'] = $payment;
                 }
+                $order['products'] = $products;
                 $order['user'] = User::query()->where('id', $order->user_id)->first();
             }
 
