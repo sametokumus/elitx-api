@@ -178,7 +178,7 @@ class OrderController extends Controller
         try {
             $order_guid = Order::query()->where('id', $id)->first()->order_id;
             $order_status_histories = OrderStatusHistory::query()
-                ->leftJoin('order_statuses', 'order_statuses.id', '=', 'orders.status_id')
+                ->leftJoin('order_statuses', 'order_statuses.id', '=', 'order_status_histories.status_id')
                 ->selectRaw('order_status_histories.*, order_statuses.is_notified as notify')
                 ->where('order_id', $order_guid)
                 ->get();
