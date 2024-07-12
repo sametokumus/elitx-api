@@ -156,7 +156,7 @@ class OrderController extends Controller
                         $variation = ProductVariation::query()->where('product_id', $product->id)->where('id', $product->variation_id)->first();
                         $detail['variation'] = $variation;
                     }
-                    $detail['owner_name'] = Shop::query()->where('id', $product->owner_id)->first()->name;
+                    $detail['owner_name'] = Shop::query()->where('id', $detail->owner_id)->first()->name;
                     $product['detail'] = $detail;
                 }
 
