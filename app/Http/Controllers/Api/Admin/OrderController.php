@@ -180,7 +180,7 @@ class OrderController extends Controller
             $order_status_histories = OrderStatusHistory::query()
                 ->leftJoin('order_statuses', 'order_statuses.id', '=', 'orders.status_id')
                 ->selectRaw('order_status_histories.*, order_statuses.is_notified as notify')
-                ->where('id', $order_guid)
+                ->where('order_id', $order_guid)
                 ->get();
             return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'order_status_histories' => $order_status_histories]);
         } catch (ValidationException $validationException) {
