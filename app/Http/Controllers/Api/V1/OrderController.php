@@ -99,7 +99,7 @@ class OrderController extends Controller
                     }
                     $currency = $product_price->currency;
 
-                    if ($cart->variation_id != null) {
+//                    if ($cart->variation_id != null) {
                         $variation = ProductVariation::query()->where('product_id', $product->id)->where('id', $request->variation_id)->where('active', 1)->first();
 
                         if ($variation) {
@@ -108,7 +108,7 @@ class OrderController extends Controller
                         }
 
                         $discounted_price = null;
-                    }
+//                    }
 
                     if ($discounted_price == null){
                         $total = $price * $cart->quantity;
