@@ -40,7 +40,11 @@ class OrderController extends Controller
                 $order['status_name'] = $status_name;
                 $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
                 $order['product_count'] = $product_count;
-                $products = OrderProduct::query()->where('order_id', $order->order_id)->get();
+                $products = OrderProduct::query()
+                    ->leftJoin('products', 'products.id', '=', 'order_products.product_id')
+                    ->where('products.owner_id', $shop->id)
+                    ->where('order_products.order_id', $order->order_id)
+                    ->get(['order_products.*']);
                 foreach ($products as $product){
                     $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
                 }
