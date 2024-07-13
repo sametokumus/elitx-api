@@ -100,10 +100,10 @@ class OrderController extends Controller
                     $currency = $product_price->currency;
 
                     if ($cart->variation_id != null) {
-                        $variation = ProductVariation::query()->where('product_id', $product->product_id)->where('id', $request->variation_id)->where('active', 1)->first();
+                        $variation = ProductVariation::query()->where('product_id', $cart->product_id)->where('id', $cart->variation_id)->where('active', 1)->first();
 
                         if ($variation) {
-                            $variation_price = ProductVariationPrice::query()->where('product_id', $product->product_id)->where('variation_id', $request->variation_id)->orderByDesc('id')->first();
+                            $variation_price = ProductVariationPrice::query()->where('product_id', $cart->product_id)->where('variation_id', $cart->variation_id)->orderByDesc('id')->first();
                             $price = $variation_price->price;
                         }
 
