@@ -119,6 +119,9 @@ class OrderController extends Controller
                     ->where('products.owner_id', $shop->id)
                     ->where('order_products.order_id', $order->order_id)
                     ->get(['order_products.*']);
+
+                $total = 0;
+                $commission_total = 0;
                 foreach ($products as $product){
                     $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
                     $detail = Product::query()->where('id', $product->product_id)->first();
@@ -128,7 +131,13 @@ class OrderController extends Controller
                     }
                     $detail['owner_name'] = Shop::query()->where('id', $detail->owner_id)->first()->name;
                     $product['detail'] = $detail;
+
+                    $total += $product->total;
+                    $commission_total += $product->commission_total;
                 }
+
+                $order->total = $total;
+                $order->commission_total = $commission_total;
 
                 if ($order->is_paid == 1){
                     $payment = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->where('is_paid', 1)->first();
