@@ -27,6 +27,9 @@ class OrderController extends Controller
             $shop = Auth::user();
             $orders = Order::query()
                 ->leftJoin('order_statuses', 'order_statuses.id', '=', 'orders.status_id')
+                ->leftJoin('order_products', 'order_products.order_id', '=', 'orders.order_id')
+                ->leftJoin('products', 'products.id', '=', 'order_products.product_id')
+                ->where('products.owner_id', $shop->id)
                 ->where('order_statuses.run_on', 1)
                 ->where('orders.active', 1)
                 ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.updated_at as order_update_date', 'orders.total', 'orders.currency', 'orders.status_id',
