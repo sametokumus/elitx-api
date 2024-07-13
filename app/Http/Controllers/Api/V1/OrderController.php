@@ -99,7 +99,7 @@ class OrderController extends Controller
                     }
                     $currency = $product_price->currency;
 
-                    if (!empty($cart->variation_id)) {
+                    if ($cart->variation_id != null) {
                         $variation = ProductVariation::query()->where('product_id', $product->id)->where('id', $request->variation_id)->where('active', 1)->first();
 
                         if ($variation) {
