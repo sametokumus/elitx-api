@@ -172,8 +172,8 @@ class CartController extends Controller
 
     public function getCartById($cart_id){
         try {
-            $cart = Cart::query()->where('cart_id',$cart_id)->first();
-            $cart_details = CartDetail::query()->where('cart_id',$cart->cart_id)->where('active',1)->get();
+            $cart = Cart::query()->where('cart_id', $cart_id)->first();
+            $cart_details = CartDetail::query()->where('cart_id', $cart_id)->where('active',1)->get();
             $cart_price = 0;
             foreach ($cart_details as $cart_detail){
                 $product = Product::query()->where('id',$cart_detail->product_id)->first();
