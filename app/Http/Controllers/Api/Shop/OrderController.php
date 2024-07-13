@@ -136,6 +136,7 @@ class OrderController extends Controller
                     $commission_total += $product->commission_total;
                 }
 
+                $order->sub_total = $total;
                 $order->total = $total;
                 $order->commission_total = $commission_total;
 
