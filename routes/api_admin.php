@@ -27,11 +27,11 @@ use App\Http\Controllers\Api\Admin\Old\SliderController;
 use App\Http\Controllers\Api\Admin\Old\SubscribeController;
 use App\Http\Controllers\Api\Admin\Old\TabController;
 use App\Http\Controllers\Api\Admin\Old\TagController;
-use App\Http\Controllers\Api\Admin\Old\UserController;
 use App\Http\Controllers\Api\Admin\OrderController;
 use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\ShopController;
 use App\Http\Controllers\Api\Admin\SupportController;
+use App\Http\Controllers\Api\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -127,7 +127,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('/order/getOnGoingOrders',[OrderController::class,'getOnGoingOrders']);
     Route::get('/order/getCompletedOrders',[OrderController::class,'getCompletedOrders']);
     Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
-    Route::get('order/getOrderStatusHistoriesById/{id}', [OrderController::class, 'getOrderStatusHistoriesById']);
+    Route::get('/order/getOrderStatusHistoriesById/{id}', [OrderController::class, 'getOrderStatusHistoriesById']);
 
 
     Route::post('order/updateOrder/{id}', [OrderController::class, 'updateOrder']);
@@ -137,7 +137,8 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('order/cancelOrder/{order_id}', [OrderController::class, 'cancelOrder']);
     Route::get('order/cancelProvision/{order_id}', [OrderController::class, 'cancelProvision']);
 
-
+    //User
+    Route::get('/user/getUserAddressesByOrderId/{order_id}',[UserController::class,'getUserAddressesByOrderId']);
 
 
 

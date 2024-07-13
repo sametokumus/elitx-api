@@ -61,7 +61,7 @@ class OrderController extends Controller
                 $country = Country::query()->where('id', $shipping->country_id)->first();
                 $city = City::query()->where('id', $shipping->city_id)->first();
 
-                $shipping_address = $shipping->name . " " . $shipping->surname . " - " . $shipping->address_1 . " " . $shipping->address_2 . " - " . $shipping->postal_code . " - " . $shipping->phone . " - " . $city->name . " / " . $country->name;
+                $shipping_address = $shipping->name . " - " . $shipping->address_1 . " " . $shipping->address_2 . " - " . $shipping->postal_code . " - " . $shipping->phone . " - " . $city->name . " / " . $country->name;
                 if ($shipping->type == 2){
                     $shipping_corporate_address = CorporateAddresses::query()->where('address_id',$shipping_id)->first();
                     $shipping_address = $shipping_address." - ".$shipping_corporate_address->tax_number." - ".$shipping_corporate_address->tax_office." - ".$shipping_corporate_address->company_name;
@@ -71,7 +71,7 @@ class OrderController extends Controller
                 $billing = Address::query()->where('id', $billing_id)->first();
                 $billing_country = Country::query()->where('id', $billing->country_id)->first();
                 $billing_city = City::query()->where('id', $billing->city_id)->first();
-                $billing_address = $billing->name . " " . $billing->surname . " - " . $billing->address_1 . " " . $billing->address_2 . " - " . $billing->postal_code . " - " . $billing->phone . " - " . $billing_city->name . " / " . $billing_country->name;
+                $billing_address = $billing->name . " - " . $billing->address_1 . " " . $billing->address_2 . " - " . $billing->postal_code . " - " . $billing->phone . " - " . $billing_city->name . " / " . $billing_country->name;
 
                 if ($billing->type == 2){
                     $billing_corporate_address = CorporateAddresses::query()->where('address_id',$billing_id)->first();

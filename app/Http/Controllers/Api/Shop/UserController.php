@@ -3,8 +3,18 @@
 namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Models\Address;
+use App\Models\Order;
+use App\Models\OrderProduct;
+use App\Models\OrderStatus;
+use App\Models\Payment;
+use App\Models\PaymentType;
+use App\Models\Product;
+use App\Models\ProductVariation;
+use App\Models\Shop;
 use App\Models\ShopDocument;
 use App\Models\ShopDocumentType;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,4 +81,9 @@ class UserController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         }
     }
+
+
+
+
+
 }
