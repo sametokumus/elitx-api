@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin\Old;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -12,6 +12,23 @@ use Nette\Schema\ValidationException;
 
 class OrderStatusController extends Controller
 {
+
+    public function getOrderStatuses(){
+        try {
+            $order_statuses = OrderStatus::query()->where('active',1)->get();
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['order_statuses' => $order_statuses]]);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
+
+
+
     public function addOrderStatus(Request $request){
         try {
             $order_status = OrderStatus::query()->where('name',$request->name)->first();
@@ -84,19 +101,6 @@ class OrderStatusController extends Controller
                 'active' =>0
             ]);
             return response(['message' => 'Sipariş durumu silme işlemi başarılı.', 'status' => 'success']);
-        } catch (ValidationException $validationException) {
-            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
-        } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
-        } catch (\Throwable $throwable) {
-            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
-        }
-    }
-
-    public function getOrderStatuses(){
-        try {
-            $order_statuses = OrderStatus::query()->where('active',1)->get();
-            return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['order_statuses' => $order_statuses]]);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {

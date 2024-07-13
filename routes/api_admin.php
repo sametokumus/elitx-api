@@ -16,7 +16,6 @@ use App\Http\Controllers\Api\Admin\Old\CreditCardController;
 use App\Http\Controllers\Api\Admin\Old\DashboardController;
 use App\Http\Controllers\Api\Admin\Old\DeliveryController;
 use App\Http\Controllers\Api\Admin\Old\ImportController;
-use App\Http\Controllers\Api\Admin\Old\OrderStatusController;
 use App\Http\Controllers\Api\Admin\Old\PopupController;
 use App\Http\Controllers\Api\Admin\Old\ProductTypeController;
 use App\Http\Controllers\Api\Admin\Old\ProductVariationGroupTypeController;
@@ -28,6 +27,7 @@ use App\Http\Controllers\Api\Admin\Old\SubscribeController;
 use App\Http\Controllers\Api\Admin\Old\TabController;
 use App\Http\Controllers\Api\Admin\Old\TagController;
 use App\Http\Controllers\Api\Admin\OrderController;
+use App\Http\Controllers\Api\Admin\OrderStatusController;
 use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\ShopController;
 use App\Http\Controllers\Api\Admin\SupportController;
@@ -139,6 +139,9 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('order/cancelOrder/{order_id}', [OrderController::class, 'cancelOrder']);
     Route::get('order/cancelProvision/{order_id}', [OrderController::class, 'cancelProvision']);
 
+    //OrderStatus
+    Route::get('/orderStatus/getOrderStatuses', [OrderStatusController::class, 'getOrderStatuses']);
+
     //User
     Route::get('/user/getUserAddressesByOrderId/{order_id}',[UserController::class,'getUserAddressesByOrderId']);
 
@@ -228,7 +231,6 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::post('orderStatus/updateOrderStatus/{id}', [OrderStatusController::class, 'updateOrderStatus']);
     Route::post('orderStatus/updateOrderAllStatus', [OrderStatusController::class, 'updateOrderAllStatus']);
     Route::get('orderStatus/deleteOrderStatus/{id}', [OrderStatusController::class, 'deleteOrderStatus']);
-    Route::get('orderStatus/getOrderStatuses', [OrderStatusController::class, 'getOrderStatuses']);
     Route::get('orderStatus/getOrderStatusById/{id}', [OrderStatusController::class, 'getOrderStatusById']);
 
     Route::post('order/updateOrderInfo/{order_id}', [OrderController::class, 'updateOrderInfo']);
