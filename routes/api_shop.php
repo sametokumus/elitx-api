@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Shop\CategoryController;
 use App\Http\Controllers\Api\Shop\CommentController;
 use App\Http\Controllers\Api\Shop\SupportController;
 use App\Http\Controllers\Api\Shop\OrderController;
+use App\Http\Controllers\Api\Shop\OrderStatusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,6 +73,9 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     Route::get('/order/getCompletedOrders',[OrderController::class,'getCompletedOrders']);
     Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
     Route::get('/order/getOrderStatusHistoriesById/{id}', [OrderController::class, 'getOrderStatusHistoriesById']);
+
+    //OrderStatus
+    Route::get('/orderStatus/getOrderStatuses', [OrderStatusController::class, 'getOrderStatuses']);
 
 
 });
