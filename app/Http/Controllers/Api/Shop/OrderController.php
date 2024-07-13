@@ -206,6 +206,18 @@ class OrderController extends Controller
                 'order_id' => $order_guid,
                 'order_product_id' => $product_id
             ]);
+
+            $check_status = OrderProduct::query()->where('order_id', $order_guid)->where('status_id', '<', $status_id)->where('active', 1)->count();
+            if ($check_status == 0){
+                $back_status = OrderProduct::query()->where('order_id', $order_guid)->where('active', 1)->orderBy('status_id')->first()->status_id;
+                Order::query()->where('order_id', $order_guid)->update([
+                    'status_id' => $status_id
+                ]);
+                OrderStatusHistory::query()->insert([
+                    'status_id' => $status_id,
+                    'order_id' => $order_guid
+                ]);
+            }
             return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
