@@ -128,6 +128,8 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('/order/getCompletedOrders',[OrderController::class,'getCompletedOrders']);
     Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
     Route::get('/order/getOrderStatusHistoriesById/{id}', [OrderController::class, 'getOrderStatusHistoriesById']);
+    Route::get('/order/getUpdateOrderBillingAddress/{order_id}/{address_id}', [OrderController::class, 'getUpdateOrderBillingAddress']);
+    Route::get('/order/getUpdateOrderShippingAddress/{order_id}/{address_id}', [OrderController::class, 'getUpdateOrderShippingAddress']);
 
 
     Route::post('order/updateOrder/{id}', [OrderController::class, 'updateOrder']);

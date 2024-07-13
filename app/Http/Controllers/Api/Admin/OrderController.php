@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Helpers\PaymentHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Address;
 use App\Models\Brand;
 use App\Models\Carrier;
+use App\Models\City;
+use App\Models\Country;
 use App\Models\CreditCard;
 use App\Models\Order;
 use App\Models\OrderProduct;
@@ -193,6 +196,64 @@ class OrderController extends Controller
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
         }
     }
+
+    public function getUpdateOrderBillingAddress($order_id, $address_id)
+    {
+        try {
+            $address = Address::query()->where('id', $address_id)->first();
+            $country = Country::query()->where('id', $address->country_id)->first();
+            $city = City::query()->where('id', $address->city_id)->first();
+            $billing_address = $address->name . " - " . $address->address_1 . " " . $address->address_2 . " - " . $address->postal_code . " - " . $address->phone . " - " . $city->name . " / " . $country->name;
+
+            Order::query()->where('id', $order_id)->update([
+                'billing_address_id' => $address_id,
+                'billing_address' => $billing_address
+            ]);
+            return response(['message' => 'Sipariş adresi güncelleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
+        }
+    }
+
+    public function getUpdateOrderShippingAddress($order_id, $address_id)
+    {
+        try {
+            $address = Address::query()->where('id', $address_id)->first();
+            $country = Country::query()->where('id', $address->country_id)->first();
+            $city = City::query()->where('id', $address->city_id)->first();
+            $shipping_address = $address->name . " - " . $address->address_1 . " " . $address->address_2 . " - " . $address->postal_code . " - " . $address->phone . " - " . $city->name . " / " . $country->name;
+
+            Order::query()->where('id', $order_id)->update([
+                'shipping_address_id' => $address_id,
+                'shipping_address' => $shipping_address
+            ]);
+            return response(['message' => 'Sipariş adresi güncelleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function deleteOrder($order_id)
     {
@@ -403,47 +464,6 @@ class OrderController extends Controller
                 'carrier_id' => $carrier_id
             ]);
             return response(['message' => 'Sipariş bilgileri güncelleme işlemi başarılı.', 'status' => 'success']);
-        } catch (ValidationException $validationException) {
-            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
-        } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
-        } catch (\Throwable $throwable) {
-            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
-        }
-    }
-
-    public function updateOrderBilling(Request $request, $order_id)
-    {
-        /**ad soyad telefon adees posta kodu ilçe il ülke corporate adrestekiler güncellenecek**/
-        try {
-            $billing_address = $request->name . " - " . $request->address . " - " . $request->postal_code . " - " . $request->phone . " - " . $request->district . " / " . $request->city . " / " . $request->country;
-            if ($request->company_name != ''){
-                $billing_address = $billing_address." - ".$request->tax_number." - ".$request->tax_office." - ".$request->company_name;
-            }
-            Order::query()->where('order_id', $order_id)->update([
-                'billing_address' => $billing_address
-            ]);
-            return response(['message' => 'Sipariş adresi güncelleme işlemi başarılı.', 'status' => 'success']);
-        } catch (ValidationException $validationException) {
-            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
-        } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
-        } catch (\Throwable $throwable) {
-            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
-        }
-    }
-
-    public function updateOrderShipping(Request $request, $order_id)
-    {
-        try {
-            $shipping_address = $request->name . " - " . $request->address . " - " . $request->postal_code . " - " . $request->phone . " - " . $request->district . " / " . $request->city . " / " . $request->country;
-            if ($request->company_name != ''){
-                $shipping_address = $shipping_address." - ".$request->tax_number." - ".$request->tax_office." - ".$request->company_name;
-            }
-            Order::query()->where('order_id', $order_id)->update([
-                'shipping_address' => $shipping_address
-            ]);
-            return response(['message' => 'Sipariş adresi güncelleme işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
