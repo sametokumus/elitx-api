@@ -54,7 +54,7 @@ class OrderController extends Controller
             if(isset($cart)) {
 
                 $order_status = OrderStatus::query()->where('is_default', 1)->first();
-                $order_quid = Uuid::uuid();
+                $order_guid = Uuid::uuid();
                 $shipping_id = $request->shipping_address_id;
                 $billing_id = $request->billing_address_id;
                 $shipping = Address::query()->where('id', $shipping_id)->first();
@@ -126,7 +126,7 @@ class OrderController extends Controller
                     }
 
                     $order_product_id = OrderProduct::query()->insertGetId([
-                        'order_id' => $order_quid,
+                        'order_id' => $order_guid,
                         'product_id' => $product->id,
                         'variation_id' => $cart->variation_id,
                         'status_id' => $order_status->id,
@@ -142,7 +142,7 @@ class OrderController extends Controller
 
                     OrderProductStatusHistory::query()->insert([
                         'status_id' => $order_status->id,
-                        'order_id' => $order_quid,
+                        'order_id' => $order_guid,
                         'order_product_id' => $order_product_id
                     ]);
                 }
@@ -162,7 +162,7 @@ class OrderController extends Controller
 
 
                 $order_id = Order::query()->insertGetId([
-                    'order_id' => $order_quid,
+                    'order_id' => $order_guid,
                     'user_id' => $user->id,
                     'cart_id' => $request->cart_id,
                     'status_id' => $order_status->id,
@@ -179,7 +179,7 @@ class OrderController extends Controller
                 ]);
 
                 OrderStatusHistory::query()->insert([
-                    'order_id' => $order_quid,
+                    'order_id' => $order_guid,
                     'status_id' => $order_status->id
                 ]);
 
@@ -206,10 +206,10 @@ class OrderController extends Controller
                         Order::query()->where('id', $order_id)->update([
                             'is_paid' => 1
                         ]);
-                        $payment_quid = Uuid::uuid();
+                        $payment_guid = Uuid::uuid();
                         Payment::query()->insert([
-                            'order_id' => $order_quid,
-                            'payment_id' => $payment_quid,
+                            'order_id' => $order_guid,
+                            'payment_id' => $payment_guid,
                             'price' => $total_price,
                             'type' => $request->payment_type,
                             'installment' => $request->installment_count,
@@ -226,10 +226,10 @@ class OrderController extends Controller
                         Order::query()->where('id', $order_id)->update([
                             'is_paid' => 1
                         ]);
-                        $payment_quid = Uuid::uuid();
+                        $payment_guid = Uuid::uuid();
                         Payment::query()->insert([
-                            'order_id' => $order_quid,
-                            'payment_id' => $payment_quid,
+                            'order_id' => $order_guid,
+                            'payment_id' => $payment_guid,
                             'price' => $total_price,
                             'type' => $request->payment_type,
                             'installment' => $request->installment_count,

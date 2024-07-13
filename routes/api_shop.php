@@ -73,6 +73,7 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     Route::get('/order/getCompletedOrders',[OrderController::class,'getCompletedOrders']);
     Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
     Route::get('/order/getOrderStatusHistoriesById/{id}', [OrderController::class, 'getOrderStatusHistoriesById']);
+    Route::get('/order/getUpdateProductStatus/{order_id}/{product_id}/{old_status_id}/{status_id}', [OrderController::class, 'getUpdateProductStatus']);
 
     //OrderStatus
     Route::get('/orderStatus/getOrderStatuses', [OrderStatusController::class, 'getOrderStatuses']);

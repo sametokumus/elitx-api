@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Shop;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\OrderProductStatusHistory;
 use App\Models\OrderStatus;
 use App\Models\OrderStatusHistory;
 use App\Models\Payment;
@@ -183,6 +184,29 @@ class OrderController extends Controller
                 ->where('order_id', $order_guid)
                 ->get();
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['order_status_histories' => $order_status_histories]]);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
+        }
+    }
+
+    public function getUpdateProductStatus($order_id, $product_id, $old_status_id, $status_id){
+        try {
+            $order = Order::query()->where('id', $order_id)->first();
+            $order_guid = $order->order_id;
+            OrderProduct::query()->where('id', $product_id)->update([
+                'status_id' => $status_id
+            ]);
+
+            OrderProductStatusHistory::query()->insert([
+                'status_id' => $status_id,
+                'order_id' => $order_guid,
+                'order_product_id' => $product_id
+            ]);
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
