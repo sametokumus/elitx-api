@@ -111,6 +111,9 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('product/getProductConfirmed/{id}', [ProductController::class, 'getProductConfirmed']);
     Route::get('product/getProductRejected/{id}', [ProductController::class, 'getProductRejected']);
     Route::get('product/getCommentsByProductId/{product_id}', [CommentController::class, 'getCommentsByProductId']);
+    Route::get('product/deleteProduct/{id}', [ProductController::class, 'deleteProduct']);
+    Route::post('product/addProduct', [ProductController::class, 'addProduct']);
+    Route::post('product/updateProduct/{id}', [ProductController::class, 'updateProduct']);
 
     //Category
     Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
@@ -174,9 +177,6 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
     Route::post('product/addFullProduct', [ProductController::class, 'addFullProduct']);
     Route::post('product/updateFullProduct/{id}', [ProductController::class, 'updateFullProduct']);
-    Route::get('product/deleteProduct/{id}', [ProductController::class, 'deleteProduct']);
-    Route::post('product/addProduct', [ProductController::class, 'addProduct']);
-    Route::post('product/updateProduct/{id}', [ProductController::class, 'updateProduct']);
     Route::post('product/updateProductStatus', [ProductController::class, 'updateProductStatus']);
 
     Route::post('product/addProductTag', [ProductController::class, 'addProductTag']);
