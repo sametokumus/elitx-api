@@ -13,7 +13,10 @@ use App\Models\PaymentType;
 use App\Models\Product;
 use App\Models\ProductVariation;
 use App\Models\Shop;
+use App\Models\SupportMessage;
+use App\Models\SupportRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -226,5 +229,29 @@ class OrderController extends Controller
         } catch (\Throwable $throwable) {
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage()]);
         }
+    }
+
+    public function addShippingInfo(Request $request)
+    {
+        try {
+            $request->validate([
+                'product_id' => 'required',
+                'shipping_number' => 'required'
+            ]);
+
+            OrderProduct::query()->where('id', $request->product_id)->update([
+                'shipping_number' => $request->shipping_number,
+                'shipping_date' => Carbon::now()->format('Y-m-d H:i:s')
+            ]);
+
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
+        }
+
     }
 }
