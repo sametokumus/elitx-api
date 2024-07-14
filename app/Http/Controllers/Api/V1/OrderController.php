@@ -297,6 +297,7 @@ class OrderController extends Controller
                 foreach ($products as $product) {
                     $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
                 }
+                $order['products'] = $products;
 
             }else{
                 return response(['message' => 'Yetkisiz işlem.', 'status' => 'auth-006']);
