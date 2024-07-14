@@ -35,9 +35,9 @@ class SearchController extends Controller
                 })
                 ->leftJoin('shop_types', function ($join) {
                     $join->on('shop_types.shop_id', '=', 'products.owner_id')
-                        ->whereRaw('shop_types.type_id = 1 OR shop_types.type_id = 2');
+                        ->where('shop_types.type_id', '=', 1)
+                        ->orWhere('shop_types.type_id', '=', 2);
                 })
-
                 ->leftJoin(DB::raw('(SELECT * FROM product_confirms WHERE id IN (SELECT MAX(id) FROM product_confirms GROUP BY product_id)) as pc'), 'pc.product_id', '=', 'products.id')
                 ->selectRaw('products.*')
                 ->where(function ($query) {
@@ -50,6 +50,7 @@ class SearchController extends Controller
             $q = ' (products.name LIKE "%' . $keyword . '%" OR products.description LIKE "%' . $keyword . '%" OR products.sku LIKE "%' . $keyword . '%")';
             $products = $products->whereRaw($q);
             $products = $products->get();
+
 
             foreach ($products as $product) {
                 if ($product->owner_type == 1) {
