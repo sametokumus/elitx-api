@@ -240,7 +240,7 @@ class OrderController extends Controller
                     }
                 }
 
-                return response(['message' => 'Sipariş başarılı.', 'status' => 'success', 'object' => ['order_id' => $order_quid]]);
+                return response(['message' => 'Sipariş başarılı.', 'status' => 'success', 'object' => ['order_id' => $order_guid]]);
             }else{
 
                 return response(['message' => 'Sepet Bulunamadı.', 'status' => 'cart-001']);
@@ -255,50 +255,26 @@ class OrderController extends Controller
         }
     }
 
-    public function getOrdersByUserId($user_id){
+    public function getUserOrders(){
         try {
-            $orders = Order::query()->where('user_id',$user_id)->where('active', 1)->orderByDesc('id')->get(['id', 'order_id', 'cart_id', 'created_at as order_date', 'total', 'status_id','payment_method']);
-            foreach ($orders as $order){
-                $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
-                $product = OrderProduct::query()->where('order_id', $order->order_id)->first();
-                $product_image_row = ProductImage::query()->where('variation_id', $product->variation_id)->first();
-                if ($product_image_row){
-                    $product_image = $product_image_row->image;
-                }else{
-                    $product_image = '';
-                }
-//                $product_image = ProductImage::query()->where('variation_id', $product->variation_id)->first()->image;
+            $user = Auth::user();
+            $user_id = $user->id;
+            $orders = Order::query()
+                ->where('user_id',$user_id)
+                ->where('orders.active', 1)
+                ->get(['orders.id', 'orders.order_id', 'orders.created_at as order_date', 'orders.updated_at as order_update_date', 'orders.total', 'orders.currency', 'orders.status_id',
+                    'orders.user_id'
+                ]);
+            foreach ($orders as $order) {
                 $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
-                $payment_method = PaymentMethod::query()->where('id',$order->payment_method)->first()->name;
-                $payment_type = PaymentType::query()->where('id',$order->payment_method)->first()->name;
-
-                $order['product_count'] = $product_count;
-                $order['product_image'] = $product_image;
-                $order['payment_type'] = $payment_type;
-                $order['payment_type_id'] = $order->payment_method;
-                $order['payment_method'] = $payment_method;
                 $order['status_name'] = $status_name;
-
-                $created_at = $order->order_date;
-
-                $start = new DateTime($created_at);
-                $end = Carbon::now();
-
-                $interval = $end->diff($start);
-                $final = $interval->format('%a');
-
-                if ($final <= 15){
-                    $order['is_refundable'] = 1;
-                }else{
-                    $order['is_refundable'] = 'timeout';
+                $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
+                $order['product_count'] = $product_count;
+                $products = OrderProduct::query()->where('order_id', $order->order_id)->get();
+                foreach ($products as $product){
+                    $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
                 }
-
-                $refund = OrderRefund::query()->where('order_id',$order->id)->first();
-                if (isset($refund)){
-                    $order['is_refundable'] = 0;
-                    $refund['status_name'] = OrderRefundStatus::query()->where('id', $refund->status)->first()->name;
-                    $order['refund'] = $refund;
-                }
+                $order['products'] = $products;
             }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['orders' => $orders]]);
         } catch (QueryException $queryException) {
