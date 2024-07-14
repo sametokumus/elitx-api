@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\ShopController;
 use App\Http\Controllers\Api\Admin\SupportController;
 use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\Admin\CommentController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -106,8 +107,10 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
 
     //Product
     Route::get('product/getProducts', [ProductController::class, 'getProducts']);
+    Route::get('/product/getProductById/{id}', [ProductController::class, 'getProductById']);
     Route::get('product/getProductConfirmed/{id}', [ProductController::class, 'getProductConfirmed']);
     Route::get('product/getProductRejected/{id}', [ProductController::class, 'getProductRejected']);
+    Route::get('product/getCommentsByProductId/{product_id}', [CommentController::class, 'getCommentsByProductId']);
 
     //Category
     Route::get('category/getCategories', [CategoryController::class, 'getCategories']);
