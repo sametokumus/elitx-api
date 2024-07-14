@@ -239,9 +239,10 @@ class OrderController extends Controller
                 'shipping_number' => 'required'
             ]);
 
+            $shipping_date = Carbon::now()->format('Y-m-d H:i:s');
             OrderProduct::query()->where('id', $request->product_id)->update([
                 'shipping_number' => $request->shipping_number,
-                'shipping_date' => Carbon::now()->format('Y-m-d H:i:s')
+                'shipping_date' => $shipping_date
             ]);
 
             return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
