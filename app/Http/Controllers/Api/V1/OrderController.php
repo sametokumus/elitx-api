@@ -284,22 +284,24 @@ class OrderController extends Controller
 
     public function getOrderById($order_id){
         try {
+            $user = Auth::user();
+            $user_id = $user->id;
             $order = Order::query()->where('order_id',$order_id)->first();
+            if ($user_id == $order->user_id) {
 
-            $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
-            $order['status_name'] = $status_name;
-            $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
-            $order['product_count'] = $product_count;
-            $products = OrderProduct::query()->where('order_id', $order->order_id)->get();
-            foreach ($products as $product){
-                $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
+                $status_name = OrderStatus::query()->where('id', $order->status_id)->first()->name;
+                $order['status_name'] = $status_name;
+                $product_count = OrderProduct::query()->where('order_id', $order->order_id)->get()->count();
+                $order['product_count'] = $product_count;
+                $products = OrderProduct::query()->where('order_id', $order->order_id)->get();
+                foreach ($products as $product) {
+                    $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
+                }
+
+            }else{
+                return response(['message' => 'Yetkisiz işlem.', 'status' => 'auth-006']);
             }
 
-            if ($order->is_paid == 1){
-                $payment = Payment::query()->where('order_id', $order->order_id)->where('active', 1)->where('is_paid', 1)->first();
-                $order['payment'] = $payment;
-            }
-            $order['user'] = User::query()->where('id', $order->user_id)->first();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['order' => $order]]);
         } catch (QueryException $queryException) {
