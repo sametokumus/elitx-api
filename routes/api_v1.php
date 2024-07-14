@@ -130,6 +130,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     Route::get('/order/getUserOrders',[OrderController::class,'getUserOrders']);
     Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
+
+    //Search
+    Route::get('/product/getSearchProducts/{keyword}',[SearchController::class,'getSearchProducts']);
 });
 
 
