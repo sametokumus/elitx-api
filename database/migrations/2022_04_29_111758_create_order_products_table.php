@@ -32,6 +32,8 @@ class CreateOrderProductsTable extends Migration
             $table->decimal('total');
             $table->decimal('commission_rate')->default(0);
             $table->decimal('commission_total')->default(0);
+            $table->string('shipping_number')->nullable();
+            $table->dateTime('shipping_date')->nullable();
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
