@@ -75,10 +75,14 @@ class SearchController extends Controller
 
             if ($request->category_id != '' && $request->category_id != null){
 
+
+                $products = $products
+                    ->leftJoin('product_categories', 'product_categories.product_id', '=', 'products.id');
+
                 $categoryIds = $this->getParentCategoryIds($request->category_id);
                 $categoryIds[] = $request->category_id;
 
-                $products = $products->whereIn('products.category_id', $categoryIds);
+                $products = $products->whereIn('product_categories.category_id', $categoryIds);
 
             }
 
