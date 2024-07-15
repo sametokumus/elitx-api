@@ -104,7 +104,7 @@ class SearchController extends Controller
                 $product['discount_type'] = $price->discount_type;
                 $product['currency'] = $price->currency;
 
-                if ($product->has_variation == "1") {
+                if ($product->has_variation == 1) {
                     $variations = ProductVariation::query()->where('product_id', $product->id)->where('active', 1)->get();
                     foreach ($variations as $variation) {
                         $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
