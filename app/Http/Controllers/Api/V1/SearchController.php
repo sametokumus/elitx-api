@@ -46,6 +46,18 @@ class SearchController extends Controller
         }
     }
 
+    public function getParentCategoryIds($categoryId, &$parentIds = [])
+    {
+        $category = ProductCategory::find($categoryId);
+
+        if ($category && $category->parent_id) {
+            $parentIds[] = $category->parent_id;
+            $this->getParentCategoryIds($category->parent_id, $parentIds);
+        }
+
+        return $parentIds;
+    }
+
     public function filterProducts(Request $request)
     {
         try {
@@ -58,6 +70,15 @@ class SearchController extends Controller
                     ->leftJoin('product_variations', 'product_variations.product_id', '=', 'products.id');
                 $q = ' (product_variations.name LIKE "%' . $request->filter_name . '%" )';
                 $products = $products->whereRaw($q);
+
+            }
+
+            if ($request->category_id != '' && $request->category_id != null){
+
+                $categoryIds = $this->getParentCategoryIds($request->category_id);
+                $categoryIds[] = $request->category_id;
+
+                $products = $products->whereIn('products.category_id', $categoryIds);
 
             }
 
