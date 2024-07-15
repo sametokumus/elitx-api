@@ -97,12 +97,14 @@ class SearchController extends Controller
                 $product['categories'] = $categories;
 
 
-//                $price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
-//                $product['base_price'] = $price->base_price;
-//                $product['discounted_price'] = $price->discounted_price;
-//                $product['discount_rate'] = $price->discount_rate;
-//                $product['discount_type'] = $price->discount_type;
-//                $product['currency'] = $price->currency;
+                $price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
+                if ($price) {
+                    $product['base_price'] = $price->base_price;
+                    $product['discounted_price'] = $price->discounted_price;
+                    $product['discount_rate'] = $price->discount_rate;
+                    $product['discount_type'] = $price->discount_type;
+                    $product['currency'] = $price->currency;
+                }
 
                 if ($product->has_variation == "1") {
                     $variations = ProductVariation::query()->where('product_id', $product->id)->where('active', 1)->get();
