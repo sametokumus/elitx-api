@@ -30,7 +30,7 @@ class SearchController extends Controller
     {
         try {
 
-            $group_types = ProductVariationGroupType::query()->where('active', 1)->get('id, name');
+            $group_types = ProductVariationGroupType::query()->where('active', 1)->get(['id', 'name']);
             foreach ($group_types as $type){
                 $filter_options = ProductVariation::query()
                     ->selectRaw('product_variations.name')
