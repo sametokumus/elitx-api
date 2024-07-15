@@ -11,6 +11,7 @@ use App\Models\ProductPrice;
 use App\Models\ProductSeo;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationGroup;
+use App\Models\ProductVariationGroupType;
 use App\Models\ProductVariationPrice;
 use App\Models\Shop;
 use App\Models\ShopType;
@@ -29,83 +30,17 @@ class SearchController extends Controller
     {
         try {
 
-
-            $products = Product::query()
-                ->leftJoin('shops', function ($join) {
-                    $join->on('shops.id', '=', 'products.owner_id')
-                        ->where('shops.confirmed', 1);
-                })
-                ->leftJoin('shop_types', function ($join) {
-                    $join->on('shop_types.shop_id', '=', 'products.owner_id')
-                        ->where(function ($query) {
-                            $query->where('shop_types.type_id', 1)
-                                ->orWhere('shop_types.type_id', 2);
-                        });
-                })
-                ->leftJoin(DB::raw('(SELECT * FROM product_confirms WHERE id IN (SELECT MAX(id) FROM product_confirms GROUP BY product_id)) as pc'), 'pc.product_id', '=', 'products.id')
-                ->selectRaw('products.*')
-                ->where(function ($query) {
-                    $query->where('products.owner_type', 1)
-                        ->orWhere('products.owner_type', 2);
-                })
-                ->where('pc.confirmed', 1)
-                ->where('products.active', 1);
-
-            $q = ' (products.name LIKE "%' . $keyword . '%" OR products.description LIKE "%' . $keyword . '%" OR products.sku LIKE "%' . $keyword . '%")';
-            $products = $products->whereRaw($q);
-            $products = $products->get();
-
-
-            foreach ($products as $product) {
-                if ($product->owner_type == 1) {
-                    $shop = Shop::query()->where('id', $product->owner_id)->first();
-                    $types = ShopType::query()
-                        ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
-                        ->selectRaw('shop_types.*, types.name as name')
-                        ->where('shop_types.shop_id', $shop->id)
-                        ->where('shop_types.active', 1)
-                        ->get();
-                    $type_words = $types->implode('name', ', ');
-                    $shop['types'] = $types;
-                    $shop['type_words'] = $type_words;
-                    $product['shop'] = $shop;
-                } else if ($product->owner_type == 2) {
-                    $product['user'] = User::query()->where('id', $product->owner_id)->first();
-                }
-
-                $brand = Brand::query()->where('id', $product->brand_id)->first();
-                $product['brand'] = $brand;
-
-                $categories = ProductCategory::query()
-                    ->leftJoin('categories', 'categories.id', '=', 'product_categories.category_id')
-                    ->selectRaw('product_categories.*, categories.name as name')
-                    ->where('product_categories.active', 1)
-                    ->where('product_categories.product_id', $product->id)
+            $group_types = ProductVariationGroupType::query()->where('active', 1)->get('id, name');
+            foreach ($group_types as $type){
+                $filter_options = ProductVariation::query()
+                    ->selectRaw('product_variations.name')
+                    ->where('product_variations.variation_group_id', $type->id)
+                    ->distinct()
                     ->get();
-                $product['categories'] = $categories;
-
-
-                $price = ProductPrice::query()->where('product_id', $product->id)->orderByDesc('id')->first();
-                $product['base_price'] = $price->base_price;
-                $product['discounted_price'] = $price->discounted_price;
-                $product['discount_rate'] = $price->discount_rate;
-                $product['discount_type'] = $price->discount_type;
-                $product['currency'] = $price->currency;
-
-                if ($product->has_variation == 1) {
-                    $variations = ProductVariation::query()->where('product_id', $product->id)->where('active', 1)->get();
-                    foreach ($variations as $variation) {
-                        $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
-                        $variation['price'] = $variation_price->price;
-                    }
-                    $product['variations'] = $variations;
-                }
-
-                $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
-                $product['fav_count'] = $fav_count;
+                $type['filter_options'] = $filter_options;
             }
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['filters' => $group_types]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
         }
