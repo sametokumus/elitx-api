@@ -73,6 +73,31 @@ class SearchController extends Controller
 
             }
 
+            if ($request->filter_product_type == 1){
+
+                $products = $products
+                    ->leftJoin('shops', 'shops.id', '=', 'products.owner_id')
+                    ->leftJoin('shop_types', 'shop_types.shop_id', '=', 'products.owner_id')
+                    ->where('shop_types.type_id', 1);
+
+            }else if ($request->filter_product_type == 2){
+
+                $products = $products
+                    ->leftJoin('shops', function ($join) {
+                        $join->on('shops.id', '=', 'products.owner_id')
+                            ->where('shops.confirmed', 1);
+                    })
+                    ->leftJoin('shop_types', function ($join) {
+                        $join->on('shop_types.shop_id', '=', 'products.owner_id')
+                            ->where('shop_types.type_id', '=', 2);
+                    })
+                    ->where(function ($query) {
+                        $query->where('products.owner_type', 1)
+                            ->where('shop_types.type_id', 2)
+                            ->orWhere('products.owner_type', 2);
+                    });
+            }
+
             if ($request->category_id != '' && $request->category_id != null){
 
 
