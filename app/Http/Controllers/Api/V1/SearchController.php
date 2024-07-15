@@ -50,6 +50,19 @@ class SearchController extends Controller
     {
         try {
 
+            $products = Product::query();
+
+            if ($request->filter_name != '' && $request->filter_name != null){
+
+                $products = $products
+                    ->leftJoin('product_variations', 'product_variations.product_id', '=', 'products.id');
+                $q = ' (product_variations.name LIKE "%' . $request->filter_name . '%" )';
+                $products = $products->whereRaw($q);
+
+            }
+
+            $products = $products->get();
+
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
