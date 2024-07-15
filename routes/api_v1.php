@@ -133,6 +133,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     //Search
     Route::get('/product/getSearchProducts/{keyword}',[SearchController::class,'getSearchProducts']);
+    Route::get('/product/filters',[SearchController::class,'filters']);
 });
 
 
