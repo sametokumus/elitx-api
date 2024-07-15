@@ -61,7 +61,11 @@ class SearchController extends Controller
 
             }
 
-            $products = $products->get();
+            $products = $products
+                ->leftJoin(DB::raw('(SELECT * FROM product_confirms WHERE id IN (SELECT MAX(id) FROM product_confirms GROUP BY product_id)) as pc'), 'pc.product_id', '=', 'products.id')
+                ->where('pc.confirmed', 1)
+                ->where('products.active', 1)
+                ->get();
 
 
             foreach ($products as $product) {
