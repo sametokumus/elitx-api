@@ -165,6 +165,24 @@ class UserController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         }
     }
+    public function getPaymentDetails(){
+        try {
+            $shop = Auth::user();
+
+            $currencies = OrderProduct::query()
+                ->leftJoin('products', 'products.id', '=', 'order_products.product_id')
+                ->where('products.owner_type', 1)
+                ->where('products.owner_id', $shop->id)
+                ->where('order_products.active', 1)
+                ->selectRaw('order_products.currency')
+                ->distinct()
+                ->get();
+
+            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['$currencies' => $currencies]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        }
+    }
 
 
 

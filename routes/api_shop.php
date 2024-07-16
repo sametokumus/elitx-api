@@ -85,6 +85,9 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     Route::get('/account/getBankInfos',[UserController::class,'getBankInfos']);
     Route::get('/account/getBankInfoById/{id}',[UserController::class,'getBankInfoById']);
 
+    //Payment
+    Route::post('/account/getPaymentDetails', [UserController::class, 'getPaymentDetails']);
+
 });
 
 
