@@ -171,10 +171,11 @@ class UserController extends Controller
 
             $currencies = OrderProduct::query()
                 ->leftJoin('products', 'products.id', '=', 'order_products.product_id')
+                ->leftJoin('orders', 'orders.order_id', '=', 'order_products.order_id')
                 ->where('products.owner_type', 1)
                 ->where('products.owner_id', $shop->id)
                 ->where('order_products.active', 1)
-                ->selectRaw('order_products.currency')
+                ->selectRaw('orders.currency')
                 ->distinct()
                 ->get();
 
