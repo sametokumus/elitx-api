@@ -211,6 +211,7 @@ class UserController extends Controller
 
                 $currency['sale_total'] = $sale_total;
                 $currency['commission_total'] = $commission_total;
+                $currency['pay_total'] = $sale_total-$commission_total;
                 $currency['payed_total'] = $payed_total;
                 $currency['remaining_total'] = $remaining_total;
             }
