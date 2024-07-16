@@ -143,6 +143,28 @@ class UserController extends Controller
         }
 
     }
+    public function getBankInfos(){
+        try {
+            $user = Auth::user();
+
+            $bank_infos = ShopBankInfo::query()->where('active', 1)->where('shop_id', $user->id)->get();
+
+            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['bank_infos' => $bank_infos]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        }
+    }
+    public function getBankInfoById($id){
+        try {
+            $user = Auth::user();
+
+            $bank_info = ShopBankInfo::query()->where('active', 1)->where('id', $id)->first();
+
+            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['bank_info' => $bank_info]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
+        }
+    }
 
 
 
