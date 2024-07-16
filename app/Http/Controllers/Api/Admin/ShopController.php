@@ -95,15 +95,15 @@ class ShopController extends Controller
     {
         try {
             $request->validate([
+                'shop_id' => 'required',
                 'order_id' => 'required',
                 'shop_bank_info_id' => 'required'
             ]);
-            $shop = Auth::user();
             $pay_guid = Uuid::uuid();
             $order = Order::query()->where('order_id', $request->order_id)->first();
 
             ShopPayment::query()->insertGetId([
-                'shop_id' => $shop->id,
+                'shop_id' => $request->shop_id,
                 'order_id' => $request->order_id,
                 'payment_guid' => $pay_guid,
                 'shop_bank_info_id' => $request->shop_bank_info_id,
