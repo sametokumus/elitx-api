@@ -109,7 +109,7 @@ class ShopController extends Controller
             ShopPayment::query()->insertGetId([
                 'shop_id' => $product->owner_id,
                 'order_product_id' => $request->order_product_id,
-                'payment_guid' => $pay_guid,
+                'payment_id' => $pay_guid,
                 'shop_bank_info_id' => $request->shop_bank_info_id,
                 'payed_price' => $order->total,
                 'currency' => $order->currency
