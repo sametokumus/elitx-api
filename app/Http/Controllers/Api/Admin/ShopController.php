@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\Shop;
+use App\Models\ShopBankInfo;
 use App\Models\ShopDocument;
 use Carbon\Carbon;
+use Faker\Provider\Uuid;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Nette\Schema\ValidationException;
 
 class ShopController extends Controller
 {
@@ -83,5 +88,36 @@ class ShopController extends Controller
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
+    }
+
+    public function addShopPayment(Request $request)
+    {
+        try {
+            $request->validate([
+                'order_id' => 'required',
+                'shop_bank_info_id' => 'required'
+            ]);
+            $shop = Auth::user();
+            $pay_guid = Uuid::uuid();
+            $order = Order::query()->where('order_id', $request->order_id)->first();
+
+            ShopBankInfo::query()->insertGetId([
+                'shop_id' => $shop->id,
+                'order_id' => $request->order_id,
+                'payment_guid' => $pay_guid,
+                'shop_bank_info_id' => $request->shop_bank_info_id,
+                'payed_price' => $order->total,
+                'currency' => $order->currency
+            ]);
+
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
+        }
+
     }
 }

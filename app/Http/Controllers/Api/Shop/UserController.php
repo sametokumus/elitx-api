@@ -19,6 +19,7 @@ use App\Models\ShopPayment;
 use App\Models\SupportMessage;
 use App\Models\SupportRequest;
 use App\Models\User;
+use Faker\Provider\Uuid;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -221,6 +222,8 @@ class UserController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001', 'e' => $queryException->getMessage()]);
         }
     }
+
+
 
 
 

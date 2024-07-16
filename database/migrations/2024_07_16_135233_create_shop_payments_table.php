@@ -17,9 +17,8 @@ class CreateShopPaymentsTable extends Migration
             $table->id();
             $table->bigInteger('shop_id');
             $table->string('payment_id');
-            $table->decimal('total_price');
+            $table->string('order_id');
             $table->decimal('payed_price');
-            $table->decimal('commission_price');
             $table->string('currency');
             $table->bigInteger('shop_bank_info_id');
             $table->tinyInteger('active')->default(1);

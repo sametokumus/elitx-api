@@ -104,6 +104,7 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     Route::get('shop/getShopRegisterDocuments/{id}', [ShopController::class, 'getShopRegisterDocuments']);
     Route::get('shop/getOpenShop/{id}', [ShopController::class, 'getOpenShop']);
     Route::get('shop/getCloseShop/{id}', [ShopController::class, 'getCloseShop']);
+    Route::post('shop/addShopPayment', [ShopController::class, 'addShopPayment']);
 
     //Product
     Route::get('product/getProducts', [ProductController::class, 'getProducts']);
