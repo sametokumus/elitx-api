@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderProduct;
+use App\Models\Product;
 use App\Models\Shop;
 use App\Models\ShopBankInfo;
 use App\Models\ShopDocument;
@@ -96,15 +98,18 @@ class ShopController extends Controller
         try {
             $request->validate([
                 'shop_id' => 'required',
-                'order_id' => 'required',
+                'order_product_id' => 'required',
                 'shop_bank_info_id' => 'required'
             ]);
             $pay_guid = Uuid::uuid();
-            $order = Order::query()->where('order_id', $request->order_id)->first();
+
+            $order_product = OrderProduct::query()->where('id', $request->order_product_id)->first();
+            $order = Order::query()->where('order_id', $order_product->order_id)->first();
+            $product = Product::query()->where('id', $order_product->product_id)->first();
 
             ShopPayment::query()->insertGetId([
-                'shop_id' => $request->shop_id,
-                'order_id' => $request->order_id,
+                'shop_id' => $product->owner_id,
+                'order_product_id' => $request->order_product_id,
                 'payment_guid' => $pay_guid,
                 'shop_bank_info_id' => $request->shop_bank_info_id,
                 'payed_price' => $order->total,
