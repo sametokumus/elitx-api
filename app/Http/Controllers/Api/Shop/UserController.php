@@ -15,6 +15,7 @@ use App\Models\Shop;
 use App\Models\ShopBankInfo;
 use App\Models\ShopDocument;
 use App\Models\ShopDocumentType;
+use App\Models\ShopPayment;
 use App\Models\SupportMessage;
 use App\Models\SupportRequest;
 use App\Models\User;
@@ -169,17 +170,50 @@ class UserController extends Controller
         try {
             $shop = Auth::user();
 
-            $currencies = OrderProduct::query()
+            $details = OrderProduct::query()
                 ->leftJoin('products', 'products.id', '=', 'order_products.product_id')
                 ->leftJoin('orders', 'orders.order_id', '=', 'order_products.order_id')
                 ->where('products.owner_type', 1)
                 ->where('products.owner_id', $shop->id)
                 ->where('order_products.active', 1)
-                ->selectRaw('orders.currency')
+                ->selectRaw('orders.currency as currency')
                 ->distinct()
                 ->get();
 
-            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['$currencies' => $currencies]]);
+            foreach ($details as $currency){
+                $sales = OrderProduct::query()
+                    ->leftJoin('products', 'products.id', '=', 'order_products.product_id')
+                    ->leftJoin('orders', 'orders.order_id', '=', 'order_products.order_id')
+                    ->where('products.owner_type', 1)
+                    ->where('products.owner_id', $shop->id)
+                    ->where('order_products.active', 1)
+                    ->where('orders.currency', $currency->currency)
+                    ->selectRaw('order_products.*')
+                    ->get();
+
+                $sale_total = 0;
+                $commission_total = 0;
+                foreach ($sales as $sale){
+                    $sale_total += $sale->total;
+                    $commission_total += $sale->commission_total;
+                }
+
+                $payed_total = 0;
+                $pays = ShopPayment::query()->where('shop_id', $shop->id)->where('currency', $currency->currency)->where('active', 1)->get();
+                foreach ($pays as $pay){
+                    $payed_total += $pay->payed_price;
+                }
+
+                $shop_total = $sale_total - $commission_total;
+                $remaining_total = $shop_total - $payed_total;
+
+                $currency['sale_total'] = $sale_total;
+                $currency['commission_total'] = $commission_total;
+                $currency['payed_total'] = $payed_total;
+                $currency['remaining_total'] = $remaining_total;
+            }
+
+            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['details' => $details]]);
         } catch (QueryException $queryException){
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001', 'e' => $queryException->getMessage()]);
         }
