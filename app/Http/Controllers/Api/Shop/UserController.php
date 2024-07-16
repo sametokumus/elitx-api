@@ -106,7 +106,34 @@ class UserController extends Controller
                 'account_currency' => $request->account_currency
             ]);
 
-            return response(['message' => 'Talep ekleme işlemi başarılı.', 'status' => 'success']);
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
+        }
+
+    }
+    public function uğdateBankInfo(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'account_bank_name' => 'required',
+                'account_owner' => 'required',
+                'account_number' => 'required',
+                'account_currency' => 'required'
+            ]);
+
+            ShopBankInfo::query()->where('id', $id)->update([
+                'account_bank_name' => $request->account_bank_name,
+                'account_owner' => $request->account_owner,
+                'account_number' => $request->account_number,
+                'account_currency' => $request->account_currency
+            ]);
+
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
