@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Shop;
 use App\Models\ShopBankInfo;
 use App\Models\ShopDocument;
+use App\Models\ShopPayment;
 use Carbon\Carbon;
 use Faker\Provider\Uuid;
 use Illuminate\Database\QueryException;
@@ -101,7 +102,7 @@ class ShopController extends Controller
             $pay_guid = Uuid::uuid();
             $order = Order::query()->where('order_id', $request->order_id)->first();
 
-            ShopBankInfo::query()->insertGetId([
+            ShopPayment::query()->insertGetId([
                 'shop_id' => $shop->id,
                 'order_id' => $request->order_id,
                 'payment_guid' => $pay_guid,
