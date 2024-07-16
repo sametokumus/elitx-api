@@ -116,7 +116,7 @@ class UserController extends Controller
         }
 
     }
-    public function uğdateBankInfo(Request $request, $id)
+    public function updateBankInfo(Request $request, $id)
     {
         try {
             $request->validate([
