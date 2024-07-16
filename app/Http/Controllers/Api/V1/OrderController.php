@@ -204,7 +204,8 @@ class OrderController extends Controller
 
                     if ($response_code == 200){
                         Order::query()->where('id', $order_id)->update([
-                            'is_paid' => 1
+                            'is_paid' => 1,
+                            'status_id' => 2
                         ]);
                         $payment_guid = Uuid::uuid();
                         Payment::query()->insert([
@@ -224,7 +225,8 @@ class OrderController extends Controller
 
                     if ($response_code == 200){
                         Order::query()->where('id', $order_id)->update([
-                            'is_paid' => 1
+                            'is_paid' => 1,
+                            'status_id' => 2
                         ]);
                         $payment_guid = Uuid::uuid();
                         Payment::query()->insert([
