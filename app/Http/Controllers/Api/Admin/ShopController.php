@@ -111,7 +111,7 @@ class ShopController extends Controller
                 'order_product_id' => $request->order_product_id,
                 'payment_id' => $pay_guid,
                 'shop_bank_info_id' => $request->shop_bank_info_id,
-                'payed_price' => $order->total,
+                'payed_price' => $order_product->total,
                 'currency' => $order->currency
             ]);
 
