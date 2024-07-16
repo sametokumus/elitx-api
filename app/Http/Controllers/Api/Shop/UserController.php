@@ -229,7 +229,9 @@ class UserController extends Controller
             $payments = ShopPayment::query()->where('shop_id', $shop->id)->where('active', 1)->get();
 
             foreach ($payments as $payment){
-                $order = Order::query()->where('order_id', $payment->order_id)->first();
+                $order_product = OrderProduct::query()->where('id', $payment->order_product_id)->first();
+                $order = Order::query()->where('order_id', $order_product->order_id)->first();
+                $payment['order_product'] = $order_product;
                 $payment['order'] = $order;
             }
 
