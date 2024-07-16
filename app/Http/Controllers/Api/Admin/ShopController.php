@@ -97,7 +97,6 @@ class ShopController extends Controller
     {
         try {
             $request->validate([
-                'shop_id' => 'required',
                 'order_product_id' => 'required',
                 'shop_bank_info_id' => 'required'
             ]);
