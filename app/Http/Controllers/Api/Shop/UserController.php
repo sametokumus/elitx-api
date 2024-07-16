@@ -231,8 +231,10 @@ class UserController extends Controller
             foreach ($payments as $payment){
                 $order_product = OrderProduct::query()->where('id', $payment->order_product_id)->first();
                 $order = Order::query()->where('order_id', $order_product->order_id)->first();
+                $product = Product::query()->where('id', $order_product->product_id)->first();
                 $payment['order_product'] = $order_product;
                 $payment['order'] = $order;
+                $payment['product'] = $product;
             }
 
             return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['payments' => $payments]]);
