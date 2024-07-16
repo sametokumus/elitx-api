@@ -176,6 +176,7 @@ class UserController extends Controller
                 ->where('products.owner_type', 1)
                 ->where('products.owner_id', $shop->id)
                 ->where('order_products.active', 1)
+                ->where('orders.is_paid', 1)
                 ->selectRaw('orders.currency as currency')
                 ->distinct()
                 ->get();
@@ -187,6 +188,7 @@ class UserController extends Controller
                     ->where('products.owner_type', 1)
                     ->where('products.owner_id', $shop->id)
                     ->where('order_products.active', 1)
+                    ->where('orders.is_paid', 1)
                     ->where('orders.currency', $currency->currency)
                     ->selectRaw('order_products.*')
                     ->get();
