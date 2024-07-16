@@ -80,10 +80,10 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     Route::get('/orderStatus/getOrderStatuses', [OrderStatusController::class, 'getOrderStatuses']);
 
     //BankInfo
-    Route::post('/shop/addBankInfo', [UserController::class, 'addBankInfo']);
-    Route::post('/shop/updateBankInfo/{id}', [UserController::class, 'updateBankInfo']);
-    Route::get('/shop/getBankInfos',[UserController::class,'getBankInfos']);
-    Route::get('/shop/getBankInfoById/{id}',[UserController::class,'getBankInfoById']);
+    Route::post('/account/addBankInfo', [UserController::class, 'addBankInfo']);
+    Route::post('/account/updateBankInfo/{id}', [UserController::class, 'updateBankInfo']);
+    Route::get('/account/getBankInfos',[UserController::class,'getBankInfos']);
+    Route::get('/account/getBankInfoById/{id}',[UserController::class,'getBankInfoById']);
 
 });
 
