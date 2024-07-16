@@ -222,6 +222,22 @@ class UserController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001', 'e' => $queryException->getMessage()]);
         }
     }
+    public function getPayments(){
+        try {
+            $shop = Auth::user();
+
+            $payments = ShopPayment::query()->where('shop_id', $shop->id)->where('active', 1)->get();
+
+            foreach ($payments as $payment){
+                $order = Order::query()->where('order_id', $payment->order_id)->first();
+                $payment['order'] = $order;
+            }
+
+            return response(['message' => 'İşlem Başarılı.','status' => 'success','object' => ['payments' => $payments]]);
+        } catch (QueryException $queryException){
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001', 'e' => $queryException->getMessage()]);
+        }
+    }
 
 
 

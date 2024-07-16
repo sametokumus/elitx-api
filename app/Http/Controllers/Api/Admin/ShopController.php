@@ -121,4 +121,12 @@ class ShopController extends Controller
         }
 
     }
+    public function getShopAwaitPaymentOrders(){
+        try {
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['shop' => $shop, 'documents' => $documents]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
 }

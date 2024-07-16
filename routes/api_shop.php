@@ -87,6 +87,7 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
 
     //Payment
     Route::get('/account/getPaymentDetails', [UserController::class, 'getPaymentDetails']);
+    Route::get('/account/getPayments', [UserController::class, 'getPayments']);
 
 });
 
