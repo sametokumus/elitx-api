@@ -79,6 +79,11 @@ Route::middleware(['auth:sanctum', 'type.shop'])->group(function (){
     //OrderStatus
     Route::get('/orderStatus/getOrderStatuses', [OrderStatusController::class, 'getOrderStatuses']);
 
+    //BankInfo
+    Route::post('/shop/addBankInfo', [UserController::class, 'addBankInfo']);
+    Route::post('/shop/updateBankInfo/{id}', [UserController::class, 'updateBankInfo']);
+    Route::get('/shop/getBankInfos',[UserController::class,'getBankInfos']);
+    Route::get('/shop/getBankInfoById/{id}',[UserController::class,'getBankInfoById']);
 
 });
 

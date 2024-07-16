@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePaymentsTable extends Migration
+class CreateShopBankInfosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,13 @@ class CreatePaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('shop_bank_infos', function (Blueprint $table) {
             $table->id();
-            $table->string('order_id');
-            $table->string('payment_id');
-            $table->decimal('price');
-            $table->bigInteger('type');
-            $table->bigInteger('installment');
-            $table->string('response')->nullable();
-            $table->string('transaction_id')->nullable();
-            $table->tinyInteger('is_paid')->default(0);
-            $table->tinyInteger('is_refund')->default(0);
+            $table->bigInteger('shop_id');
+            $table->string('account_bank_name');
+            $table->string('account_owner');
+            $table->string('account_number');
+            $table->string('account_currency');
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
@@ -37,6 +33,6 @@ class CreatePaymentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists('shop_bank_infos');
     }
 }
