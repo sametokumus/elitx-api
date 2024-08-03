@@ -18,6 +18,7 @@ class CreateNeighbourhoodsTable extends Migration
             $table->bigInteger('district_id');
             $table->string('name');
             $table->string('postal_code');
+            $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
         });

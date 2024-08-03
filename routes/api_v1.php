@@ -10,16 +10,16 @@ use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CommentController;
 use App\Http\Controllers\Api\V1\CartController;
 use App\Http\Controllers\Api\V1\OrderController;
+use App\Http\Controllers\Api\V1\CountriesController;
+use App\Http\Controllers\Api\V1\CitiesController;
 
 
 use App\Http\Controllers\Api\V1\BankBinPairController;
 use App\Http\Controllers\Api\V1\BrandController;
 use App\Http\Controllers\Api\V1\CarrierController;
 use App\Http\Controllers\Api\V1\CimriController;
-use App\Http\Controllers\Api\V1\CitiesController;
 use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\ContactRulesController;
-use App\Http\Controllers\Api\V1\CountriesController;
 use App\Http\Controllers\Api\V1\CouponController;
 use App\Http\Controllers\Api\V1\CreditCardController;
 use App\Http\Controllers\Api\V1\PopupController;
@@ -85,14 +85,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::post('/messages/sendMessage', [MessageController::class, 'sendMessage']);
 
 
-    Route::get('/countries/getCountries', [CountriesController::class, 'getCountries']);
-    Route::post('/countries/addCountries', [CountriesController::class, 'addCountries']);
-
-    Route::get('/cities/getCitiesByCountryId/{country_id}', [CitiesController::class, 'getCitiesByCountryId']);
-    Route::get('/cities/getDistrictsByCityId/{city_id}', [CitiesController::class, 'getDistrictsByCityId']);
-    Route::get('/cities/getNeighbourhoodsByDistrictId/{district_id}', [CitiesController::class, 'getNeighbourhoodsByDistrictId']);
-    Route::get('/cities/getNeighbourhoodById/{neighbourhood_id}', [CitiesController::class, 'getNeighbourhoodById']);
-    Route::post('/cities/addCities/{country_id}', [CitiesController::class, 'addCities']);
 
     Route::get('/contactRules/getContactRules', [ContactRulesController::class, 'getContactRules']);
     Route::post('/contactRules/addContactRules', [ContactRulesController::class, 'addContactRules']);
@@ -168,7 +160,11 @@ Route::post('/cart/getCheckoutPrices', [CartController::class, 'getCheckoutPrice
 Route::get('/cart/setIsOrder/{cart_id}/{is_order}', [CartController::class, 'setIsOrder']);
 
 
-
+//Country & City
+Route::get('/countries/getCountries', [CountriesController::class, 'getCountries']);
+Route::get('/cities/getCitiesByCountryId/{country_id}', [CitiesController::class, 'getCitiesByCountryId']);
+Route::get('/cities/getDistrictsByCityId/{city_id}', [CitiesController::class, 'getDistrictsByCityId']);
+Route::get('/cities/getNeighbourhoodsByDistrictId/{district_id}', [CitiesController::class, 'getNeighbourhoodsByDistrictId']);
 
 
 
