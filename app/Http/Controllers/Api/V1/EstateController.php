@@ -26,6 +26,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Nette\Schema\ValidationException;
 
 class EstateController extends Controller
@@ -65,7 +66,7 @@ class EstateController extends Controller
             $now = Carbon::now()->format('Y-m-d');
             $estate_id = Estate::query()->insertGetId([
                 'advert_no' => $advert_no,
-                'title' => $request->name,
+                'title' => $request->title,
                 'advert_type' => $request->advert_type,
                 'listing_date' => $now,
                 'country_id' => $request->country_id,
@@ -135,6 +136,44 @@ class EstateController extends Controller
             ]);
 
             return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['estate_id' => $estate_id]]);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
+        }
+
+    }
+    public function filterEstate(Request $request)
+    {
+        try {
+            $estates = Estate::query()
+                ->leftJoin('estate_props', 'estate_props.estate_id', '=', 'estates.id')
+                ->where('estates.status_id', 2)
+                ->where('estates.active', 1);
+
+            $estates = $estates
+                ->leftJoin(DB::raw('(SELECT * FROM estate_confirms WHERE id IN (SELECT MAX(id) FROM estate_confirms GROUP BY estate_id)) as ec'), 'ec.estate_id', '=', 'estates.id')
+                ->where('ec.confirmed', 1);
+
+            if ($request->search_word != "" && $request->search_word != null){
+                $estates = $estates->where('title', 'like', '%'.$request->search_word.'%');
+            }
+
+            if ($request->neighbourhood_id != "" && $request->neighbourhood_id != null){
+                $estates = $estates->where('neighbourhood_id', $request->neighbourhood_id);
+            }else if ($request->district_id != "" && $request->district_id != null){
+                $estates = $estates->where('district_id', $request->district_id);
+            }else if ($request->city_id != "" && $request->city_id != null){
+                $estates = $estates->where('city_id', $request->city_id);
+            }else if ($request->country_id != "" && $request->country_id != null){
+                $estates = $estates->where('country_id', $request->country_id);
+            }
+
+            $estates = $estates->get();
+
+            return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['estates' => $estates]]);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
