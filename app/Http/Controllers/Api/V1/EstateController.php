@@ -194,11 +194,21 @@ class EstateController extends Controller
     {
         do {
             // Generate a random 12-digit number
-            $number = mt_rand(100000000000, 999999999999);
+            $number = $this->generateRandom12DigitNumber();
         } while ($this->numberExistsInDatabase($number));
 
         return $number;
     }
+
+    private function generateRandom12DigitNumber()
+    {
+        $number = '';
+        for ($i = 0; $i < 12; $i++) {
+            $number .= random_int(0, 9);
+        }
+        return $number;
+    }
+
     private function numberExistsInDatabase($number)
     {
         // Check the database for the number
