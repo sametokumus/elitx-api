@@ -19,17 +19,18 @@ class EstateController extends Controller
         try {
             $estate_options = array();
             $advert_types = EstateAdvertType::query()->where('active', 1)->get();
-            array_push($estate_options, ['advert_types' => $advert_types, 'pretty_name' => 'İlan Türü']);
             $types = EstateType::query()->where('active', 1)->get();
-            array_push($estate_options, ['types' => $types, 'pretty_name' => 'Bina Türü']);
             $conditions = EstateCondition::query()->where('active', 1)->get();
-            array_push($estate_options, ['conditions' => $conditions, 'pretty_name' => 'Bina Durumu']);
             $floors = EstateFloor::query()->where('active', 1)->get();
-            array_push($estate_options, ['floors' => $floors, 'pretty_name' => 'Bulunduğu Kat']);
             $rooms = EstateRoom::query()->where('active', 1)->get();
-            array_push($estate_options, ['rooms' => $rooms, 'pretty_name' => 'Oda Sayısı']);
             $warmings = EstateWarming::query()->where('active', 1)->get();
-            array_push($estate_options, ['warmings' => $warmings, 'pretty_name' => 'Isınma Tipi']);
+
+            $estate_options['advert_types'] = $advert_types;
+            $estate_options['types'] = $types;
+            $estate_options['conditions'] = $conditions;
+            $estate_options['floors'] = $floors;
+            $estate_options['rooms'] = $rooms;
+            $estate_options['warmings'] = $warmings;
 
 
 
