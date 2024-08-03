@@ -128,6 +128,10 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/product/getSearchProducts/{keyword}',[SearchController::class,'getSearchProducts']);
     Route::get('/product/filters',[SearchController::class,'filters']);
     Route::post('/product/filterProducts',[SearchController::class,'filterProducts']);
+
+
+    //Estate
+    Route::post('/estate/addEstate',[EstateController::class,'addEstate']);
 });
 
 
