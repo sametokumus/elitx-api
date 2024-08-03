@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\CartController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\CountriesController;
 use App\Http\Controllers\Api\V1\CitiesController;
+use App\Http\Controllers\Api\V1\EstateController;
 
 
 use App\Http\Controllers\Api\V1\BankBinPairController;
@@ -167,6 +168,8 @@ Route::get('/cities/getDistrictsByCityId/{city_id}', [CitiesController::class, '
 Route::get('/cities/getNeighbourhoodsByDistrictId/{district_id}', [CitiesController::class, 'getNeighbourhoodsByDistrictId']);
 
 
+//Estate
+Route::get('/estate/getEstateOptions', [EstateController::class, 'getEstateOptions']);
 
 
 
