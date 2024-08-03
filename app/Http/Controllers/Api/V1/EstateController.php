@@ -55,8 +55,8 @@ class EstateController extends Controller
     {
         try {
             $request->validate([
-                'name' => 'required',
-                'base_price' => 'required',
+                'title' => 'required',
+                'price' => 'required',
                 'currency' => 'required'
             ]);
             $user = Auth::user();
