@@ -236,7 +236,7 @@ class EstateController extends Controller
                 $estates = $estates->where('estate_props.condition_id', $request->condition_id);
             }
 
-            $estates = $estates->toSql();
+            $estates = $estates->get();
 
             return response(['message' => 'Arama işlemi başarılı.', 'status' => 'success', 'object' => ['estates' => $estates]]);
         } catch (ValidationException $validationException) {
