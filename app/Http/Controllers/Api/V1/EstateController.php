@@ -83,7 +83,7 @@ class EstateController extends Controller
 
             EstateProp::query()->insert([
                 'estate_id' => $estate_id,
-                'estate_type' => $request->type,
+                'estate_type' => $request->estate_type,
                 'room_id' => $request->room_id,
                 'size' => $request->size,
                 'building_age' => $request->building_age,
@@ -148,7 +148,16 @@ class EstateController extends Controller
     public function filterEstate(Request $request)
     {
         try {
+
+            $latestEstatePrices = EstatePrice::query()
+                ->select('estate_prices.*')
+                ->whereRaw('estate_prices.id IN (SELECT MAX(id) FROM estate_prices GROUP BY estate_id)');
+
             $estates = Estate::query()
+                ->selectRaw('estates.*, latest_prices.price, latest_prices.currency')
+                ->leftJoinSub($latestEstatePrices, 'latest_prices', function ($join) {
+                    $join->on('estates.id', '=', 'latest_prices.estate_id');
+                })
                 ->leftJoin('estate_props', 'estate_props.estate_id', '=', 'estates.id')
                 ->where('estates.status_id', 2)
                 ->where('estates.active', 1);
@@ -158,22 +167,78 @@ class EstateController extends Controller
                 ->where('ec.confirmed', 1);
 
             if ($request->search_word != "" && $request->search_word != null){
-                $estates = $estates->where('title', 'like', '%'.$request->search_word.'%');
+                $estates = $estates->where('estates.title', 'like', '%'.$request->search_word.'%');
+            }
+
+            if ($request->min_price != "" && $request->min_price != null){
+                $estates = $estates->where('latest_prices.price', '>=', $request->min_price);
+            }
+
+            if ($request->max_price != "" && $request->max_price != null){
+                $estates = $estates->where('latest_prices.price', '<=', $request->max_price);
             }
 
             if ($request->neighbourhood_id != "" && $request->neighbourhood_id != null){
-                $estates = $estates->where('neighbourhood_id', $request->neighbourhood_id);
+                $estates = $estates->where('estates.neighbourhood_id', $request->neighbourhood_id);
             }else if ($request->district_id != "" && $request->district_id != null){
-                $estates = $estates->where('district_id', $request->district_id);
+                $estates = $estates->where('estates.district_id', $request->district_id);
             }else if ($request->city_id != "" && $request->city_id != null){
-                $estates = $estates->where('city_id', $request->city_id);
+                $estates = $estates->where('estates.city_id', $request->city_id);
             }else if ($request->country_id != "" && $request->country_id != null){
-                $estates = $estates->where('country_id', $request->country_id);
+                $estates = $estates->where('estates.country_id', $request->country_id);
+            }
+
+            if ($request->advert_type != "" && $request->advert_type != null){
+                $estates = $estates->where('estates.advert_type', $request->advert_type);
+            }
+
+            if ($request->estate_type != "" && $request->estate_type != null){
+                $estates = $estates->where('estate_props.estate_type', $request->estate_type);
+            }
+
+            if ($request->room_id != "" && $request->room_id != null){
+                $estates = $estates->whereIn('estate_props.room_id', $request->room_id);
+            }
+
+            if ($request->min_size != "" && $request->min_size != null){
+                $estates = $estates->where('estate_props.size', '>=', $request->min_size);
+            }
+
+            if ($request->max_size != "" && $request->max_size != null){
+                $estates = $estates->where('estate_props.size', '<=', $request->max_size);
+            }
+
+            if ($request->min_age != "" && $request->min_age != null){
+                $estates = $estates->where('estate_props.building_age', '>=', $request->min_age);
+            }
+
+            if ($request->max_age != "" && $request->max_age != null){
+                $estates = $estates->where('estate_props.building_age', '<=', $request->max_age);
+            }
+
+            if ($request->floor_id != "" && $request->floor_id != null){
+                $estates = $estates->whereIn('estate_props.floor_id', $request->floor_id);
+            }
+
+            if ($request->warming_id != "" && $request->warming_id != null){
+                $estates = $estates->whereIn('estate_props.warming_id', $request->warming_id);
+            }
+
+            if ($request->balcony != "" && $request->balcony != null){
+                $estates = $estates->where('estate_props.balcony', $request->balcony);
+            }
+
+            if ($request->furnished != "" && $request->furnished != null){
+                $estates = $estates->where('estate_props.furnished', $request->furnished);
+            }
+
+            if ($request->condition_id != "" && $request->condition_id != null){
+                $estates = $estates->where('estate_props.condition_id', $request->condition_id);
             }
 
             $estates = $estates->get();
 
-            return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['estates' => $estates]]);
+            return response(['message' => 'Arama işlemi başarılı.', 'status' => 'success', 'object' => ['estates' => $estates]]);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {

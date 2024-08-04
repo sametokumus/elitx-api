@@ -174,6 +174,7 @@ Route::get('/cities/getNeighbourhoodsByDistrictId/{district_id}', [CitiesControl
 
 //Estate
 Route::get('/estate/getEstateOptions', [EstateController::class, 'getEstateOptions']);
+Route::post('/estate/filterEstate', [EstateController::class, 'filterEstate']);
 
 
 
