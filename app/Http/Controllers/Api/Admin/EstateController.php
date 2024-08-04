@@ -24,6 +24,12 @@ class EstateController extends Controller
                 'confirmed' => 1,
                 'confirmed_at' => Carbon::now()
             ]);
+            $estate = Estate::query()->where('id', $id)->first();
+            if ($estate->owner_type == 2){
+                Estate::query()->where('id',$id)->update([
+                    'status_id' => 2
+                ]);
+            }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
