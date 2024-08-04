@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\Admin\ShopController;
 use App\Http\Controllers\Api\Admin\SupportController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\CommentController;
+use App\Http\Controllers\Api\Admin\EstateController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -152,6 +153,9 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     //User
     Route::get('/user/getUserAddressesByOrderId/{order_id}',[UserController::class,'getUserAddressesByOrderId']);
 
+    //Estate
+    Route::get('estate/getEstateConfirmed/{id}', [EstateController::class, 'getEstateConfirmed']);
+    Route::get('estate/getEstateRejected/{id}', [EstateController::class, 'getEstateRejected']);
 
 
 
