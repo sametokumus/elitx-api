@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductComment;
 use App\Models\ProductConfirm;
 use App\Models\ProductImage;
 use App\Models\ProductPrice;
@@ -302,6 +303,22 @@ class ProductController extends Controller
 
                 $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
                 $product['fav_count'] = $fav_count;
+
+                $comment_count = ProductComment::query()
+                    ->where('product_id', $product->id)
+                    ->where('confirmed', 1)
+                    ->where('active', 1)
+                    ->count();
+                $product['comment_count'] = $comment_count;
+
+                $is_favorite = 0;
+                if (Auth::user()){
+                    $favs = UserFavorite::query()->where('user_id', Auth::user()->id)->where('product_id', $product->id)->where('active', 1)->get();
+                    if ($favs){
+                        $is_favorite = 1;
+                    }
+                }
+                $product['is_favorite'] = $is_favorite;
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
@@ -379,8 +396,25 @@ class ProductController extends Controller
                     $product['variations'] = $variations;
                 }
 
-                $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
+                $fav_count = UserFavorite::query()->where('product_id', $product->id)->where('active', 1)->count();
                 $product['fav_count'] = $fav_count;
+
+                $comment_count = ProductComment::query()
+                    ->where('product_id', $product->id)
+                    ->where('confirmed', 1)
+                    ->where('active', 1)
+                    ->count();
+                $product['comment_count'] = $comment_count;
+
+                $is_favorite = 0;
+                if (Auth::user()){
+                    $favs = UserFavorite::query()->where('user_id', Auth::user()->id)->where('product_id', $product->id)->where('active', 1)->get();
+                    if ($favs){
+                        $is_favorite = 1;
+                    }
+                }
+                $product['is_favorite'] = $is_favorite;
+
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
