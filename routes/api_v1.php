@@ -124,15 +124,15 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/order/getUserOrders',[OrderController::class,'getUserOrders']);
     Route::get('/order/getOrderById/{order_id}',[OrderController::class,'getOrderById']);
 
-    //Search
-    Route::get('/product/getSearchProducts/{keyword}',[SearchController::class,'getSearchProducts']);
-    Route::get('/product/filters',[SearchController::class,'filters']);
-    Route::post('/product/filterProducts',[SearchController::class,'filterProducts']);
-
 
     //Estate
     Route::post('/estate/addEstate',[EstateController::class,'addEstate']);
 });
+
+//Search
+Route::get('/product/getSearchProducts/{keyword}',[SearchController::class,'getSearchProducts']);
+Route::get('/product/filters',[SearchController::class,'filters']);
+Route::post('/product/filterProducts',[SearchController::class,'filterProducts']);
 
 
 Route::get('/product/getProductById/{id}', [ProductController::class, 'getProductById']);
