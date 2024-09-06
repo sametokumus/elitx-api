@@ -408,10 +408,11 @@ class ProductController extends Controller
 
                 $is_favorite = 0;
                 if (Auth::user()){
-                    $favs = UserFavorite::query()->where('user_id', Auth::user()->id)->where('product_id', $product->id)->where('active', 1)->get();
-                    if ($favs){
-                        $is_favorite = 1;
-                    }
+                    $favs = UserFavorite::query()->where('user_id', Auth::user()->id)->where('product_id', $product->id)->where('active', 1)->toSql();
+//                    if ($favs){
+//                        $is_favorite = 1;
+//                    }
+                    $is_favorite = $favs;
                 }
                 $product['is_favorite'] = $is_favorite;
 
