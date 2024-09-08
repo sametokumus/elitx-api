@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\CountriesController;
 use App\Http\Controllers\Api\V1\CitiesController;
 use App\Http\Controllers\Api\V1\EstateController;
+use App\Http\Controllers\Api\V1\NotificationController;
 
 
 use App\Http\Controllers\Api\V1\BankBinPairController;
@@ -127,6 +128,10 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     //Estate
     Route::post('/estate/addEstate',[EstateController::class,'addEstate']);
+
+
+    //Notifications
+    Route::get('/notification/getCreateOldNotifies',[NotificationController::class,'getCreateOldNotifies']);
 });
 
 //Search

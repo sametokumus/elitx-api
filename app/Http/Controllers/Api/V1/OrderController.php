@@ -298,6 +298,9 @@ class OrderController extends Controller
                 $products = OrderProduct::query()->where('order_id', $order->order_id)->get();
                 foreach ($products as $product) {
                     $product['status_name'] = OrderStatus::query()->where('id', $product->status_id)->first()->name;
+                    $product_info = Product::query()->where('id', $product->product_id)->first();
+                    $product['thumbnail'] = $product_info->thumbnail;
+                    $product['product_info'] = $product_info;
                 }
                 $order['products'] = $products;
 

@@ -407,14 +407,13 @@ class ProductController extends Controller
                 $product['comment_count'] = $comment_count;
 
                 $is_favorite = 0;
-//                if (Auth::user()){
-//                    $favs = UserFavorite::query()->where('user_id', Auth::user()->id)->where('product_id', $product->id)->where('active', 1)->toSql();
-////                    if ($favs){
-////                        $is_favorite = 1;
-////                    }
-//                    $is_favorite = $favs;
-//                }
-                $product['is_favorite'] = Auth::user();
+                if (Auth::user()){
+                    $favs = UserFavorite::query()->where('user_id', Auth::user()->id)->where('product_id', $product->id)->where('active', 1)->toSql();
+                    if ($favs){
+                        $is_favorite = 1;
+                    }
+                }
+                $product['is_favorite'] = $is_favorite;
 
             }
 
