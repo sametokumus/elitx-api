@@ -132,6 +132,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     //Notifications
     Route::get('/notification/getCreateOldNotifies',[NotificationController::class,'getCreateOldNotifies']);
+    Route::get('/notification/getNotifies',[NotificationController::class,'getNotifies']);
 });
 
 //Search
