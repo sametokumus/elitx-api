@@ -646,7 +646,7 @@ class ProductController extends Controller
                     ->where('user_id', $user_id)
                     ->where('product_id', $product_id)
                     ->update([
-                        'point' => $point
+                        'point' => number_format($point, 1)
                     ]);
                 $avgPoint = ProductPoint::query()->where('product_id', $product_id)->where('active', 1)->avg('point');
                 Product::query()->where('id', $product_id)->update([
@@ -655,7 +655,7 @@ class ProductController extends Controller
             } else {
                 ProductPoint::query()
                     ->insert([
-                        'point' => $point,
+                        'point' => number_format($point, 1),
                         'user_id' => $user_id,
                         'product_id' => $product_id
                     ]);
