@@ -112,6 +112,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     //Product
     Route::post('product/addProduct', [ProductController::class, 'addProduct']);
+    Route::get('product/addProductPoint/{product_id}/{point}', [ProductController::class, 'addProductPoint']);
 
     //Comment
     Route::post('product/addProductComment', [CommentController::class, 'addProductComment']);

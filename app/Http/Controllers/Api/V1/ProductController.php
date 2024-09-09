@@ -9,6 +9,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductComment;
 use App\Models\ProductConfirm;
 use App\Models\ProductImage;
+use App\Models\ProductPoint;
 use App\Models\ProductPrice;
 use App\Models\ProductStatusHistory;
 use App\Models\ProductVariation;
@@ -622,6 +623,62 @@ class ProductController extends Controller
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['product' => $product]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
+        }
+    }
+
+    public function addProductPoint($product_id, $point)
+    {
+        try {
+
+            $user = Auth::user();
+            $user_id = $user->id;
+
+            if ($point > 5) {
+                throw new \Exception('product-001');
+            }
+
+            $has_point = ProductPoint::query()
+                ->where('user_id', $user_id)
+                ->where('product_id', $product_id)
+                ->count();
+            if ($has_point > 0) {
+                ProductPoint::query()
+                    ->where('user_id', $user_id)
+                    ->where('product_id', $product_id)
+                    ->update([
+                        'point' => $point
+                    ]);
+                $avgPoint = ProductPoint::query()->where('product_id', $product_id)->where('active', 1)->avg('point');
+                Product::query()->where('product_id', $product_id)->update([
+                    'point' => $avgPoint
+                ]);
+            } else {
+                ProductPoint::query()
+                    ->insert([
+                        'point' => $point,
+                        'user_id' => $user_id,
+                        'product_id' => $product_id
+                    ]);
+                $totalPoint = ProductPoint::query()->where('product_id', $product_id)->where('active', 1)->sum('point');
+                $count = ProductPoint::query()->where('product_id', $product_id)->where('active', 1)->count();
+                $avgPoint = $totalPoint / $count;
+                Product::query()->where('product_id', $product_id)->update([
+                    'point' => $avgPoint,
+                    'point_count' => $count
+                ]);
+            }
+
+
+            return response(['message' => 'Favori ürün ekleme işlemi başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Exception $exception){
+            if ($exception->getMessage() == 'auth-002'){
+                return  response(['message' => 'Girdiğiniz eposta adresi kullanılmaktadır.','status' => 'auth-002']);
+            }
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $exception->getMessage()]);
         }
     }
 }
