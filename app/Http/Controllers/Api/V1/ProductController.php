@@ -649,7 +649,7 @@ class ProductController extends Controller
                         'point' => $point
                     ]);
                 $avgPoint = ProductPoint::query()->where('product_id', $product_id)->where('active', 1)->avg('point');
-                Product::query()->where('product_id', $product_id)->update([
+                Product::query()->where('id', $product_id)->update([
                     'point' => $avgPoint
                 ]);
             } else {
@@ -662,7 +662,7 @@ class ProductController extends Controller
                 $totalPoint = ProductPoint::query()->where('product_id', $product_id)->where('active', 1)->sum('point');
                 $count = ProductPoint::query()->where('product_id', $product_id)->where('active', 1)->count();
                 $avgPoint = $totalPoint / $count;
-                Product::query()->where('product_id', $product_id)->update([
+                Product::query()->where('id', $product_id)->update([
                     'point' => $avgPoint,
                     'point_count' => $count
                 ]);
