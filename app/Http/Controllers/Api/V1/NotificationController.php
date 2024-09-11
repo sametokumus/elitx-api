@@ -62,6 +62,7 @@ class NotificationController extends Controller
             $notifies = UserNotification::query()->where('active', 1)->where('type_id', 1)->where('user_id', $user->id)->get();
             foreach ($notifies as $notify){
                 $option = NotifyOption::query()->where('id', $notify->option_id)->first();
+                $notify['title'] = $option->title_tr;
                 $notify['message'] = $option->message_tr;
             }
 
