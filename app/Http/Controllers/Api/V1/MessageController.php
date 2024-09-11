@@ -69,6 +69,7 @@ class MessageController extends Controller
                 $message['is_read'] = 1;
                 $message['sender'] = User::query()->where('id', $message->sender_id)->first();
                 $message['receiver'] = User::query()->where('id', $message->receiver_id)->first();
+                $message['product'] = Product::query()->where('id', $message->product_id)->first();
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['messages' => $messages]]);
