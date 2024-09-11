@@ -633,7 +633,7 @@ class ProductController extends Controller
             $user = Auth::user();
             $user_id = $user->id;
 
-            if ($point > 5) {
+            if ($point > 5 || $point < 1) {
                 throw new \Exception('product-001');
             }
 
@@ -669,14 +669,14 @@ class ProductController extends Controller
             }
 
 
-            return response(['message' => 'Favori ürün ekleme işlemi başarılı.', 'status' => 'success']);
+            return response(['message' => 'Puanlama işlemi başarılı.', 'status' => 'success']);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
         } catch (\Exception $exception){
-            if ($exception->getMessage() == 'auth-002'){
-                return  response(['message' => 'Girdiğiniz eposta adresi kullanılmaktadır.','status' => 'auth-002']);
+            if ($exception->getMessage() == 'product-001'){
+                return  response(['message' => 'Girdiğiniz değer 1-5 arasında olmalıdır.','status' => 'auth-002']);
             }
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $exception->getMessage()]);
         }
