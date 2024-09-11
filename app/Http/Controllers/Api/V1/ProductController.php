@@ -636,7 +636,6 @@ class ProductController extends Controller
             if ($point > 5 || $point < 1) {
                 throw new \Exception('product-001');
             }
-
             $has_point = ProductPoint::query()
                 ->where('user_id', $user_id)
                 ->where('product_id', $product_id)
