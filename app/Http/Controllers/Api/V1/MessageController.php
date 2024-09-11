@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\CorporateAddresses;
 use App\Models\Country;
 use App\Models\Message;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class MessageController extends Controller
             foreach ($messages as $message){
                 $message['last_message'] = Message::query()->where('id', $message->id)->first();
                 $message['conversation_partner'] = User::query()->where('id', $message->conversation_partner_id)->first();
-//                $message['product'] = Product::query()->where('id', $message->product_id)->first();
+                $message['product'] = Product::query()->where('id', $message->product_id)->first();
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['messages' => $messages]]);
