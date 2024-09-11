@@ -15,6 +15,9 @@ class CreateNotifyOptionsTable extends Migration
     {
         Schema::create('notify_options', function (Blueprint $table) {
             $table->id();
+            $table->string('title_tr');
+            $table->string('title_en');
+            $table->string('title_de');
             $table->string('message_tr');
             $table->string('message_en');
             $table->string('message_de');

@@ -72,4 +72,26 @@ class NotificationController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
+    public function getDeleteNotify($notify_id){
+        try {
+            $user = Auth::user();
+            $notify = UserNotification::query()->where('id', $notify_id)->first();
+            if ($user->id == $notify->user_id) {
+                UserNotification::query()->where('active', 1)->where('id', $notify_id)->update([
+                    'active' => 0
+                ]);
+            }else{
+                throw new \Exception('notify-001');
+            }
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        } catch (\Exception $exception){
+            if ($exception->getMessage() == 'notify-001'){
+                return  response(['message' => 'Size ait olmayan bir bildirimi silemezsiniz.','status' => 'notify-001']);
+            }
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001', 'err' => $exception->getMessage()]);
+        }
+    }
 }

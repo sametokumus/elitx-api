@@ -12,6 +12,7 @@ use App\Models\ProductImage;
 use App\Models\ProductPoint;
 use App\Models\ProductPrice;
 use App\Models\ProductStatusHistory;
+use App\Models\ProductUsageStatus;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationGroup;
 use App\Models\ProductVariationPrice;
@@ -170,7 +171,8 @@ class ProductController extends Controller
             $request->validate([
                 'name' => 'required',
                 'base_price' => 'required',
-                'currency' => 'required'
+                'currency' => 'required',
+                'usage_status_id' => 'required'
             ]);
             $user = Auth::user();
 
@@ -181,6 +183,7 @@ class ProductController extends Controller
                 'status_id' => 1,
                 'owner_type' => 2,
                 'owner_id' => $user->id,
+                'usage_status_id' => $request->usage_status_id,
             ]);
 
             ProductPrice::query()->insert([
@@ -246,10 +249,11 @@ class ProductController extends Controller
         try {
 
             $products = Product::query()
+                ->leftJoin('product_usage_statuses', 'product_usage_statuses.id', '=', 'products.usage_status_id')
                 ->leftJoin('shops', 'shops.id', '=', 'products.owner_id')
                 ->leftJoin('shop_types', 'shop_types.shop_id', '=', 'products.owner_id')
                 ->leftJoin(DB::raw('(SELECT * FROM product_confirms WHERE id IN (SELECT MAX(id) FROM product_confirms GROUP BY product_id)) as pc'), 'pc.product_id', '=', 'products.id')
-                ->selectRaw('products.*')
+                ->selectRaw('products.*, product_usage_statuses.name as usage_status_name')
                 ->where('products.owner_type', 1)
                 ->where('shop_types.type_id', 1)
                 ->where('shops.confirmed', 1)
@@ -342,7 +346,8 @@ class ProductController extends Controller
                 })
 
                 ->leftJoin(DB::raw('(SELECT * FROM product_confirms WHERE id IN (SELECT MAX(id) FROM product_confirms GROUP BY product_id)) as pc'), 'pc.product_id', '=', 'products.id')
-                ->selectRaw('products.*')
+                ->leftJoin('product_usage_statuses', 'product_usage_statuses.id', '=', 'products.usage_status_id')
+                ->selectRaw('products.*, product_usage_statuses.name as usage_status_name')
                 ->where(function ($query) {
                     $query->where('products.owner_type', 1)
                         ->where('shop_types.type_id', 2)
@@ -429,8 +434,9 @@ class ProductController extends Controller
         try {
 
             $products = Product::query()
+                ->leftJoin('product_usage_statuses', 'product_usage_statuses.id', '=', 'products.usage_status_id')
                 ->leftJoin('shop_types', 'shop_types.shop_id', '=', 'products.owner_id')
-                ->selectRaw('products.*')
+                ->selectRaw('products.*, product_usage_statuses.name as usage_status_name')
                 ->where('products.owner_type', 1) //Mağaza
                 ->where('shop_types.type_id', 1) //Sıfır Ürün Mağazası
                 ->where('products.active', 1)
@@ -495,11 +501,12 @@ class ProductController extends Controller
     {
         try {
             $products = Product::query()
+                ->leftJoin('product_usage_statuses', 'product_usage_statuses.id', '=', 'products.usage_status_id')
                 ->leftJoin('shop_types', function ($join) {
                     $join->on('shop_types.shop_id', '=', 'products.owner_id')
                         ->where('shop_types.type_id', '=', 2);
                 })
-                ->selectRaw('products.*')
+                ->selectRaw('products.*, product_usage_statuses.name as usage_status_name')
                 ->where(function ($query) {
                     $query->where('products.owner_type', 1)
                         ->where('shop_types.type_id', 2);
@@ -558,6 +565,21 @@ class ProductController extends Controller
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
+        }
+    }
+
+    public function getProductUsageStatuses()
+    {
+        try {
+
+
+            $usage_statuses = ProductUsageStatus::query()
+                ->where('active', 1)
+                ->get();
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['usage_statuses' => $usage_statuses]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'err' => $queryException->getMessage()]);
         }

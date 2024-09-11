@@ -134,6 +134,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     //Notifications
     Route::get('/notification/getCreateOldNotifies',[NotificationController::class,'getCreateOldNotifies']);
     Route::get('/notification/getNotifies',[NotificationController::class,'getNotifies']);
+    Route::get('/notification/getDeleteNotify/{notify_id}',[NotificationController::class,'getDeleteNotify']);
 });
 
 //Search
@@ -147,6 +148,7 @@ Route::get('/product/getNewProducts', [ProductController::class, 'getNewProducts
 Route::get('/product/getSecondHandProducts', [ProductController::class, 'getSecondHandProducts']);
 Route::get('/product/getNewProductsByCategoryId/{category_id}', [ProductController::class, 'getNewProductsByCategoryId']);
 Route::get('/product/getSecondHandProductsByCategoryId/{category_id}', [ProductController::class, 'getSecondHandProductsByCategoryId']);
+Route::get('/product/getProductUsageStatuses', [ProductController::class, 'getProductUsageStatuses']);
 
 
 
