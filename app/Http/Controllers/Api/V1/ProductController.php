@@ -108,6 +108,7 @@ class ProductController extends Controller
                 ->selectRaw('products.*')
                 ->where('user_favorites.active', 1)
                 ->where('user_favorites.user_id', $user_id)
+                ->where('products.active', 1)
                 ->get();
 
             foreach ($products as $product) {
