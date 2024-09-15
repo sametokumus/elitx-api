@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\CountriesController;
 use App\Http\Controllers\Api\V1\CitiesController;
 use App\Http\Controllers\Api\V1\EstateController;
 use App\Http\Controllers\Api\V1\NotificationController;
+use App\Http\Controllers\Api\V1\CarController;
 
 
 use App\Http\Controllers\Api\V1\BankBinPairController;
@@ -131,6 +132,10 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::post('/estate/addEstate',[EstateController::class,'addEstate']);
 
 
+    //Car
+    Route::post('/car/addCar',[CarController::class,'addCar']);
+
+
     //Notifications
     Route::get('/notification/getCreateOldNotifies',[NotificationController::class,'getCreateOldNotifies']);
     Route::get('/notification/getNotifies',[NotificationController::class,'getNotifies']);
@@ -184,6 +189,11 @@ Route::get('/cities/getNeighbourhoodsByDistrictId/{district_id}', [CitiesControl
 //Estate
 Route::get('/estate/getEstateOptions', [EstateController::class, 'getEstateOptions']);
 Route::post('/estate/filterEstate', [EstateController::class, 'filterEstate']);
+
+
+//Car
+Route::get('/car/getCarOptions', [CarController::class, 'getCarOptions']);
+Route::post('/car/filterCar', [CarController::class, 'filterCar']);
 
 
 
