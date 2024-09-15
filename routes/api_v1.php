@@ -154,6 +154,7 @@ Route::get('/product/getSecondHandProducts', [ProductController::class, 'getSeco
 Route::get('/product/getNewProductsByCategoryId/{category_id}', [ProductController::class, 'getNewProductsByCategoryId']);
 Route::get('/product/getSecondHandProductsByCategoryId/{category_id}', [ProductController::class, 'getSecondHandProductsByCategoryId']);
 Route::get('/product/getProductUsageStatuses', [ProductController::class, 'getProductUsageStatuses']);
+Route::get('/product/getShopProducts/{shop_id}', [ProductController::class, 'getShopProducts']);
 
 
 
