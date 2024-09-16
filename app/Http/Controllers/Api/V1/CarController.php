@@ -158,94 +158,121 @@ class CarController extends Controller
 
             $latestCarPrices = CarPrice::query()
                 ->select('car_prices.*')
-                ->whereRaw('car_prices.id IN (SELECT MAX(id) FROM estate_prices GROUP BY estate_id)');
+                ->whereRaw('car_prices.id IN (SELECT MAX(id) FROM car_prices GROUP BY car_id)');
 
-            $estates = Estate::query()
+            $cars = Car::query()
                 ->selectRaw('estates.*, latest_prices.price, latest_prices.currency')
-                ->leftJoinSub($latestEstatePrices, 'latest_prices', function ($join) {
-                    $join->on('estates.id', '=', 'latest_prices.estate_id');
+                ->leftJoinSub($latestCarPrices, 'latest_prices', function ($join) {
+                    $join->on('cars.id', '=', 'latest_prices.car_id');
                 })
-                ->leftJoin('estate_props', 'estate_props.estate_id', '=', 'estates.id')
-                ->where('estates.status_id', 2)
-                ->where('estates.active', 1);
+                ->leftJoin('car_props', 'car_props.car_id', '=', 'cars.id')
+                ->where('cars.status_id', 2)
+                ->where('cars.active', 1);
 
-            $estates = $estates
-                ->leftJoin(DB::raw('(SELECT * FROM estate_confirms WHERE id IN (SELECT MAX(id) FROM estate_confirms GROUP BY estate_id)) as ec'), 'ec.estate_id', '=', 'estates.id')
-                ->where('ec.confirmed', 1);
+            $cars = $cars
+                ->leftJoin(DB::raw('(SELECT * FROM car_confirms WHERE id IN (SELECT MAX(id) FROM car_confirms GROUP BY car_id)) as cc'), 'cc.car_id', '=', 'cars.id')
+                ->where('cc.confirmed', 1);
 
             if ($request->search_word != "" && $request->search_word != null){
-                $estates = $estates->where('estates.title', 'like', '%'.$request->search_word.'%');
+                $cars = $cars->where('cars.title', 'like', '%'.$request->search_word.'%');
             }
 
             if ($request->min_price != "" && $request->min_price != null){
-                $estates = $estates->where('latest_prices.price', '>=', $request->min_price);
+                $cars = $cars->where('latest_prices.price', '>=', $request->min_price);
             }
 
             if ($request->max_price != "" && $request->max_price != null){
-                $estates = $estates->where('latest_prices.price', '<=', $request->max_price);
+                $cars = $cars->where('latest_prices.price', '<=', $request->max_price);
             }
 
             if ($request->neighbourhood_id != "" && $request->neighbourhood_id != null){
-                $estates = $estates->where('estates.neighbourhood_id', $request->neighbourhood_id);
+                $cars = $cars->where('cars.neighbourhood_id', $request->neighbourhood_id);
             }else if ($request->district_id != "" && $request->district_id != null){
-                $estates = $estates->where('estates.district_id', $request->district_id);
+                $cars = $cars->where('cars.district_id', $request->district_id);
             }else if ($request->city_id != "" && $request->city_id != null){
-                $estates = $estates->where('estates.city_id', $request->city_id);
+                $cars = $cars->where('cars.city_id', $request->city_id);
             }else if ($request->country_id != "" && $request->country_id != null){
-                $estates = $estates->where('estates.country_id', $request->country_id);
+                $cars = $cars->where('cars.country_id', $request->country_id);
             }
 
-            if ($request->advert_type != "" && $request->advert_type != null){
-                $estates = $estates->where('estates.advert_type', $request->advert_type);
+            if ($request->category_id != "" && $request->category_id != null){
+                $categoryIds = $this->getSubCategoryIds($request->category_id);
+                $cars = $cars
+                    ->leftJoin('car_categories', 'car_categories.id', '=', 'car_props.category_id')
+                    ->whereIn('car_categories.id', $categoryIds);
             }
 
-            if ($request->estate_type != "" && $request->estate_type != null){
-                $estates = $estates->where('estate_props.estate_type', $request->estate_type);
+            if ($request->model_id != "" && $request->model_id != null){
+                $cars = $cars->where('car_props.model_id', $request->model_id);
+            }else if ($request->serie_id != "" && $request->serie_id != null){
+                $cars = $cars->where('car_props.serie_id', $request->serie_id);
+            }else if ($request->brand_id != "" && $request->brand_id != null){
+                $cars = $cars->where('car_props.brand_id', $request->brand_id);
             }
 
-            if ($request->room_id != "" && $request->room_id != null){
-                $estates = $estates->whereIn('estate_props.room_id', $request->room_id);
+            if ($request->min_year != "" && $request->min_year != null){
+                $cars = $cars->where('car_props.year', '>=', $request->min_year);
             }
 
-            if ($request->min_size != "" && $request->min_size != null){
-                $estates = $estates->where('estate_props.size', '>=', $request->min_size);
+            if ($request->max_year != "" && $request->max_year != null){
+                $cars = $cars->where('car_props.year', '<=', $request->max_year);
             }
 
-            if ($request->max_size != "" && $request->max_size != null){
-                $estates = $estates->where('estate_props.size', '<=', $request->max_size);
+            if ($request->fuel_id != "" && $request->fuel_id != null){
+                $cars = $cars->whereIn('car_props.fuel_id', $request->fuel_id);
             }
 
-            if ($request->min_age != "" && $request->min_age != null){
-                $estates = $estates->where('estate_props.building_age', '>=', $request->min_age);
-            }
-
-            if ($request->max_age != "" && $request->max_age != null){
-                $estates = $estates->where('estate_props.building_age', '<=', $request->max_age);
-            }
-
-            if ($request->floor_id != "" && $request->floor_id != null){
-                $estates = $estates->whereIn('estate_props.floor_id', $request->floor_id);
-            }
-
-            if ($request->warming_id != "" && $request->warming_id != null){
-                $estates = $estates->whereIn('estate_props.warming_id', $request->warming_id);
-            }
-
-            if ($request->balcony != "" && $request->balcony != null){
-                $estates = $estates->where('estate_props.balcony', $request->balcony);
-            }
-
-            if ($request->furnished != "" && $request->furnished != null){
-                $estates = $estates->where('estate_props.furnished', $request->furnished);
+            if ($request->gear_id != "" && $request->gear_id != null){
+                $cars = $cars->whereIn('car_props.gear_id', $request->gear_id);
             }
 
             if ($request->condition_id != "" && $request->condition_id != null){
-                $estates = $estates->where('estate_props.condition_id', $request->condition_id);
+                $cars = $cars->whereIn('car_props.condition_id', $request->condition_id);
             }
 
-            $estates = $estates->get();
+            if ($request->body_type_id != "" && $request->body_type_id != null){
+                $cars = $cars->whereIn('car_props.body_type_id', $request->body_type_id);
+            }
 
-            return response(['message' => 'Arama işlemi başarılı.', 'status' => 'success', 'object' => ['estates' => $estates]]);
+            if ($request->traction_id != "" && $request->traction_id != null){
+                $cars = $cars->whereIn('car_props.traction_id', $request->traction_id);
+            }
+
+            if ($request->door_id != "" && $request->door_id != null){
+                $cars = $cars->whereIn('car_props.door_id', $request->door_id);
+            }
+
+            if ($request->min_km != "" && $request->min_km != null){
+                $cars = $cars->where('car_props.km', '>=', $request->min_km);
+            }
+
+            if ($request->max_km != "" && $request->max_km != null){
+                $cars = $cars->where('car_props.km', '<=', $request->max_km);
+            }
+
+            if ($request->min_hp != "" && $request->min_hp != null){
+                $cars = $cars->where('car_props.hp', '>=', $request->min_hp);
+            }
+
+            if ($request->max_hp != "" && $request->max_hp != null){
+                $cars = $cars->where('car_props.hp', '<=', $request->max_hp);
+            }
+
+            if ($request->min_cc != "" && $request->min_cc != null){
+                $cars = $cars->where('car_props.cc', '>=', $request->min_cc);
+            }
+
+            if ($request->max_cc != "" && $request->max_cc != null){
+                $cars = $cars->where('car_props.cc', '<=', $request->max_cc);
+            }
+
+            if ($request->color != "" && $request->color != null){
+                $cars = $cars->where('car_props.color', 'like', '%'.$request->color.'%');
+            }
+
+            $cars = $cars->get();
+
+            return response(['message' => 'Arama işlemi başarılı.', 'status' => 'success', 'object' => ['cars' => $cars]]);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
@@ -285,5 +312,21 @@ class CarController extends Controller
     {
         // Check the database for the number
         return Estate::query()->where('advert_no', $number)->exists();
+    }
+
+    private function getSubCategoryIds($categoryId) {
+        // Get subcategories based on parent_id
+        $subCategories = DB::table('car_categories')
+            ->where('parent_id', $categoryId)
+            ->pluck('id');
+
+        $allSubCategoryIds = [$categoryId]; // Include the main category
+
+        // Iterate over each subcategory to find its subcategories recursively
+        foreach ($subCategories as $subCategoryId) {
+            $allSubCategoryIds = array_merge($allSubCategoryIds, getSubCategoryIds($subCategoryId));
+        }
+
+        return $allSubCategoryIds;
     }
 }
