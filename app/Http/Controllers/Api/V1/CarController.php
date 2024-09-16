@@ -196,10 +196,7 @@ class CarController extends Controller
             }
 
             if ($request->category_id != "" && $request->category_id != null){
-                $categoryIds = $this->getSubCategoryIds($request->category_id);
-                $cars = $cars
-                    ->leftJoin('car_categories', 'car_categories.id', '=', 'car_props.category_id')
-                    ->whereIn('car_categories.id', $categoryIds);
+                $cars = $cars->where('car_props.category_id', $request->category_id);
             }
 
             if ($request->model_id != "" && $request->model_id != null){
@@ -312,21 +309,5 @@ class CarController extends Controller
     {
         // Check the database for the number
         return Estate::query()->where('advert_no', $number)->exists();
-    }
-
-    private function getSubCategoryIds($categoryId) {
-        // Get subcategories based on parent_id
-        $subCategories = DB::table('car_categories')
-            ->where('parent_id', $categoryId)
-            ->pluck('id');
-
-        $allSubCategoryIds = [$categoryId]; // Include the main category
-
-        // Iterate over each subcategory to find its subcategories recursively
-        foreach ($subCategories as $subCategoryId) {
-            $allSubCategoryIds = array_merge($allSubCategoryIds, getSubCategoryIds($subCategoryId));
-        }
-
-        return $allSubCategoryIds;
     }
 }
