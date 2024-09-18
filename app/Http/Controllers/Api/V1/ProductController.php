@@ -15,6 +15,7 @@ use App\Models\ProductStatusHistory;
 use App\Models\ProductUsageStatus;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationGroup;
+use App\Models\ProductVariationGroupType;
 use App\Models\ProductVariationPrice;
 use App\Models\Shop;
 use App\Models\ShopType;
@@ -725,7 +726,7 @@ class ProductController extends Controller
                 foreach ($variations as $variation) {
                     $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                     $variation['price'] = $variation_price->price;
-                    $variation['group_name'] = ProductVariationGroup::query()->where('id', $variation->variation_group_id)->first()->name;
+                    $variation['group_name'] = ProductVariationGroupType::query()->where('id', $variation->variation_group_id)->first()->name;
                 }
                 $product['variations'] = $variations;
             }
