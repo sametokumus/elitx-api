@@ -725,6 +725,7 @@ class ProductController extends Controller
                 foreach ($variations as $variation) {
                     $variation_price = ProductVariationPrice::query()->where('product_id', $product->id)->where('variation_id', $variation->id)->orderByDesc('id')->first();
                     $variation['price'] = $variation_price->price;
+                    $variation['group_name'] = ProductVariationGroup::query()->where('id', $variation->variation_group_id)->first()->name;
                 }
                 $product['variations'] = $variations;
             }
