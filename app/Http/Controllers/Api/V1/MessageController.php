@@ -47,6 +47,7 @@ class MessageController extends Controller
         try {
             $auth_user = Auth::user();
             $user_id = $auth_user->id;
+            $partner_info = User::query()->where('id', $partner_id)->first();
 
             $messages = Message::query()
                 ->select('id', 'product_id', 'sender_id', 'receiver_id', 'text')
@@ -72,7 +73,7 @@ class MessageController extends Controller
                 $message['product'] = Product::query()->where('id', $message->product_id)->first();
             }
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['messages' => $messages]]);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['messages' => $messages, 'partner_info' => $partner_info]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
