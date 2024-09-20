@@ -350,6 +350,7 @@ class CartController extends Controller
             }
 
 
+            $checkout_prices['currency'] = $currency;
             $checkout_prices['coupon_code'] = $coupon_code;
             $checkout_prices['coupon_message'] = $coupon_message;
             $checkout_prices['coupon_subtotal_price'] = number_format($coupon_subtotal_price, 2, ",", ".");
