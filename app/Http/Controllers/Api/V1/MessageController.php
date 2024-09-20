@@ -51,7 +51,7 @@ class MessageController extends Controller
             $product = Product::query()->where('id', $product_id)->first();
 
             $messages = Message::query()
-                ->select('id', 'product_id', 'sender_id', 'receiver_id', 'text')
+                ->select('id', 'product_id', 'sender_id', 'receiver_id', 'text', 'created_at', 'updated_at')
                 ->where(function($query) use ($user_id, $partner_id) {
                     $query->where(function($query) use ($user_id, $partner_id) {
                         $query->where('sender_id', $user_id)
