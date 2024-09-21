@@ -27,6 +27,7 @@ class MessageController extends Controller
             $messages = Message::query()
                 ->select(DB::raw('MAX(id) as id'), 'product_id')
                 ->selectRaw('CASE WHEN sender_id <> '.$user_id.' THEN sender_id ELSE receiver_id END AS conversation_partner_id')
+                ->where('active', 1)
                 ->where('sender_id', $user_id)
                 ->orWhere('receiver_id', $user_id)
                 ->groupBy('conversation_partner_id', 'product_id')
@@ -63,6 +64,7 @@ class MessageController extends Controller
                         });
                 })
                 ->where('product_id', $product_id)
+                ->where('active', 1)
                 ->get();
             foreach ($messages as $message){
                 Message::query()->where('id', $message->id)->update([
