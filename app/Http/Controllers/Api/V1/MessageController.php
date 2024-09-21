@@ -108,4 +108,32 @@ class MessageController extends Controller
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001','a' => $throwable->getMessage()]);
         }
     }
+    public function getDeleteMessageConversation($product_id, $partner_id)
+    {
+        try {
+            $auth_user = Auth::user();
+            $user_id = $auth_user->id;
+
+            $messages = Message::query()
+                ->select('id', 'product_id', 'sender_id', 'receiver_id', 'text', 'created_at', 'updated_at')
+                ->where(function($query) use ($user_id, $partner_id) {
+                    $query->where(function($query) use ($user_id, $partner_id) {
+                        $query->where('sender_id', $user_id)
+                            ->where('receiver_id', $partner_id);
+                    })
+                        ->orWhere(function($query) use ($user_id, $partner_id) {
+                            $query->where('sender_id', $partner_id)
+                                ->where('receiver_id', $user_id);
+                        });
+                })
+                ->where('product_id', $product_id)
+                ->update([
+                    'active' => 0
+                ]);
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
 }

@@ -86,6 +86,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/messages/getMessageListByUser', [MessageController::class, 'getMessageListByUser']);
     Route::get('/messages/getMessagesByUserProductIdAndUserId/{user_product_id}/{partner_id}', [MessageController::class, 'getMessagesByUserProductIdAndUserId']);
     Route::post('/messages/sendMessage', [MessageController::class, 'sendMessage']);
+    Route::get('/messages/getDeleteMessageConversation/{product_id}/{partner_id}', [MessageController::class, 'getDeleteMessageConversation']);
 
 
 
