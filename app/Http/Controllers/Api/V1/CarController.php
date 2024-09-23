@@ -27,6 +27,9 @@ use App\Models\EstateRoom;
 use App\Models\EstateStatusHistory;
 use App\Models\EstateType;
 use App\Models\EstateWarming;
+use App\Models\Shop;
+use App\Models\ShopType;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -295,6 +298,22 @@ class CarController extends Controller
                 ->where('cars.active', 1)
                 ->where('cars.id', $car_id)
                 ->first();
+
+            if ($car->owner_type == 1) {
+                $shop = Shop::query()->where('id', $car->owner_id)->first();
+                $types = ShopType::query()
+                    ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
+                    ->selectRaw('shop_types.*, types.name as name')
+                    ->where('shop_types.shop_id', $shop->id)
+                    ->where('shop_types.active', 1)
+                    ->get();
+                $type_words = $types->implode('name', ', ');
+                $shop['types'] = $types;
+                $shop['type_words'] = $type_words;
+                $car['shop'] = $shop;
+            } else if ($car->owner_type == 2) {
+                $car['user'] = User::query()->where('id', $car->owner_id)->first();
+            }
 
             $car['body_type'] = CarBodyType::query()->where('id', $car->body_type_id)->where('active', 1)->first();
             $car['condition'] = CarCondition::query()->where('id', $car->condition_id)->where('active', 1)->first();
