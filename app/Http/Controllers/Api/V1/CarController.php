@@ -268,7 +268,7 @@ class CarController extends Controller
                 $cars = $cars->where('car_props.color', 'like', '%'.$request->color.'%');
             }
 
-            $cars = $cars->toSql();
+            $cars = $cars->get();
 
             return response(['message' => 'Arama işlemi başarılı.', 'status' => 'success', 'object' => ['cars' => $cars]]);
         } catch (ValidationException $validationException) {
