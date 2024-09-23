@@ -267,7 +267,7 @@ class EstateController extends Controller
                 ->whereRaw('estate_prices.id IN (SELECT MAX(id) FROM estate_prices GROUP BY estate_id)');
 
             $estate = Estate::query()
-                ->selectRaw('estates.*, latest_prices.price, latest_prices.currency')
+                ->selectRaw('estate_props.*, estates.*, latest_prices.price, latest_prices.currency')
                 ->leftJoinSub($latestEstatePrices, 'latest_prices', function ($join) {
                     $join->on('estates.id', '=', 'latest_prices.estate_id');
                 })
