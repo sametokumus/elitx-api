@@ -264,7 +264,7 @@ class EstateController extends Controller
         try {
             $latestEstatePrices = EstatePrice::query()
                 ->select('estate_prices.*')
-                ->whereRaw('estate_prices.id IN (SELECT MAX(id) FROM estate_prices GROUP BY estate_id)');
+                ->whereRaw('estate_prices.id IN (SELECT MAX(id) FROM estate_prices WHERE estate_id = '.$estate_id.' GROUP BY estate_id)');
 
             $estate = Estate::query()
                 ->selectRaw('estate_props.*, estates.*, latest_prices.price, latest_prices.currency')
