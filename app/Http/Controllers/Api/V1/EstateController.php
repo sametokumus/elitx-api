@@ -277,30 +277,30 @@ class EstateController extends Controller
                 ->where('estates.id', $estate_id)
                 ->toSql();
 
-//            if ($estate->owner_type == 1) {
-//                $shop = Shop::query()->where('id', $estate->owner_id)->first();
-//                $types = ShopType::query()
-//                    ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
-//                    ->selectRaw('shop_types.*, types.name as name')
-//                    ->where('shop_types.shop_id', $shop->id)
-//                    ->where('shop_types.active', 1)
-//                    ->get();
-//                $type_words = $types->implode('name', ', ');
-//                $shop['types'] = $types;
-//                $shop['type_words'] = $type_words;
-//                $estate['shop'] = $shop;
-//            } else if ($estate->owner_type == 2) {
-//                $estate['user'] = User::query()->where('id', $estate->owner_id)->first();
-//            }
+            if ($estate->owner_type == 1) {
+                $shop = Shop::query()->where('id', $estate->owner_id)->first();
+                $types = ShopType::query()
+                    ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
+                    ->selectRaw('shop_types.*, types.name as name')
+                    ->where('shop_types.shop_id', $shop->id)
+                    ->where('shop_types.active', 1)
+                    ->get();
+                $type_words = $types->implode('name', ', ');
+                $shop['types'] = $types;
+                $shop['type_words'] = $type_words;
+                $estate['shop'] = $shop;
+            } else if ($estate->owner_type == 2) {
+                $estate['user'] = User::query()->where('id', $estate->owner_id)->first();
+            }
 
-//            $estate['advert_type'] = EstateAdvertType::query()->where('id', $estate->advert_type)->where('active', 1)->first();
-//            $estate['type'] = EstateType::query()->where('id', $estate->estate_type)->where('active', 1)->first();
-//            $estate['condition'] = EstateCondition::query()->where('id', $estate->condition_id)->where('active', 1)->first();
-//            $estate['floor'] = EstateFloor::query()->where('id', $estate->floor_id)->where('active', 1)->first();
-//            $estate['room'] = EstateRoom::query()->where('id', $estate->room_id)->where('active', 1)->first();
-//            $estate['warming'] = EstateWarming::query()->where('id', $estate->warming_id)->where('active', 1)->first();
-//
-//            $estate['images'] = EstateImage::query()->where('estate_id', $estate_id)->where('active', 1)->get();
+            $estate['advert_type'] = EstateAdvertType::query()->where('id', $estate->advert_type)->where('active', 1)->first();
+            $estate['type'] = EstateType::query()->where('id', $estate->estate_type)->where('active', 1)->first();
+            $estate['condition'] = EstateCondition::query()->where('id', $estate->condition_id)->where('active', 1)->first();
+            $estate['floor'] = EstateFloor::query()->where('id', $estate->floor_id)->where('active', 1)->first();
+            $estate['room'] = EstateRoom::query()->where('id', $estate->room_id)->where('active', 1)->first();
+            $estate['warming'] = EstateWarming::query()->where('id', $estate->warming_id)->where('active', 1)->first();
+
+            $estate['images'] = EstateImage::query()->where('estate_id', $estate_id)->where('active', 1)->get();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => [
                 'estate' => $estate]]);
