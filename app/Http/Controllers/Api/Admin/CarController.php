@@ -3,30 +3,27 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Estate;
-use App\Models\EstateConfirm;
-use App\Models\Product;
-use App\Models\ProductConfirm;
+use App\Models\Car;
+use App\Models\CarConfirm;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class EstateController extends Controller
+class CarController extends Controller
 {
-
-    public function getEstateConfirmed($id){
+    public function getCarConfirmed($id){
         try {
             $admin = Auth::user();
-            EstateConfirm::query()->insert([
-                'estate_id' => $id,
+            CarConfirm::query()->insert([
+                'car_id' => $id,
                 'admin_id' => $admin->id,
                 'confirmed' => 1,
                 'confirmed_at' => Carbon::now()
             ]);
-            $estate = Estate::query()->where('id', $id)->first();
-            if ($estate->owner_type == 2){
-                Estate::query()->where('id',$id)->update([
+            $car = Car::query()->where('id', $id)->first();
+            if ($car->owner_type == 2){
+                Car::query()->where('id',$id)->update([
                     'status_id' => 2
                 ]);
             }
@@ -36,14 +33,14 @@ class EstateController extends Controller
         }
     }
 
-    public function getEstateRejected($id){
+    public function getCarRejected($id){
         try {
-            Estate::query()->where('id',$id)->update([
+            Car::query()->where('id',$id)->update([
                 'status_id' => 3
             ]);
             $admin = Auth::user();
-            EstateConfirm::query()->insert([
-                'estate_id' => $id,
+            CarConfirm::query()->insert([
+                'car_id' => $id,
                 'admin_id' => $admin->id,
                 'confirmed' => 2,
                 'confirmed_at' => Carbon::now()

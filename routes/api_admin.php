@@ -34,6 +34,7 @@ use App\Http\Controllers\Api\Admin\SupportController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\CommentController;
 use App\Http\Controllers\Api\Admin\EstateController;
+use App\Http\Controllers\Api\Admin\CarController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -156,6 +157,10 @@ Route::middleware(['auth:sanctum', 'type.admin'])->group(function (){
     //Estate
     Route::get('estate/getEstateConfirmed/{id}', [EstateController::class, 'getEstateConfirmed']);
     Route::get('estate/getEstateRejected/{id}', [EstateController::class, 'getEstateRejected']);
+
+    //Car
+    Route::get('car/getCarConfirmed/{id}', [CarController::class, 'getCarConfirmed']);
+    Route::get('car/getCarRejected/{id}', [CarController::class, 'getCarRejected']);
 
 
 
