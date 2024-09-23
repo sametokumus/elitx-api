@@ -322,6 +322,8 @@ class CarController extends Controller
             $car['gear'] = CarGear::query()->where('id', $car->gear_id)->where('active', 1)->first();
             $car['traction'] = CarTraction::query()->where('id', $car->traction_id)->where('active', 1)->first();
 
+            $car['images'] = CarImage::query()->where('car_id', $car_id)->where('active', 1)->get();
+
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => [
                 'car' => $car]]);
         } catch (QueryException $queryException) {
