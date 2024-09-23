@@ -277,21 +277,21 @@ class EstateController extends Controller
                 ->where('estates.id', $estate_id)
                 ->first();
 
-            if ($estate->owner_type == 1) {
-                $shop = Shop::query()->where('id', $estate->owner_id)->first();
-                $types = ShopType::query()
-                    ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
-                    ->selectRaw('shop_types.*, types.name as name')
-                    ->where('shop_types.shop_id', $shop->id)
-                    ->where('shop_types.active', 1)
-                    ->get();
-                $type_words = $types->implode('name', ', ');
-                $shop['types'] = $types;
-                $shop['type_words'] = $type_words;
-                $estate['shop'] = $shop;
-            } else if ($estate->owner_type == 2) {
-                $estate['user'] = User::query()->where('id', $estate->owner_id)->first();
-            }
+//            if ($estate->owner_type == 1) {
+//                $shop = Shop::query()->where('id', $estate->owner_id)->first();
+//                $types = ShopType::query()
+//                    ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
+//                    ->selectRaw('shop_types.*, types.name as name')
+//                    ->where('shop_types.shop_id', $shop->id)
+//                    ->where('shop_types.active', 1)
+//                    ->get();
+//                $type_words = $types->implode('name', ', ');
+//                $shop['types'] = $types;
+//                $shop['type_words'] = $type_words;
+//                $estate['shop'] = $shop;
+//            } else if ($estate->owner_type == 2) {
+//                $estate['user'] = User::query()->where('id', $estate->owner_id)->first();
+//            }
 
             $estate['advert_type'] = EstateAdvertType::query()->where('id', $estate->advert_type_id)->where('active', 1)->first();
             $estate['type'] = EstateType::query()->where('id', $estate->type_id)->where('active', 1)->first();
