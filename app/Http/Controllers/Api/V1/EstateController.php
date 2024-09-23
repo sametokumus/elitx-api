@@ -293,8 +293,8 @@ class EstateController extends Controller
 //                $estate['user'] = User::query()->where('id', $estate->owner_id)->first();
 //            }
 
-            $estate['advert_type'] = EstateAdvertType::query()->where('id', $estate->advert_type_id)->where('active', 1)->first();
-            $estate['type'] = EstateType::query()->where('id', $estate->type_id)->where('active', 1)->first();
+            $estate['advert_type'] = EstateAdvertType::query()->where('id', $estate->advert_type)->where('active', 1)->first();
+            $estate['type'] = EstateType::query()->where('id', $estate->estate_type)->where('active', 1)->first();
             $estate['condition'] = EstateCondition::query()->where('id', $estate->condition_id)->where('active', 1)->first();
             $estate['floor'] = EstateFloor::query()->where('id', $estate->floor_id)->where('active', 1)->first();
             $estate['room'] = EstateRoom::query()->where('id', $estate->room_id)->where('active', 1)->first();
