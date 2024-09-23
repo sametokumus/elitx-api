@@ -87,6 +87,7 @@ class CarController extends Controller
 
             CarProp::query()->insert([
                 'car_id' => $car_id,
+                'category_id' => $request->category_id,
                 'brand_id' => $request->brand_id,
                 'serie_id' => $request->serie_id,
                 'model_id' => $request->model_id,
