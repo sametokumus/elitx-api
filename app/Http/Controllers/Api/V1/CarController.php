@@ -280,6 +280,34 @@ class CarController extends Controller
         }
 
     }
+    public function getCarById($car_id){
+        try {
+            $latestCarPrices = CarPrice::query()
+                ->select('car_prices.*')
+                ->whereRaw('car_prices.id IN (SELECT MAX(id) FROM car_prices WHERE car_id = '.$car_id.' GROUP BY car_id)');
+            $car = Car::query()
+                ->selectRaw('cars.*, latest_prices.price, latest_prices.currency')
+                ->leftJoinSub($latestCarPrices, 'latest_prices', function ($join) {
+                    $join->on('cars.id', '=', 'latest_prices.car_id');
+                })
+                ->leftJoin('car_props', 'car_props.car_id', '=', 'cars.id')
+                ->where('cars.status_id', 2)
+                ->where('cars.active', 1)
+                ->where('cars.id', $car_id);
+
+            $car['body_type'] = CarBodyType::query()->where('id', $car->body_type_id)->where('active', 1)->first();
+            $car['condition'] = CarCondition::query()->where('id', $car->condition_id)->where('active', 1)->first();
+            $car['door'] = CarDoor::query()->where('id', $car->door_id)->where('active', 1)->first();
+            $car['fuel'] = CarFuel::query()->where('id', $car->fuel_id)->where('active', 1)->first();
+            $car['gear'] = CarGear::query()->where('id', $car->gear_id)->where('active', 1)->first();
+            $car['traction'] = CarTraction::query()->where('id', $car->traction_id)->where('active', 1)->first();
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => [
+                'car' => $car]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
 
 
 
