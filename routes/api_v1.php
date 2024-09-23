@@ -196,7 +196,7 @@ Route::post('/estate/filterEstate', [EstateController::class, 'filterEstate']);
 //Car
 Route::get('/car/getCarOptions', [CarController::class, 'getCarOptions']);
 Route::post('/car/filterCar', [CarController::class, 'filterCar']);
-Route::post('/car/getCarById/{car_id}', [CarController::class, 'getCarById']);
+Route::get('/car/getCarById/{car_id}', [CarController::class, 'getCarById']);
 
 
 
