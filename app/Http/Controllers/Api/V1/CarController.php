@@ -293,7 +293,8 @@ class CarController extends Controller
                 ->leftJoin('car_props', 'car_props.car_id', '=', 'cars.id')
                 ->where('cars.status_id', 2)
                 ->where('cars.active', 1)
-                ->where('cars.id', $car_id);
+                ->where('cars.id', $car_id)
+                ->first();
 
             $car['body_type'] = CarBodyType::query()->where('id', $car->body_type_id)->where('active', 1)->first();
             $car['condition'] = CarCondition::query()->where('id', $car->condition_id)->where('active', 1)->first();
