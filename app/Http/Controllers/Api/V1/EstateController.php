@@ -275,7 +275,7 @@ class EstateController extends Controller
                 ->where('estates.status_id', 2)
                 ->where('estates.active', 1)
                 ->where('estates.id', $estate_id)
-                ->first();
+                ->toSql();
 
 //            if ($estate->owner_type == 1) {
 //                $shop = Shop::query()->where('id', $estate->owner_id)->first();
