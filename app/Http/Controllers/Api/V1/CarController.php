@@ -286,7 +286,7 @@ class CarController extends Controller
                 ->select('car_prices.*')
                 ->whereRaw('car_prices.id IN (SELECT MAX(id) FROM car_prices WHERE car_id = '.$car_id.' GROUP BY car_id)');
             $car = Car::query()
-                ->selectRaw('cars.*, latest_prices.price, latest_prices.currency')
+                ->selectRaw('car_props.*, cars.*, latest_prices.price, latest_prices.currency')
                 ->leftJoinSub($latestCarPrices, 'latest_prices', function ($join) {
                     $join->on('cars.id', '=', 'latest_prices.car_id');
                 })
