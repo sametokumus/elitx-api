@@ -3,6 +3,15 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Car;
+use App\Models\CarBodyType;
+use App\Models\CarCondition;
+use App\Models\CarDoor;
+use App\Models\CarFuel;
+use App\Models\CarGear;
+use App\Models\CarImage;
+use App\Models\CarPrice;
+use App\Models\CarTraction;
 use App\Models\Country;
 use App\Models\Estate;
 use App\Models\EstateAdvertType;
@@ -22,6 +31,9 @@ use App\Models\ProductConfirm;
 use App\Models\ProductImage;
 use App\Models\ProductPrice;
 use App\Models\ProductStatusHistory;
+use App\Models\Shop;
+use App\Models\ShopType;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -247,6 +259,54 @@ class EstateController extends Controller
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
         }
 
+    }
+    public function getEstateById($estate_id){
+        try {
+            $latestEstatePrices = EstatePrice::query()
+                ->select('estate_prices.*')
+                ->whereRaw('estate_prices.id IN (SELECT MAX(id) FROM estate_prices GROUP BY estate_id)');
+
+            $estate = Estate::query()
+                ->selectRaw('estates.*, latest_prices.price, latest_prices.currency')
+                ->leftJoinSub($latestEstatePrices, 'latest_prices', function ($join) {
+                    $join->on('estates.id', '=', 'latest_prices.estate_id');
+                })
+                ->leftJoin('estate_props', 'estate_props.estate_id', '=', 'estates.id')
+                ->where('estates.status_id', 2)
+                ->where('estates.active', 1)
+                ->where('estates.id', $estate_id)
+                ->first();
+
+            if ($estate->owner_type == 1) {
+                $shop = Shop::query()->where('id', $estate->owner_id)->first();
+                $types = ShopType::query()
+                    ->leftJoin('types', 'types.id', '=', 'shop_types.type_id')
+                    ->selectRaw('shop_types.*, types.name as name')
+                    ->where('shop_types.shop_id', $shop->id)
+                    ->where('shop_types.active', 1)
+                    ->get();
+                $type_words = $types->implode('name', ', ');
+                $shop['types'] = $types;
+                $shop['type_words'] = $type_words;
+                $estate['shop'] = $shop;
+            } else if ($estate->owner_type == 2) {
+                $estate['user'] = User::query()->where('id', $estate->owner_id)->first();
+            }
+
+            $estate['advert_type'] = EstateAdvertType::query()->where('id', $estate->advert_type_id)->where('active', 1)->first();
+            $estate['type'] = EstateType::query()->where('id', $estate->type_id)->where('active', 1)->first();
+            $estate['condition'] = EstateCondition::query()->where('id', $estate->condition_id)->where('active', 1)->first();
+            $estate['floor'] = EstateFloor::query()->where('id', $estate->floor_id)->where('active', 1)->first();
+            $estate['room'] = EstateRoom::query()->where('id', $estate->room_id)->where('active', 1)->first();
+            $estate['warming'] = EstateWarming::query()->where('id', $estate->warming_id)->where('active', 1)->first();
+
+            $estate['images'] = EstateImage::query()->where('estate_id', $estate_id)->where('active', 1)->get();
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => [
+                'estate' => $estate]]);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
     }
 
 
