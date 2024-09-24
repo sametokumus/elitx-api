@@ -257,32 +257,6 @@ class CartController extends Controller
             Cart::query()->where('cart_id', $cart_id)->where('user_id', null)->update([
                 'user_id' => $user_id
             ]);
-            $cart_details = CartDetail::query()->where('cart_id', $cart_id)->where('user_id', $user_id)->get();
-            foreach ($cart_details as $cart_detail){
-                $rule = ProductRule::query()->where('variation_id', $cart_detail->variation_id)->first();
-                $product = Product::query()->where('id', $cart_detail->product_id)->first();
-
-                    $user = User::query()->where('id', $user_id)->where('active', 1)->first();
-                    $total_user_discount = $user->user_discount;
-
-                    $type_discount = UserTypeDiscount::query()->where('user_type_id',$user->user_type)->where('brand_id',$product->brand_id)->where('type_id',$product->type_id)->where('active', 1)->first();
-                    if(!empty($type_discount)){
-                        $total_user_discount = $total_user_discount + $type_discount->discount;
-                    }
-
-                    if ($total_user_discount > 0){
-                        if ($rule->discounted_price == null || $rule->discount_rate == 0){
-                            $price = $rule->regular_price - ($rule->regular_price / 100 * $total_user_discount);
-                        }else{
-                            $price = $rule->regular_price - ($rule->regular_price / 100 * ($total_user_discount + $rule->discount_rate));
-                        }
-
-                        CartDetail::query()->where('id', $cart_detail->id)->update([
-                            'price' => $price
-                        ]);
-                    }
-
-            }
 
             return response(['message' => 'Güncelleme işlemi başarılı.','status' => 'success']);
         } catch (ValidationException $validationException) {
