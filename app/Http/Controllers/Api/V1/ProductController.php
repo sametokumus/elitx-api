@@ -326,6 +326,8 @@ class ProductController extends Controller
                     }
                 }
                 $product['is_favorite'] = $is_favorite;
+
+                $product['images'] = ProductImage::query()->where('product_id', $product->id)->where('active', 1)->get();
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
@@ -423,6 +425,8 @@ class ProductController extends Controller
                 }
                 $product['is_favorite'] = $is_favorite;
 
+                $product['images'] = ProductImage::query()->where('product_id', $product->id)->where('active', 1)->get();
+
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
@@ -491,6 +495,11 @@ class ProductController extends Controller
 
                 $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
                 $product['fav_count'] = $fav_count;
+
+                $comment_count = ProductComment::query()->where('product_id', $product->id)->where('confirmed', 1)->where('active', 1)->count();
+                $product['comment_count'] = $comment_count;
+
+                $product['images'] = ProductImage::query()->where('product_id', $product->id)->where('active', 1)->get();
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
@@ -564,6 +573,11 @@ class ProductController extends Controller
 
                 $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
                 $product['fav_count'] = $fav_count;
+
+                $comment_count = ProductComment::query()->where('product_id', $product->id)->where('confirmed', 1)->where('active', 1)->count();
+                $product['comment_count'] = $comment_count;
+
+                $product['images'] = ProductImage::query()->where('product_id', $product->id)->where('active', 1)->get();
             }
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['products' => $products]]);
@@ -733,6 +747,11 @@ class ProductController extends Controller
 
             $fav_count = UserFavorite::query()->where('product_id', $product->id)->count();
             $product['fav_count'] = $fav_count;
+
+            $comment_count = ProductComment::query()->where('product_id', $product->id)->where('confirmed', 1)->where('active', 1)->count();
+            $product['comment_count'] = $comment_count;
+
+            $product['images'] = ProductImage::query()->where('product_id', $product->id)->where('active', 1)->get();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['product' => $product]]);
         } catch (QueryException $queryException) {
