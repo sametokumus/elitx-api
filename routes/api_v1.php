@@ -72,7 +72,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::post('/user/updateUser', [UserController::class, 'updateUser']);
     Route::get('/user/deleteUser', [UserController::class, 'deleteUser']);
     Route::post('/user/changePassword', [UserController::class, 'changePassword']);
-    Route::post('/user/addUserSession', [UserController::class, 'addUserSession']);
 //    Route::post('/user/addRefundRequest', [UserController::class, 'addRefundRequest']);
 //    Route::get('/user/getUsers', [UserController::class, 'getUsers']);
 
@@ -97,6 +96,8 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     Route::get('/contactRules/getContactRulesByUserId/{user_id}', [UserContactRulesController::class, 'getContactRulesByUserId']);
     Route::post('/contactRules/updateContactRulesByUserId/{user_id}/{contact_rule_id}', [UserContactRulesController::class, 'updateContactRulesByUserId']);
+
+    Route::post('/user/addUserSession', [UserController::class, 'addUserSession']);
 
     Route::get('/userDocuments/getUserDocuments', [UserDocumentController::class, 'getUserDocuments']);
     Route::post('/userDocuments/addUserDocuments', [UserDocumentController::class, 'addUserDocuments']);
