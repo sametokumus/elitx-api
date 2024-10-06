@@ -97,8 +97,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/contactRules/getContactRulesByUserId/{user_id}', [UserContactRulesController::class, 'getContactRulesByUserId']);
     Route::post('/contactRules/updateContactRulesByUserId/{user_id}/{contact_rule_id}', [UserContactRulesController::class, 'updateContactRulesByUserId']);
 
-    Route::post('/user/addUserSession', [UserController::class, 'addUserSession']);
-
     Route::get('/userDocuments/getUserDocuments', [UserDocumentController::class, 'getUserDocuments']);
     Route::post('/userDocuments/addUserDocuments', [UserDocumentController::class, 'addUserDocuments']);
     Route::post('/userDocuments/updateUserDocuments/{document_id}', [UserDocumentController::class, 'updateUserDocuments']);
@@ -144,6 +142,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/notification/getNotifies',[NotificationController::class,'getNotifies']);
     Route::get('/notification/getDeleteNotify/{notify_id}',[NotificationController::class,'getDeleteNotify']);
 });
+
+//UserSession
+Route::post('/user/addUserSession', [UserController::class, 'addUserSession']);
 
 //Search
 Route::get('/product/getSearchProducts/{keyword}',[SearchController::class,'getSearchProducts']);
