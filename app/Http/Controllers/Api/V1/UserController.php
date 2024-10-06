@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\Country;
 use App\Models\Order;
 use App\Models\OrderRefund;
 use App\Models\ProductCategory;
@@ -11,6 +12,8 @@ use App\Models\User;
 use App\Models\UserDocumentCheck;
 use App\Models\UserFavorite;
 use App\Models\UserProfile;
+use App\Models\UserSession;
+use Faker\Provider\Uuid;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -140,6 +143,47 @@ class UserController extends Controller
             return  response(['message' => 'Hatalı sorgu.','status' => 'query-001']);
         } catch (\Throwable $throwable) {
             return  response(['message' => 'Hatalı işlem.','status' => 'error-001','ar' => $throwable->getMessage()]);
+        }
+    }
+    public function addUserSession(Request $request){
+        try {
+            $country = Country::query()->where('iso' ,$request->countryCode)->first();
+            if ($country->active == 1) {
+
+                $session_guid = Uuid::uuid();
+                $lang = $request->session_lang;
+                if ($lang == null) {
+                    $lang = $country->lang;
+                }
+
+
+                UserSession::query()->insert([
+                    'session_id' => $session_guid,
+                    'session_lang' => $lang,
+                    'as' => $request->as,
+                    'city' => $request->city,
+                    'country' => $request->country,
+                    'countryCode' => $request->countryCode,
+                    'district' => $request->district,
+                    'isp' => $request->isp,
+                    'lat' => $request->lat,
+                    'lon' => $request->lon,
+                    'org' => $request->org,
+                    'ip' => $request->ip,
+                    'region' => $request->region,
+                    'regionName' => $request->regionName
+                ]);
+
+                return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['sale_this_country' => 1, 'session_lang' => $lang, 'session_id' => $session_guid]]);
+            }else{
+                return response(['message' => 'Güncelleme işlemi başarılı.', 'status' => 'success', 'object' => ['sale_this_country' => 0]]);
+            }
+        } catch (ValidationException $validationException) {
+            return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return  response(['message' => 'Hatalı sorgu.','status' => 'query-001','e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return  response(['message' => 'Hatalı işlem.','status' => 'error-001','e' => $throwable->getMessage()]);
         }
     }
 
