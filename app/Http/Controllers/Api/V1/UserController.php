@@ -174,9 +174,15 @@ class UserController extends Controller
                     'regionName' => $request->regionName
                 ]);
 
-                return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['sale_this_country' => 1, 'session_lang' => $lang, 'session_id' => $session_guid]]);
+                return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => [
+                    'sale_this_country' => 1,
+                    'session_lang' => $lang,
+                    'session_id' => $session_guid,
+                    'currency' => $country->currency,
+                    'currency_icon' => $country->currency_icon
+                ]]);
             }else{
-                return response(['message' => 'Güncelleme işlemi başarılı.', 'status' => 'success', 'object' => ['sale_this_country' => 0]]);
+                return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['sale_this_country' => 0]]);
             }
         } catch (ValidationException $validationException) {
             return  response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.','status' => 'validation-001']);

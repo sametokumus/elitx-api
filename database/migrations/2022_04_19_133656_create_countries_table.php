@@ -15,8 +15,12 @@ class CreateCountriesTable extends Migration
     {
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->string('iso');
             $table->string('name');
+            $table->integer('phonecode')->nullable();
+            $table->string('lang')->nullable();
+            $table->string('currency')->nullable();
+            $table->string('currency_icon')->nullable();
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
