@@ -255,5 +255,40 @@ class AdvertController extends Controller
         }
     }
 
+    public function getRemoveAdvertSecondHand($advert_id)
+    {
+        try {
+
+            $user = Auth::user();
+            $user_id = $user->id;
+
+            $product = Product::query()
+                ->where('owner_type', 2)
+                ->where('owner_id', $user_id)
+                ->where('id', $advert_id)
+                ->count();
+            if ($product > 0) {
+                Product::query()
+                    ->where('id', $advert_id)
+                    ->update([
+                        'status_id' => 4
+                    ]);
+                ProductStatusHistory::query()->insert([
+                    'product_id' => $advert_id,
+                    'status_id' => 4
+                ]);
+            }
+
+
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success']);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
+        }
+    }
+
 
 }
