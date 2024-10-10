@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\CitiesController;
 use App\Http\Controllers\Api\V1\EstateController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\CarController;
+use App\Http\Controllers\Api\V1\AdvertController;
 
 
 use App\Http\Controllers\Api\V1\BankBinPairController;
@@ -113,7 +114,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/product/getFavorites', [ProductController::class, 'getFavorites']);
 
     //Product
-    Route::post('product/addProduct', [ProductController::class, 'addProduct']);
     Route::get('product/addProductPoint/{product_id}/{point}', [ProductController::class, 'addProductPoint']);
 
     //Comment
@@ -141,6 +141,11 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/notification/getCreateOldNotifies',[NotificationController::class,'getCreateOldNotifies']);
     Route::get('/notification/getNotifies',[NotificationController::class,'getNotifies']);
     Route::get('/notification/getDeleteNotify/{notify_id}',[NotificationController::class,'getDeleteNotify']);
+
+    //Advert
+    Route::post('advert/addSecondHand', [AdvertController::class, 'addSecondHand']);
+    Route::get('/order/getUserAdverts',[AdvertController::class,'getUserAdverts']);
+    Route::get('/order/getAdvertSecondHand/{advert_id}',[AdvertController::class,'getAdvertSecondHand']);
 });
 
 //UserSession
