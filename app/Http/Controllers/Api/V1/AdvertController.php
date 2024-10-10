@@ -19,6 +19,7 @@ use App\Models\Shop;
 use App\Models\ShopType;
 use App\Models\User;
 use App\Models\UserFavorite;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +44,7 @@ class AdvertController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'stock_quantity' => 1,
-                'status_id' => 1,
+                'status_id' => 2,
                 'owner_type' => 2,
                 'owner_id' => $user->id,
                 'usage_status_id' => $request->usage_status_id,
@@ -58,7 +59,7 @@ class AdvertController extends Controller
 
             ProductStatusHistory::query()->insert([
                 'product_id' => $product_id,
-                'status_id' => 1
+                'status_id' => 2
             ]);
 
             if ($request->hasFile('thumbnail')) {
@@ -99,7 +100,10 @@ class AdvertController extends Controller
             }
 
             ProductConfirm::query()->insert([
-                'product_id' => $product_id
+                'product_id' => $product_id,
+                'admin_id' => 0,
+                'confirmed' => 1,
+                'confirmed_at' => Carbon::now()
             ]);
 
             Product::query()->where('id', $product_id)->update([
