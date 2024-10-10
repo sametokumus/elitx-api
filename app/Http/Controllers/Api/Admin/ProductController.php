@@ -157,6 +157,9 @@ class ProductController extends Controller
 
     public function getProductConfirmed($id){
         try {
+            Product::query()->where('id',$id)->update([
+                'status_id' => 2
+            ]);
             $admin = Auth::user();
             ProductConfirm::query()->insert([
                 'product_id' => $id,
