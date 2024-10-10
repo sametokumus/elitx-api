@@ -182,6 +182,7 @@ class ProductController extends Controller
                 ->where('shops.confirmed', 1)
                 ->where('products.active', 1)
                 ->where('products.is_saled', 0)
+                ->where('products.status_id', 2)
                 ->where('pc.confirmed', 1)
                 ->get();
 
@@ -282,6 +283,7 @@ class ProductController extends Controller
                 ->where('pc.confirmed', 1)
                 ->where('products.active', 1)
                 ->where('products.is_saled', 0)
+                ->where('products.status_id', 2)
                 ->get();
 
             foreach ($products as $product) {
@@ -370,6 +372,7 @@ class ProductController extends Controller
                 ->where('shop_types.type_id', 1) //Sıfır Ürün Mağazası
                 ->where('products.active', 1)
                 ->where('products.is_saled', 0)
+                ->where('products.status_id', 2)
                 ->get();
 
             foreach ($products as $product) {
@@ -449,6 +452,7 @@ class ProductController extends Controller
                 ->orWhere('products.owner_type', 2)
                 ->where('products.active', 1)
                 ->where('products.is_saled', 0)
+                ->where('products.status_id', 2)
                 ->get();
 
             foreach ($products as $product) {
@@ -541,6 +545,7 @@ class ProductController extends Controller
                 ->where('shops.confirmed', 1)
                 ->where('products.active', 1)
                 ->where('products.is_saled', 0)
+                ->where('products.status_id', 2)
                 ->where('pc.confirmed', 1)
                 ->where('shops.id', $shop_id)
                 ->get();
