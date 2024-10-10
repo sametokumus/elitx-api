@@ -186,6 +186,7 @@ class ProductController extends Controller
                 'owner_type' => 2,
                 'owner_id' => $user->id,
                 'usage_status_id' => $request->usage_status_id,
+                'active' => 0
             ]);
 
             ProductPrice::query()->insert([
@@ -238,6 +239,10 @@ class ProductController extends Controller
 
             ProductConfirm::query()->insert([
                 'product_id' => $product_id
+            ]);
+
+            Product::query()->where('id', $product_id)->update([
+                'active' => 1
             ]);
 
             return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['product_id' => $product_id]]);
