@@ -143,9 +143,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/notification/getDeleteNotify/{notify_id}',[NotificationController::class,'getDeleteNotify']);
 
     //Advert
-    Route::post('advert/addSecondHand', [AdvertController::class, 'addSecondHand']);
-    Route::get('/order/getUserAdverts',[AdvertController::class,'getUserAdverts']);
-    Route::get('/order/getAdvertSecondHand/{advert_id}',[AdvertController::class,'getAdvertSecondHand']);
+    Route::post('/advert/addSecondHand', [AdvertController::class, 'addSecondHand']);
+    Route::get('/advert/getUserAdverts',[AdvertController::class,'getUserAdverts']);
+    Route::get('/advert/getAdvertSecondHand/{advert_id}',[AdvertController::class,'getAdvertSecondHand']);
 });
 
 //UserSession
