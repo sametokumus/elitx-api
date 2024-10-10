@@ -210,13 +210,18 @@ class ProductController extends Controller
                 ]);
             }
 
-            $categories = json_decode($request->categories);
-            foreach ($categories as $category) {
-                ProductCategory::query()->insert([
-                    'product_id' => $product_id,
-                    'category_id' => $category
-                ]);
-            }
+//            $categories = json_decode($request->categories);
+//            foreach ($categories as $category) {
+//                ProductCategory::query()->insert([
+//                    'product_id' => $product_id,
+//                    'category_id' => $category
+//                ]);
+//            }
+
+            ProductCategory::query()->insert([
+                'product_id' => $product_id,
+                'category_id' => $request->category
+            ]);
 
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
