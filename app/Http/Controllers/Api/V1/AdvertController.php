@@ -122,8 +122,9 @@ class AdvertController extends Controller
             $user_id = $user->id;
 
             $products = Product::query()
+                ->leftJoin('product_statuses', 'product_statuses.id', '=', 'products.status_id')
                 ->leftJoin('product_usage_statuses', 'product_usage_statuses.id', '=', 'products.usage_status_id')
-                ->selectRaw('products.*, product_usage_statuses.name as usage_status_name')
+                ->selectRaw('products.*, product_statuses.name as status_name, product_usage_statuses.name as usage_status_name')
                 ->where('products.owner_type', 2)
                 ->where('products.owner_id', $user_id)
                 ->where('products.active', 1)
