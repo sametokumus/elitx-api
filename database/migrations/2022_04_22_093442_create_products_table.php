@@ -33,6 +33,7 @@ class CreateProductsTable extends Migration
             $table->decimal('point')->default(0);
             $table->tinyInteger('point_count')->default(0);
             $table->bigInteger('usage_status_id')->default(1);
+            $table->tinyInteger('is_saled')->default(0);
             $table->tinyInteger('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
