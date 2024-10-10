@@ -235,8 +235,13 @@ class AdvertController extends Controller
                 Product::query()
                     ->where('id', $advert_id)
                     ->update([
-                        'is_saled' => 1
+                        'is_saled' => 1,
+                        'status_id' => 5
                     ]);
+                ProductStatusHistory::query()->insert([
+                    'product_id' => $advert_id,
+                    'status_id' => 5
+                ]);
             }
 
 
