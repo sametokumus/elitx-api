@@ -130,11 +130,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
 
     //Estate
-    Route::post('/estate/addEstate',[EstateController::class,'addEstate']);
 
 
     //Car
-    Route::post('/car/addCar',[CarController::class,'addCar']);
 
 
     //Notifications
@@ -149,6 +147,9 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     Route::get('/advert/getSaledAdvertSecondHand/{advert_id}',[AdvertController::class,'getSaledAdvertSecondHand']);
     Route::get('/advert/getRemoveAdvertSecondHand/{advert_id}',[AdvertController::class,'getRemoveAdvertSecondHand']);
 
+    Route::post('/advert/addEstate',[AdvertController::class,'addEstate']);
+
+    Route::post('/advert/addCar',[AdvertController::class,'addCar']);
     Route::get('/advert/getUserAdvertCars', [AdvertController::class, 'getUserAdvertCars']);
     Route::get('/advert/getUserAdvertCar/{advert_id}', [AdvertController::class, 'getUserAdvertCar']);
 });

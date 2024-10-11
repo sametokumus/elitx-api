@@ -19,6 +19,7 @@ class CreateEstatesTable extends Migration
             $table->bigInteger('owner_id');
             $table->text('advert_no');
             $table->text('title');
+            $table->text('description')->nullable();
             $table->text('thumbnail')->nullable();
             $table->tinyInteger('advert_type')->nullable();
             $table->date('listing_date')->nullable();

@@ -4,6 +4,18 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Car;
+use App\Models\CarConfirm;
+use App\Models\CarImage;
+use App\Models\CarPrice;
+use App\Models\CarProp;
+use App\Models\CarStatusHistory;
+use App\Models\Estate;
+use App\Models\EstateConfirm;
+use App\Models\EstateImage;
+use App\Models\EstatePrice;
+use App\Models\EstateProp;
+use App\Models\EstateStatusHistory;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\OrderStatus;
@@ -218,7 +230,6 @@ class AdvertController extends Controller
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
         }
     }
-
     public function getSaledAdvertSecondHand($advert_id)
     {
         try {
@@ -254,7 +265,6 @@ class AdvertController extends Controller
             return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'e' => $throwable->getMessage()]);
         }
     }
-
     public function getRemoveAdvertSecondHand($advert_id)
     {
         try {
@@ -290,5 +300,196 @@ class AdvertController extends Controller
         }
     }
 
+    public function addEstate(Request $request)
+    {
+        try {
+            $request->validate([
+                'title' => 'required',
+                'price' => 'required',
+                'currency' => 'required'
+            ]);
+            $user = Auth::user();
 
+            $advert_no = $this->generateUnique12DigitNumber();
+            $now = \Illuminate\Support\Carbon::now()->format('Y-m-d');
+            $estate_id = Estate::query()->insertGetId([
+                'advert_no' => $advert_no,
+                'title' => $request->title,
+                'description' => $request->description,
+                'advert_type' => $request->advert_type,
+                'listing_date' => $now,
+                'country_id' => $request->country_id,
+                'city_id' => $request->city_id,
+                'district_id' => $request->district_id,
+                'neighbourhood_id' => $request->neighbourhood_id,
+                'address' => $request->address,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'status_id' => 1,
+                'owner_type' => 2,
+                'owner_id' => $user->id
+            ]);
+
+            EstateProp::query()->insert([
+                'estate_id' => $estate_id,
+                'estate_type' => $request->estate_type,
+                'room_id' => $request->room_id,
+                'size' => $request->size,
+                'building_age' => $request->building_age,
+                'floor_id' => $request->floor_id,
+                'warming_id' => $request->warming_id,
+                'balcony' => $request->balcony,
+                'furnished' => $request->furnished,
+                'dues' => $request->dues,
+                'dues_currency' => $request->dues_currency,
+                'condition_id' => $request->condition_id
+            ]);
+
+            EstatePrice::query()->insert([
+                'estate_id' => $estate_id,
+                'price' => $request->price,
+                'currency' => $request->currency
+            ]);
+
+            EstateStatusHistory::query()->insert([
+                'estate_id' => $estate_id,
+                'status_id' => 1
+            ]);
+
+            if ($request->hasFile('thumbnail')) {
+                $rand = uniqid();
+                $image = $request->file('thumbnail');
+                $image_name = $rand . "-" . $image->getClientOriginalName();
+                $image->move(public_path('/images/EstateImage/'), $image_name);
+                $image_path = "/images/EstateImage/" . $image_name;
+                Estate::query()->where('id', $estate_id)->update([
+                    'thumbnail' => $image_path
+                ]);
+            }
+
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $rand = uniqid();
+                    $image_name = $rand . "-" . $image->getClientOriginalName();
+                    $image->move(public_path('/images/EstateImage/'), $image_name);
+                    $image_path = "/images/EstateImage/" . $image_name;
+                    EstateImage::query()->insert([
+                        'estate_id' => $estate_id,
+                        'image' => $image_path
+                    ]);
+                }
+            }
+
+            EstateConfirm::query()->insert([
+                'estate_id' => $estate_id
+            ]);
+
+            return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['estate_id' => $estate_id]]);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
+        }
+
+    }
+
+    public function addCar(Request $request)
+    {
+        try {
+            $request->validate([
+                'title' => 'required',
+                'price' => 'required',
+                'currency' => 'required'
+            ]);
+            $user = Auth::user();
+
+            $advert_no = $this->generateUnique12DigitNumber();
+            $now = \Illuminate\Support\Carbon::now()->format('Y-m-d');
+            $car_id = Car::query()->insertGetId([
+                'advert_no' => $advert_no,
+                'title' => $request->title,
+                'description' => $request->description,
+                'listing_date' => $now,
+                'country_id' => $request->country_id,
+                'city_id' => $request->city_id,
+                'district_id' => $request->district_id,
+                'neighbourhood_id' => $request->neighbourhood_id,
+                'address' => $request->address,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'status_id' => 1,
+                'owner_type' => 2,
+                'owner_id' => $user->id
+            ]);
+
+            CarProp::query()->insert([
+                'car_id' => $car_id,
+                'category_id' => $request->category_id,
+                'brand_id' => $request->brand_id,
+                'serie_id' => $request->serie_id,
+                'model_id' => $request->model_id,
+                'year' => $request->year,
+                'fuel_id' => $request->fuel_id,
+                'gear_id' => $request->gear_id,
+                'condition_id' => $request->condition_id,
+                'body_type_id' => $request->body_type_id,
+                'traction_id' => $request->traction_id,
+                'door_id' => $request->door_id,
+                'km' => $request->km,
+                'hp' => $request->hp,
+                'cc' => $request->cc,
+                'color' => $request->color
+            ]);
+
+            CarPrice::query()->insert([
+                'car_id' => $car_id,
+                'price' => $request->price,
+                'currency' => $request->currency
+            ]);
+
+            CarStatusHistory::query()->insert([
+                'car_id' => $car_id,
+                'status_id' => 1
+            ]);
+
+            if ($request->hasFile('thumbnail')) {
+                $rand = uniqid();
+                $image = $request->file('thumbnail');
+                $image_name = $rand . "-" . $image->getClientOriginalName();
+                $image->move(public_path('/images/CarImage/'), $image_name);
+                $image_path = "/images/CarImage/" . $image_name;
+                Car::query()->where('id', $car_id)->update([
+                    'thumbnail' => $image_path
+                ]);
+            }
+
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $rand = uniqid();
+                    $image_name = $rand . "-" . $image->getClientOriginalName();
+                    $image->move(public_path('/images/CarImage/'), $image_name);
+                    $image_path = "/images/CarImage/" . $image_name;
+                    CarImage::query()->insert([
+                        'car_id' => $car_id,
+                        'image' => $image_path
+                    ]);
+                }
+            }
+
+            CarConfirm::query()->insert([
+                'car_id' => $car_id
+            ]);
+
+            return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['car_id' => $car_id]]);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
+        }
+
+    }
 }

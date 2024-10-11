@@ -179,7 +179,8 @@ class UserController extends Controller
                     'session_lang' => $lang,
                     'session_id' => $session_guid,
                     'currency' => $country->currency,
-                    'currency_icon' => $country->currency_icon
+                    'currency_icon' => $country->currency_icon,
+                    'country_id' => $country->id
                 ]]);
             }else{
                 return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['sale_this_country' => 0]]);
