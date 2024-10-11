@@ -18,32 +18,32 @@ class CitiesController extends Controller
     public function getUpdateNeighbours()
     {
         try {
-            $iller = iller::query()->get();
-            foreach ($iller as $il){
-                $il_id = City::query()->insertGetId([
-                    'name' => $il->il_adi,
-                    'country_id' => 223
-                ]);
-
-                $ilceler = ilceler::query()->where('il_id', $il->id)->get();
-                foreach ($ilceler as $ilce){
-                    $ilce_id = District::query()->insertGetId([
-                        'name' => $ilce->ilce_adi,
-                        'city_id' => $il_id
-                    ]);
-
-                    $mahalleler = mahalleler::query()->where('il_id', $il->id)->where('ilce_id', $ilce->id)->get();
-                    foreach ($mahalleler as $mahalle){
-                        Neighbourhood::query()->insertGetId([
-                            'name' => $mahalle->mahalle_adi,
-                            'postal_code' => $mahalle->posta_kodu,
-                            'district_id' => $ilce_id
-                        ]);
-
-                    }
-
-                }
-            }
+//            $iller = iller::query()->get();
+//            foreach ($iller as $il){
+//                $il_id = City::query()->insertGetId([
+//                    'name' => $il->il_adi,
+//                    'country_id' => 223
+//                ]);
+//
+//                $ilceler = ilceler::query()->where('il_id', $il->id)->get();
+//                foreach ($ilceler as $ilce){
+//                    $ilce_id = District::query()->insertGetId([
+//                        'name' => $ilce->ilce_adi,
+//                        'city_id' => $il_id
+//                    ]);
+//
+//                    $mahalleler = mahalleler::query()->where('il_id', $il->id)->where('ilce_id', $ilce->id)->get();
+//                    foreach ($mahalleler as $mahalle){
+//                        Neighbourhood::query()->insertGetId([
+//                            'name' => $mahalle->mahalle_adi,
+//                            'postal_code' => $mahalle->posta_kodu,
+//                            'district_id' => $ilce_id
+//                        ]);
+//
+//                    }
+//
+//                }
+//            }
 
 //
 //            $cities = City::query()->where('country_id', 223)->get();
