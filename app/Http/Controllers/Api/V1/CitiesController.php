@@ -15,18 +15,25 @@ class CitiesController extends Controller
     public function getUpdateNeighbours()
     {
         try {
-            $old_dists = Districts2::query()->get();
-
-            foreach ($old_dists as $old_dist) {
-                // Corrected the LIKE query
-                $new_dist = District::query()->where('name', 'LIKE', '%' . $old_dist->name . '%')->first();
-
-                if ($new_dist) { // Check if $new_dist exists
-                    Neighbourhood::query()->where('district_id', $old_dist->id)->update([
-                        'district_id' => $new_dist->id
-                    ]);
-                }
+            $cities = City::query()->where('country_id', 223)->get();
+            foreach ($cities as $city){
+                District::query()->where('city_id', $city->id)->delete();
             }
+            City::query()->where('country_id', 223)->delete();
+
+
+//            $old_dists = Districts2::query()->get();
+//
+//            foreach ($old_dists as $old_dist) {
+//                // Corrected the LIKE query
+//                $new_dist = District::query()->where('name', 'LIKE', '%' . $old_dist->name . '%')->first();
+//
+//                if ($new_dist) { // Check if $new_dist exists
+//                    Neighbourhood::query()->where('district_id', $old_dist->id)->update([
+//                        'district_id' => $new_dist->id
+//                    ]);
+//                }
+//            }
 
 
 
