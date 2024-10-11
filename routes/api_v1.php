@@ -156,6 +156,7 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
 //UserSession
 Route::post('/user/addUserSession', [UserController::class, 'addUserSession']);
+Route::post('/user/getUpdateNeighbours', [CitiesController::class, 'getUpdateNeighbours']);
 
 //Search
 Route::get('/product/getSearchProducts/{keyword}',[SearchController::class,'getSearchProducts']);

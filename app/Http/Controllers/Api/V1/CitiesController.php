@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Models\City;
 use App\Models\District;
+use App\Models\Districts2;
 use App\Models\Neighbourhood;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -11,6 +12,27 @@ use Nette\Schema\ValidationException;
 
 class CitiesController extends Controller
 {
+    public function getUpdateNeighbours()
+    {
+        try {
+            $old_dists = Districts2::query()->get();
+            foreach ($old_dists as $old_dist){
+
+                $new_dist = District::query()->where('LIKE', $old_dist->name)->first();
+                Neighbourhood::query()->where('district_id', $old_dist->id)->update([
+                    'district_id' => $new_dist->id
+                ]);
+
+            }
+
+
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+        }
+    }
+
+
     public function getCitiesByCountryId($country_id)
     {
         try {
