@@ -25,14 +25,14 @@ class CitiesController extends Controller
                     'country_id' => 223
                 ]);
 
-                $ilceler = ilceler::query()->where('il_id', $il_id)->get();
+                $ilceler = ilceler::query()->where('il_id', $il->id)->get();
                 foreach ($ilceler as $ilce){
                     $ilce_id = District::query()->insertGetId([
                         'name' => $ilce->ilce_adi,
                         'city_id' => $il_id
                     ]);
 
-                    $mahalleler = mahalleler::query()->where('il_id', $il_id)->where('ilce_id', $ilce_id)->get();
+                    $mahalleler = mahalleler::query()->where('il_id', $il->id)->where('ilce_id', $ilce->id)->get();
                     foreach ($mahalleler as $mahalle){
                         Neighbourhood::query()->insertGetId([
                             'name' => $mahalle->mahalle_adi,
