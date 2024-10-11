@@ -16,19 +16,23 @@ class CitiesController extends Controller
     {
         try {
             $old_dists = Districts2::query()->get();
-            foreach ($old_dists as $old_dist){
 
-                $new_dist = District::query()->where('LIKE', $old_dist->name)->first();
-                Neighbourhood::query()->where('district_id', $old_dist->id)->update([
-                    'district_id' => $new_dist->id
-                ]);
+            foreach ($old_dists as $old_dist) {
+                // Corrected the LIKE query
+                $new_dist = District::query()->where('name', 'LIKE', '%' . $old_dist->name . '%')->first();
 
+                if ($new_dist) { // Check if $new_dist exists
+                    Neighbourhood::query()->where('district_id', $old_dist->id)->update([
+                        'district_id' => $new_dist->id
+                    ]);
+                }
             }
+
 
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
         } catch (QueryException $queryException) {
-            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e'=>$queryException->getMessage()]);
         }
     }
 
