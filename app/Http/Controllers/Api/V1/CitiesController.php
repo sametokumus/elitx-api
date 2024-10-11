@@ -68,7 +68,7 @@ class CitiesController extends Controller
 
 
 
-            return response(['message' => 'İşlem Başarılı.', 'status' => 'success']);
+            return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'iller' => $iller, 'ilceler' => $ilceler, 'mahalleler' => $mahalleler]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'e'=>$queryException->getMessage()]);
         }
