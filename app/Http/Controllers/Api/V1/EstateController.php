@@ -222,28 +222,5 @@ class EstateController extends Controller
 
 
 
-    private function generateUnique12DigitNumber()
-    {
-        do {
-            // Generate a random 12-digit number
-            $number = $this->generateRandom12DigitNumber();
-        } while ($this->numberExistsInDatabase($number));
 
-        return $number;
-    }
-
-    private function generateRandom12DigitNumber()
-    {
-        $number = '';
-        for ($i = 0; $i < 12; $i++) {
-            $number .= random_int(0, 9);
-        }
-        return $number;
-    }
-
-    private function numberExistsInDatabase($number)
-    {
-        // Check the database for the number
-        return Estate::query()->where('advert_no', $number)->exists();
-    }
 }
