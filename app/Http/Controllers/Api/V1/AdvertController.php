@@ -514,13 +514,13 @@ class AdvertController extends Controller
 
     private function numberExistsInDatabase($number)
     {
-        // Check the database for the number
+        // Check if the number exists in the estates table
+        $existsInEstates = Estate::query()->where('advert_no', $number)->exists();
 
-//        return Estate::query()->where('advert_no', $number)->exists();
-        return Estate::query()->where('advert_no', $number)
-            ->orWhereHas('cars', function ($query) use ($number) {
-                $query->where('advert_no', $number);
-            })
-            ->exists();
+        // Check if the number exists in the cars table
+        $existsInCars = Car::query()->where('advert_no', $number)->exists();
+
+        // Return true if the number exists in either table
+        return $existsInEstates || $existsInCars;
     }
 }
