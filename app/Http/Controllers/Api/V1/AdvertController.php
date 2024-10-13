@@ -325,9 +325,10 @@ class AdvertController extends Controller
                 'address' => $request->address,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
-                'status_id' => 1,
+                'status_id' => 2,
                 'owner_type' => 2,
-                'owner_id' => $user->id
+                'owner_id' => $user->id,
+                'active' => 0
             ]);
 
             EstateProp::query()->insert([
@@ -381,7 +382,14 @@ class AdvertController extends Controller
             }
 
             EstateConfirm::query()->insert([
-                'estate_id' => $estate_id
+                'estate_id' => $estate_id,
+                'admin_id' => 0,
+                'confirmed' => 1,
+                'confirmed_at' => Carbon::now()
+            ]);
+
+            Estate::query()->where('id', $estate_id)->update([
+                'active' => 1
             ]);
 
             return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['estate_id' => $estate_id]]);
@@ -419,9 +427,10 @@ class AdvertController extends Controller
                 'address' => $request->address,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
-                'status_id' => 1,
+                'status_id' => 2,
                 'owner_type' => 2,
-                'owner_id' => $user->id
+                'owner_id' => $user->id,
+                'active' => 0
             ]);
 
             CarProp::query()->insert([
@@ -479,7 +488,14 @@ class AdvertController extends Controller
             }
 
             CarConfirm::query()->insert([
-                'car_id' => $car_id
+                'car_id' => $car_id,
+                'admin_id' => 0,
+                'confirmed' => 1,
+                'confirmed_at' => Carbon::now()
+            ]);
+
+            Car::query()->where('id', $car_id)->update([
+                'active' => 1
             ]);
 
             return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['car_id' => $car_id]]);
@@ -492,6 +508,12 @@ class AdvertController extends Controller
         }
 
     }
+
+
+
+
+
+
 
     private function generateUnique12DigitNumber()
     {
