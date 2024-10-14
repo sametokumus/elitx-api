@@ -331,8 +331,6 @@ class AdvertController extends Controller
                 'active' => 0
             ]);
 
-            return response(['message' => 'başarılı.', 'status' => 'success', 'object' => ['estate_id' => $estate_id]]);
-
             EstateProp::query()->insert([
                 'estate_id' => $estate_id,
                 'estate_type' => $request->estate_type,
@@ -400,7 +398,7 @@ class AdvertController extends Controller
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
         } catch (\Throwable $throwable) {
-            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine(), 'fl' => $throwable->getFile(), 'cd' => $throwable->getCode()]);
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
         }
 
     }
