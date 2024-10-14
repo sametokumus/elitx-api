@@ -331,6 +331,8 @@ class AdvertController extends Controller
                 'active' => 0
             ]);
 
+            return response(['message' => 'başarılı.', 'status' => 'success', 'object' => ['estate_id' => $estate_id]]);
+
             EstateProp::query()->insert([
                 'estate_id' => $estate_id,
                 'estate_type' => $request->estate_type,
