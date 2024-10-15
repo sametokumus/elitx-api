@@ -526,8 +526,8 @@ class AdvertController extends Controller
                     $join->on('cars.id', '=', 'latest_prices.car_id');
                 })
                 ->leftJoin('car_props', 'car_props.car_id', '=', 'cars.id')
-                ->where('estates.owner_type', 2)
-                ->where('estates.owner_id', $user_id)
+                ->where('cars.owner_type', 2)
+                ->where('cars.owner_id', $user_id)
                 ->where('cars.active', 1);
 
             $cars = $cars->get();
