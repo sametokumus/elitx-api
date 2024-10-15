@@ -406,11 +406,11 @@ class AdvertController extends Controller
     public function addCar(Request $request)
     {
         try {
-            $request->validate([
-                'title' => 'required',
-                'price' => 'required',
-                'currency' => 'required'
-            ]);
+//            $request->validate([
+//                'title' => 'required',
+//                'price' => 'required',
+//                'currency' => 'required'
+//            ]);
             $user = Auth::user();
 
             $advert_no = $this->generateUnique12DigitNumber();
