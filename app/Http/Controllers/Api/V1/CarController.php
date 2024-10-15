@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Car;
 use App\Models\CarBodyType;
+use App\Models\CarCategory;
 use App\Models\CarCondition;
 use App\Models\CarConfirm;
 use App\Models\CarDoor;
@@ -41,6 +42,7 @@ class CarController extends Controller
 {
     public function getCarOptions(){
         try {
+            $categories = CarCategory::query()->where('active', 1)->get();
             $body_types = CarBodyType::query()->where('active', 1)->get();
             $conditions = CarCondition::query()->where('active', 1)->get();
             $doors = CarDoor::query()->where('active', 1)->get();
@@ -49,12 +51,13 @@ class CarController extends Controller
             $traction = CarTraction::query()->where('active', 1)->get();
 
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => [
+                'categories' => $categories,
                 'body_types' => $body_types,
                 'conditions' => $conditions,
                 'doors' => $doors,
                 'fuels' => $fuels,
                 'gears' => $gears,
-                'traction' => $traction
+                'tractions' => $traction
             ]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);
