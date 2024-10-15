@@ -143,7 +143,6 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
     //Advert
     Route::post('/advert/addSecondHand', [AdvertController::class, 'addSecondHand']);
     Route::get('/advert/getUserAdvertSecondHands',[AdvertController::class,'getUserAdvertSecondHands']);
-    Route::get('/advert/getUserAdvertSecondHand/{advert_id}',[AdvertController::class,'getUserAdvertSecondHand']);
     Route::get('/advert/getSaledAdvertSecondHand/{advert_id}',[AdvertController::class,'getSaledAdvertSecondHand']);
     Route::get('/advert/getRemoveAdvertSecondHand/{advert_id}',[AdvertController::class,'getRemoveAdvertSecondHand']);
 
