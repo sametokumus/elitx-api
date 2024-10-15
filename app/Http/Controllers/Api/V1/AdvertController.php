@@ -402,6 +402,38 @@ class AdvertController extends Controller
         }
 
     }
+    public function getUserAdvertEstates()
+    {
+        try {
+            $user = Auth::user();
+            $user_id = $user->id;
+
+            $latestEstatePrices = EstatePrice::query()
+                ->select('estate_prices.*')
+                ->whereRaw('estate_prices.id IN (SELECT MAX(id) FROM estate_prices GROUP BY estate_id)');
+
+            $estates = Estate::query()
+                ->selectRaw('estates.*, latest_prices.price, latest_prices.currency')
+                ->leftJoinSub($latestEstatePrices, 'latest_prices', function ($join) {
+                    $join->on('estates.id', '=', 'latest_prices.estate_id');
+                })
+                ->leftJoin('estate_props', 'estate_props.estate_id', '=', 'estates.id')
+                ->where('estates.owner_type', 2)
+                ->where('estates.owner_id', $user_id)
+                ->where('estates.active', 1);
+
+            $estates = $estates->get();
+
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['estates' => $estates]]);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
+        }
+
+    }
 
     public function addCar(Request $request)
     {
@@ -499,6 +531,38 @@ class AdvertController extends Controller
             ]);
 
             return response(['message' => 'Ürün ekleme işlemi başarılı.', 'status' => 'success', 'object' => ['car_id' => $car_id]]);
+        } catch (ValidationException $validationException) {
+            return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
+        } catch (QueryException $queryException) {
+            return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001', 'a' => $queryException->getMessage()]);
+        } catch (\Throwable $throwable) {
+            return response(['message' => 'Hatalı işlem.', 'status' => 'error-001', 'er' => $throwable->getMessage(), 'ln' => $throwable->getLine()]);
+        }
+
+    }
+    public function getUserAdvertCars()
+    {
+        try {
+            $user = Auth::user();
+            $user_id = $user->id;
+
+            $latestCarPrices = CarPrice::query()
+                ->select('car_prices.*')
+                ->whereRaw('car_prices.id IN (SELECT MAX(id) FROM car_prices GROUP BY car_id)');
+
+            $cars = Car::query()
+                ->selectRaw('cars.*, latest_prices.price, latest_prices.currency')
+                ->leftJoinSub($latestCarPrices, 'latest_prices', function ($join) {
+                    $join->on('cars.id', '=', 'latest_prices.car_id');
+                })
+                ->leftJoin('car_props', 'car_props.car_id', '=', 'cars.id')
+                ->where('estates.owner_type', 2)
+                ->where('estates.owner_id', $user_id)
+                ->where('cars.active', 1);
+
+            $cars = $cars->get();
+
+            return response(['message' => 'İşlem başarılı.', 'status' => 'success', 'object' => ['cars' => $cars]]);
         } catch (ValidationException $validationException) {
             return response(['message' => 'Lütfen girdiğiniz bilgileri kontrol ediniz.', 'status' => 'validation-001']);
         } catch (QueryException $queryException) {
