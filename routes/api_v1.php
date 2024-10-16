@@ -148,9 +148,11 @@ Route::middleware(['auth:sanctum', 'type.user'])->group(function (){
 
     Route::post('/advert/addEstate',[AdvertController::class,'addEstate']);
     Route::get('/advert/getUserAdvertEstates', [AdvertController::class, 'getUserAdvertEstates']);
+    Route::get('/advert/getRemoveAdvertEstate/{advert_id}',[AdvertController::class,'getRemoveAdvertEstate']);
 
     Route::post('/advert/addCar',[AdvertController::class,'addCar']);
     Route::get('/advert/getUserAdvertCars', [AdvertController::class, 'getUserAdvertCars']);
+    Route::get('/advert/getRemoveAdvertCar/{advert_id}',[AdvertController::class,'getRemoveAdvertCar']);
 });
 
 //UserSession
