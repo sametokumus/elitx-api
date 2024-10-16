@@ -383,11 +383,12 @@ class AdvertController extends Controller
                 ->whereRaw('estate_prices.id IN (SELECT MAX(id) FROM estate_prices GROUP BY estate_id)');
 
             $estates = Estate::query()
-                ->selectRaw('estates.*, latest_prices.price, latest_prices.currency')
+                ->selectRaw('estates.*, latest_prices.price, latest_prices.currency, estate_advert_types.name as advert_type_name')
                 ->leftJoinSub($latestEstatePrices, 'latest_prices', function ($join) {
                     $join->on('estates.id', '=', 'latest_prices.estate_id');
                 })
                 ->leftJoin('estate_props', 'estate_props.estate_id', '=', 'estates.id')
+                ->leftJoin('estate_advert_types', 'estate_advert_types.id', '=', 'estates.advert_type')
                 ->where('estates.owner_type', 2)
                 ->where('estates.owner_id', $user_id)
                 ->where('estates.active', 1);
