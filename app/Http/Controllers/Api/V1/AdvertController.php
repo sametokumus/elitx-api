@@ -557,11 +557,12 @@ class AdvertController extends Controller
                 ->whereRaw('car_prices.id IN (SELECT MAX(id) FROM car_prices GROUP BY car_id)');
 
             $cars = Car::query()
-                ->selectRaw('cars.*, latest_prices.price, latest_prices.currency')
+                ->selectRaw('cars.*, latest_prices.price, latest_prices.currency, car_statuses.name as status_name')
                 ->leftJoinSub($latestCarPrices, 'latest_prices', function ($join) {
                     $join->on('cars.id', '=', 'latest_prices.car_id');
                 })
                 ->leftJoin('car_props', 'car_props.car_id', '=', 'cars.id')
+                ->leftJoin('car_statuses', 'car_statuses.id', '=', 'cars.status_id')
                 ->where('cars.owner_type', 2)
                 ->where('cars.owner_id', $user_id)
                 ->where('cars.active', 1);
