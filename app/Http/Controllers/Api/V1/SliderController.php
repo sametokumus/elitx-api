@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Old;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Slider;
@@ -13,17 +13,10 @@ class SliderController extends Controller
     {
         try {
             $sliders = Slider::query()
-                ->where('active',1);
-            $sliders = $sliders->get();
+                ->where('active',1)
+                ->orderBy('order')
+                ->get();
 
-            foreach ($sliders as $slider){
-                if($slider->user_type == 0){
-                    $slider['user_type_name'] = "Tüm Kullanıcılar";
-                }else{
-                    $user_type = UserType::query()->where('id', $slider->user_type)->first();
-                    $slider['user_type_name'] = $user_type->name;
-                }
-            }
             return response(['message' => 'İşlem Başarılı.', 'status' => 'success', 'object' => ['sliders' => $sliders]]);
         } catch (QueryException $queryException) {
             return response(['message' => 'Hatalı sorgu.', 'status' => 'query-001']);

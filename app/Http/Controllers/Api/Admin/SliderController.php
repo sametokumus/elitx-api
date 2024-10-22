@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin\Old;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Slider;
@@ -18,21 +18,13 @@ class SliderController extends Controller
                 'content_text' => 'required'
             ]);
             $slider_id = Slider::query()->insertGetId([
-                'content_title' => $request->content_title,
+                'content_tag' => $request->content_tag,
                 'content_text' => $request->content_text,
-                'order' => $request->order,
-                'user_type' => $request->user_type
+                'content_subtext' => $request->content_subtext,
+                'btn_text' => $request->btn_text,
+                'btn_url' => $request->btn_url,
+                'order' => $request->order
             ]);
-            if ($request->hasFile('bg_url')) {
-                $rand = uniqid();
-                $image = $request->file('bg_url');
-                $image_name = $rand . "-" . $image->getClientOriginalName();
-                $image->move(public_path('/images/Slider/'), $image_name);
-                $image_path = "/images/Slider/" . $image_name;
-                Slider::query()->where('id',$slider_id)->update([
-                    'bg_url' => $image_path
-                ]);
-            }
             if ($request->hasFile('image_url')) {
                 $rand = uniqid();
                 $image = $request->file('image_url');
@@ -59,22 +51,13 @@ class SliderController extends Controller
             ]);
 
             $slider = Slider::query()->where('id',$id)->update([
-                'content_title' => $request->content_title,
+                'content_tag' => $request->content_tag,
                 'content_text' => $request->content_text,
-                'order' => $request->order,
-                'user_type' => $request->user_type
+                'content_subtext' => $request->content_subtext,
+                'btn_text' => $request->btn_text,
+                'btn_url' => $request->btn_url,
+                'order' => $request->order
             ]);
-
-            if ($request->hasFile('bg_url')) {
-                $rand = uniqid();
-                $image = $request->file('bg_url');
-                $image_name = $rand . "-" . $image->getClientOriginalName();
-                $image->move(public_path('/images/Slider/'), $image_name);
-                $image_path = "/images/Slider/" . $image_name;
-                Slider::query()->where('id',$id)->update([
-                    'bg_url' => $image_path
-                ]);
-            }
             if ($request->hasFile('image_url')) {
                 $rand = uniqid();
                 $image = $request->file('image_url');
